@@ -41,7 +41,7 @@ class Exercise extends React.Component<IProps, IState> {
             type="text"
             value={answer}
             name="answer"
-            onChange={this.handleChange as any} />
+            onChange={this.handleChange as any} autoFocus/>
           <Form.Label>to the cinema.</Form.Label>
         </Form.Group>
         <Button onClick={this.check}>Check</Button>
