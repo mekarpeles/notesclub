@@ -19,3 +19,11 @@
 .exercise{
   justify-content: center;
 }
+
+input.correct-answer {
+  color: green;
+}
+
+input.wrong-answer {
+  color: red;
+}
