@@ -82,7 +82,7 @@ class Exercise extends React.Component<IProps, IState> {
               <p>
                 <b>{type}</b>
               </p>
-              <p>
+              <p className="instructions">
                 {instructions}
               </p>
             </div>

@@ -42,3 +42,7 @@ input.wrong-answer {
   align-items: center;
   justify-content: center;
 }
+
+.instructions {
+  color: grey;
+}
