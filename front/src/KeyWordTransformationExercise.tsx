@@ -17,7 +17,7 @@ interface IState {
   solve: boolean
 }
 
-class Exercise extends React.Component<IProps, IState> {
+class KeyWordTransformationExercise extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
 
@@ -112,4 +112,4 @@ class Exercise extends React.Component<IProps, IState> {
   }
 }
 
-export default Exercise;
+export default KeyWordTransformationExercise;

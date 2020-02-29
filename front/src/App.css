@@ -46,3 +46,20 @@ input.wrong-answer {
 .instructions {
   color: grey;
 }
+
+.display-linebreak {
+}
+
+.choices {
+  padding-top: 20px;
+  text-align: left;
+}
+
+.multiple-choice-text {
+  white-space: pre-line;
+  text-align: justify;
+}
+
+.multiple-choice-choices {
+  width: 100%;
+}
