@@ -27,3 +27,18 @@ input.correct-answer {
 input.wrong-answer {
   color: red;
 }
+
+.exercise {
+  padding-top: 20px;
+}
+
+.exercise-core {
+  padding-top: 20px;
+}
+
+.sentence-to-complete {
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
