@@ -77,6 +77,9 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
 
     return (
       <div className="multiple-choice-options">
+        <p className="description">
+          Click on the answer that best fits each gap:
+        </p>
         {error ? <Alert variant="danger" onClose={() => this.closeError()} dismissible>{error}</Alert> : <></>}
         <table>
           {options.map((line_options, index) => {

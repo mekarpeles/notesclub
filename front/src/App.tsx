@@ -16,9 +16,8 @@ class App extends React.Component {
           <Header />
         </header>
         <KeyWordTransformationExercise description="Write a second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between three and six words, including the word given." originalSentence="I was in favour of going to the cinema." word="IDEA" part1="I thought it would be" part2="to the cinema." solutions={solutions} />
-        <MultipleChoiceClozeExercise text={text} options={options} description="Read the text below and click on the answer from the bottom that best fits each gap. There is an example at the beginning (0)." solutions={solutions2}/>
+        <MultipleChoiceClozeExercise text={text} options={options} description="Read the text below and click on the answer at the bottom that best fits each gap. There is an example at the beginning (0)." solutions={solutions2}/>
       </div>
-
     );
   }
 }
