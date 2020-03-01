@@ -3,42 +3,63 @@ import { Form, Button } from 'react-bootstrap';
 
 interface IProps {
   text: string
+  solutions: string[][]
 }
 
 interface IState {
   content: string[]
   gaps: string[]
+  solve: boolean
 }
 
 class OpenCloze extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
-    const text = this.props.text
+    const { text, solutions }= this.props
     const content = text.split(/\(\d+\)\ \.+/)
+    const gaps = Array(content.length - 1).fill("")
+    gaps[0] = solutions[0].join("/")
     this.state = {
       content: content,
-      gaps: Array(content.length).fill("")
+      gaps: gaps,
+      solve: false
     }
   }
 
-  handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
     const index = Number(target.name.replace("gap_", ""))
-    const gaps = this.state.gaps
+    const { gaps } = this.state
     gaps[index] = target.value
     this.setState({ gaps: gaps })
   }
 
-  renderGap(row_index: number) {
-    const gaps = this.state.gaps
+  renderGap = (row_index: number) => {
+    const { gaps, solve } = this.state
+    const { solutions } = this.props
+
+    let classN = ""
+    if (solve) {
+      if (solutions[row_index][0] == gaps[row_index]) {
+        classN = classN + " right-answer"
+      } else {
+        classN = classN + " wrong-answer"
+      }
+    }
     return(
-      <b>({row_index}) {gaps[row_index] || "......"}</b>
+      <b className={classN}>({row_index}) {gaps[row_index] || "......"}</b>
     )
   }
 
+  check = () => {
+    this.setState({ solve: true })
+  }
+
   render() {
-    const { content, gaps } = this.state
+    const { content, gaps, solve } = this.state
+    const { solutions } = this.props
     const content_length = content.length
+    const all_solutions = solutions.map((solution, index) => solution.join("/"))
 
     return(
       <div className="exercise container">
@@ -55,15 +76,17 @@ class OpenCloze extends React.Component<IProps, IState> {
                   )
                 })}
             </div>
+            <Button onClick={this.check}>Check</Button>
+
           </div>
           <div className="col-lg-4">
             {gaps.map((gap, index) => {
               return(
                 <Form.Group className="form-inline">
-                  <Form.Label>({index})</Form.Label>
+                  <Form.Label>({index})&nbsp;</Form.Label>
                   <Form.Control
                     type="text"
-                    value={gaps[index]}
+                    value={solve ? all_solutions[index] : gaps[index]}
                     name={"gap_" + String(index)}
                     onChange={this.handleChange as any} autoFocus />
                 </Form.Group>
@@ -71,6 +94,7 @@ class OpenCloze extends React.Component<IProps, IState> {
             })}
           </div>
           <div className="col-lg-1"></div>
+
         </div>
       </div>
     )
