@@ -3,14 +3,13 @@ import { Form, Button } from 'react-bootstrap';
 
 interface IProps {
   text: string
-  choices: string[][]
+  options: string[][]
 }
 
 interface IState {
-  solve: boolean
   content: string[]
-  options: number[]
-  choice_highlighted: number | null
+  choices: number[]
+  field_highlighted: number | null
 }
 
 class KeyWordTransformationExercise extends React.Component<IProps, IState> {
@@ -18,45 +17,44 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     super(props)
     const text = this.props.text
     const content = text.split(/\(\d+\)\ \.+/)
-    const options = Array(content.length - 1)
+    const choices = Array(content.length - 1)
 
     this.state = {
-      solve: false,
       content: content,
-      options: options,
-      choice_highlighted: null
+      choices: choices,
+      field_highlighted: null
     }
   }
 
-  selectChoice = (index: number, ind: number) => {
-    const { options } = this.state
-    const { choices }= this.props
-    options[index] = ind
-    this.setState({ options: options, choice_highlighted: index })
+  selectOption = (index: number, ind: number) => {
+    const { choices } = this.state
+    const { options }= this.props
+    choices[index] = ind
+    this.setState({ choices: choices, field_highlighted: index })
   }
 
-  renderChoice = (index: number, ind: number, word: string) => {
-    const { options } = this.state
+  renderOption = (index: number, ind: number, word: string) => {
+    const { choices } = this.state
 
     return (
-      <td onClick={() => this.selectChoice(index, ind)}>
-        {options[index] === ind ? <b>{word}</b> : word}
+      <td onClick={() => this.selectOption(index, ind)}>
+        {choices[index] === ind ? <b>{word}</b> : word}
       </td>
     )
   }
 
-  renderChoices = () => {
-    const { choices } = this.props
-    const { choice_highlighted } = this.state
+  renderOptions = () => {
+    const { options } = this.props
+    const { field_highlighted } = this.state
 
     return (
-      <div className="choices">
-        <table className="multiple-choice-choices">
-          {choices.map((line_choices, index) => {
+      <div className="options">
+        <table className="multiple-option-options">
+          {options.map((line_options, index) => {
             return (
-              <tr className={choice_highlighted == index ? 'multiple-choice-option' : ''}>
-                {index}:&nbsp;{line_choices.map((word, ind) => {
-                  return(this.renderChoice(index, ind, word))
+              <tr className={field_highlighted == index ? 'multiple-option-choice' : ''}>
+                {index}:&nbsp;{line_options.map((word, ind) => {
+                  return(this.renderOption(index, ind, word))
                 })}
               </tr>
             )
@@ -67,18 +65,18 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
   }
 
   mouseOver = (row_index: number) => {
-    this.setState({ choice_highlighted: row_index })
+    this.setState({ field_highlighted: row_index })
   }
 
-  renderOption = (row_index: number) => {
-    const { options, choice_highlighted } = this.state
-    const { choices } = this.props
-    const c = options.map((option_index) => {
-      return(choices[row_index][option_index])
+  renderChoice = (row_index: number) => {
+    const { choices, field_highlighted } = this.state
+    const { options } = this.props
+    const c = choices.map((choice_index) => {
+      return(options[row_index][choice_index])
     })
 
     return(
-      <b className={choice_highlighted == row_index ? 'multiple-choice-option' : ''} onMouseEnter={() => this.mouseOver(row_index)}>({row_index}) {c[row_index] || "......"}</b>
+      <b className={field_highlighted == row_index ? 'multiple-option-choice' : ''} onMouseEnter={() => this.mouseOver(row_index)}>({row_index}) {c[row_index] || "......"}</b>
     )
   }
 
@@ -91,15 +89,15 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
         <div className="row">
           <div className="col-lg-3"></div>
           <div className="col-lg-6">
-            <div className="multiple-choice-text">
+            <div className="multiple-option-text">
               {content.map((piece, row_index) => {
                 return(
-                  <>{piece}{row_index < content_length - 1 ? this.renderOption(row_index) : <></>}</>
+                  <>{piece}{row_index < content_length - 1 ? this.renderChoice(row_index) : <></>}</>
                 )
               })}
             </div>
 
-            {this.renderChoices()}
+            {this.renderOptions()}
 
           </div>
           <div className="col-lg-3"></div>

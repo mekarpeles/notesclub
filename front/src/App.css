@@ -50,20 +50,20 @@ input.wrong-answer {
 .display-linebreak {
 }
 
-.choices {
+.options {
   padding-top: 20px;
   text-align: left;
 }
 
-.multiple-choice-text {
+.multiple-option-text {
   white-space: pre-line;
   text-align: justify;
 }
 
-.multiple-choice-choices {
+.multiple-option-options {
   width: 100%;
 }
 
-.multiple-choice-option {
+.multiple-option-choice {
   background-color: aquamarine;
 }
