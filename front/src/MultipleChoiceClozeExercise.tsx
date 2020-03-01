@@ -34,21 +34,33 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
   }
 
   selectOption = (index: number, ind: number) => {
-    const { choices } = this.state
+    const { choices, solve } = this.state
     const { options }= this.props
-    if(index != 0){
-      choices[index] = ind
-      this.setState({ choices: choices, field_highlighted: index, showAlert: false })
-    }else{
-      this.setState({ showAlert: true })
+    if(!solve){
+      if (index != 0) {
+        choices[index] = ind
+        this.setState({ choices: choices, field_highlighted: index, showAlert: false })
+      } else {
+        this.setState({ showAlert: true })
+      }
     }
   }
 
   renderOption = (index: number, ind: number, word: string) => {
-    const { choices } = this.state
+    const { choices, solve } = this.state
+    const { solutions } = this.props
+
+    let classN = ""
+    if (solve) {
+      if (solutions[index] == ind) {
+        classN = classN + " right-answer"
+      } else {
+        classN = classN + " wrong-answer"
+      }
+    }
 
     return (
-      <td onClick={() => this.selectOption(index, ind)}>
+      <td className={classN} onClick={() => this.selectOption(index, ind)}>
         {choices[index] === ind ? <b>{word}</b> : word}
       </td>
     )
