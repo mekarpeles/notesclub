@@ -4,6 +4,7 @@ import { Alert, Form, Button } from 'react-bootstrap';
 interface IProps {
   text: string
   options: string[][]
+  description: string
 }
 
 interface IState {
@@ -55,10 +56,9 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     const { field_highlighted, showAlert } = this.state
 
     return (
-      <div className="options">
-        <p>Click on one word per row to complete the fields:</p>
+      <div className="multiple-choice-options">
         {showAlert ? <Alert variant="danger">The first line (0) is an example!</Alert> : <></>}
-        <table className="multiple-choice-options">
+        <table>
           {options.map((line_options, index) => {
             return (
               <tr className={field_highlighted == index ? 'multiple-choice-choice' : ''}>
@@ -91,6 +91,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
 
   public render() {
     const { content } = this.state
+    const { description } = this.props
     const content_length = content.length
 
     return (
@@ -98,6 +99,10 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
         <div className="row">
           <div className="col-lg-3"></div>
           <div className="col-lg-6">
+            <p><b>Multiple Choice Cloze</b></p>
+            <p className="description">
+              {description}
+            </p>
             <div className="multiple-choice-text">
               {content.map((piece, row_index) => {
                 return(

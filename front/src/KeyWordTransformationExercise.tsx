@@ -2,13 +2,12 @@ import * as React from 'react';
 import { Form, Button } from 'react-bootstrap';
 
 interface IProps {
-  type: string
   originalSentence: string
   word: string
   part1: string
   part2: string
   solutions: string[]
-  instructions: string
+  description: string
 }
 
 interface IState {
@@ -60,18 +59,9 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     )
   }
 
-  renderInstructions = () => {
-    const instructions = this.props.instructions
-    return (
-      <div>
-        {instructions}
-      </div>
-    )
-  }
-
   public render() {
     const { answer, solve, correctOrWrong } = this.state
-    const { originalSentence, word, part1, part2, instructions, type } = this.props
+    const { originalSentence, word, part1, part2, description } = this.props
 
     return (
       <div className="exercise container">
@@ -79,11 +69,9 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
           <div className="col-lg-3"></div>
           <div className="col-lg-6">
             <div>
-              <p>
-                <b>{type}</b>
-              </p>
-              <p className="instructions">
-                {instructions}
+              <p><b>Key Word Transformation</b></p>
+              <p className="description">
+                {description}
               </p>
             </div>
             <div className="exercise-core">
