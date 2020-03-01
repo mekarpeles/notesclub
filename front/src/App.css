@@ -55,15 +55,15 @@ input.wrong-answer {
   text-align: left;
 }
 
-.multiple-option-text {
+.multiple-choice-text {
   white-space: pre-line;
   text-align: justify;
 }
 
-.multiple-option-options {
+.multiple-choice-options {
   width: 100%;
 }
 
-.multiple-option-choice {
+.multiple-choice-choice {
   background-color: aquamarine;
 }

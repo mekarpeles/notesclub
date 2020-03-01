@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Alert, Form, Button } from 'react-bootstrap';
 
 interface IProps {
   text: string
@@ -10,6 +10,7 @@ interface IState {
   content: string[]
   choices: number[]
   field_highlighted: number | null
+  showAlert: boolean
 }
 
 class KeyWordTransformationExercise extends React.Component<IProps, IState> {
@@ -18,19 +19,25 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     const text = this.props.text
     const content = text.split(/\(\d+\)\ \.+/)
     const choices = Array(content.length - 1)
+    choices[0] = 2
 
     this.state = {
       content: content,
       choices: choices,
-      field_highlighted: null
+      field_highlighted: null,
+      showAlert: false
     }
   }
 
   selectOption = (index: number, ind: number) => {
     const { choices } = this.state
     const { options }= this.props
-    choices[index] = ind
-    this.setState({ choices: choices, field_highlighted: index })
+    if(index != 0){
+      choices[index] = ind
+      this.setState({ choices: choices, field_highlighted: index, showAlert: false })
+    }else{
+      this.setState({ showAlert: true })
+    }
   }
 
   renderOption = (index: number, ind: number, word: string) => {
@@ -45,14 +52,16 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
 
   renderOptions = () => {
     const { options } = this.props
-    const { field_highlighted } = this.state
+    const { field_highlighted, showAlert } = this.state
 
     return (
       <div className="options">
-        <table className="multiple-option-options">
+        <p>Click on one word per row to complete the fields:</p>
+        {showAlert ? <Alert variant="danger">The first line (0) is an example!</Alert> : <></>}
+        <table className="multiple-choice-options">
           {options.map((line_options, index) => {
             return (
-              <tr className={field_highlighted == index ? 'multiple-option-choice' : ''}>
+              <tr className={field_highlighted == index ? 'multiple-choice-choice' : ''}>
                 {index}:&nbsp;{line_options.map((word, ind) => {
                   return(this.renderOption(index, ind, word))
                 })}
@@ -76,7 +85,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     })
 
     return(
-      <b className={field_highlighted == row_index ? 'multiple-option-choice' : ''} onMouseEnter={() => this.mouseOver(row_index)}>({row_index}) {c[row_index] || "......"}</b>
+      <b className={field_highlighted == row_index ? 'multiple-choice-choice' : ''} onMouseEnter={() => this.mouseOver(row_index)}>({row_index}) {c[row_index] || "......"}</b>
     )
   }
 
@@ -89,14 +98,13 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
         <div className="row">
           <div className="col-lg-3"></div>
           <div className="col-lg-6">
-            <div className="multiple-option-text">
+            <div className="multiple-choice-text">
               {content.map((piece, row_index) => {
                 return(
                   <>{piece}{row_index < content_length - 1 ? this.renderChoice(row_index) : <></>}</>
                 )
               })}
             </div>
-
             {this.renderOptions()}
 
           </div>
