@@ -12,7 +12,7 @@ interface IProps {
 
 interface IState {
   answer: string
-  correctOrWrong: string
+  rightOrWrong: string
   solve: boolean
 }
 
@@ -23,23 +23,23 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     this.state = {
       answer: "",
       solve: false,
-      correctOrWrong: ""
+      rightOrWrong: ""
     }
   }
 
   check = () => {
     const { answer } = this.state
     const { solutions } = this.props
-    let correctOrWrong = "wrong"
+    let rightOrWrong = "wrong"
 
     for(let i = 0; i < solutions.length; i++){
       if(answer === solutions[i]){
-        correctOrWrong = "correct"
+        rightOrWrong = "right"
         break
       }
     }
 
-    this.setState({ solve: true, correctOrWrong: correctOrWrong })
+    this.setState({ solve: true, rightOrWrong: rightOrWrong })
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,7 +60,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
   }
 
   public render() {
-    const { answer, solve, correctOrWrong } = this.state
+    const { answer, solve, rightOrWrong } = this.state
     const { originalSentence, word, part1, part2, description } = this.props
 
     return (
@@ -83,7 +83,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
                   type="text"
                   value={answer}
                   name="answer"
-                  className={correctOrWrong + "-answer"}
+                  className={rightOrWrong + "-answer"}
                   onChange={this.handleChange as any} autoFocus/>
                 <Form.Label>&nbsp;{part2}</Form.Label>
               </Form.Group>

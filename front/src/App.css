@@ -20,11 +20,19 @@
   justify-content: center;
 }
 
-input.correct-answer {
+input.right-answer {
   color: green;
 }
 
 input.wrong-answer {
+  color: red;
+}
+
+.right-answer {
+  color: green;
+}
+
+.wrong-answer {
   color: red;
 }
 

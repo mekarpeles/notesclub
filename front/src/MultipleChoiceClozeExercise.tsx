@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Alert, Form, Button } from 'react-bootstrap';
+import { Alert, Button } from 'react-bootstrap';
 
 interface IProps {
   text: string
   options: string[][]
   description: string
+  solutions: number[]
 }
 
 interface IState {
@@ -12,6 +13,7 @@ interface IState {
   choices: number[]
   field_highlighted: number | null
   showAlert: boolean
+  solve: boolean
 }
 
 class KeyWordTransformationExercise extends React.Component<IProps, IState> {
@@ -26,7 +28,8 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
       content: content,
       choices: choices,
       field_highlighted: null,
-      showAlert: false
+      showAlert: false,
+      solve: false
     }
   }
 
@@ -78,15 +81,29 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
   }
 
   renderChoice = (row_index: number) => {
-    const { choices, field_highlighted } = this.state
-    const { options } = this.props
+    const { choices, field_highlighted, solve } = this.state
+    const { options, solutions } = this.props
     const c = choices.map((choice_index) => {
       return(options[row_index][choice_index])
     })
 
+    let classN = ""
+    if (field_highlighted == row_index){ classN = "multiple-choice-choice" }
+    if (solve){
+      if(choices[row_index] === solutions[row_index]){
+        classN = classN + " right-answer"
+      }else{
+        classN = classN + " wrong-answer"
+      }
+    }
+
     return(
-      <b className={field_highlighted == row_index ? 'multiple-choice-choice' : ''} onMouseEnter={() => this.mouseOver(row_index)}>({row_index}) {c[row_index] || "......"}</b>
+      <b className={classN} onMouseEnter={() => this.mouseOver(row_index)}>({row_index}) {c[row_index] || "......"}</b>
     )
+  }
+
+  check = () => {
+    this.setState({ solve: true, field_highlighted: null })
   }
 
   public render() {
@@ -111,7 +128,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
               })}
             </div>
             {this.renderOptions()}
-
+            <Button onClick={this.check}>Check</Button>
           </div>
           <div className="col-lg-3"></div>
         </div>
