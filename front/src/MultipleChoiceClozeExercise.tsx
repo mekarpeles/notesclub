@@ -12,7 +12,7 @@ interface IState {
   content: string[]
   choices: number[]
   field_highlighted: number | null
-  showAlert: boolean
+  error: string | null
   solve: boolean
 }
 
@@ -28,20 +28,21 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
       content: content,
       choices: choices,
       field_highlighted: null,
-      showAlert: false,
+      error: null,
       solve: false
     }
   }
 
   selectOption = (index: number, ind: number) => {
     const { choices, solve } = this.state
-    const { options }= this.props
-    if(!solve){
-      if (index != 0) {
-        choices[index] = ind
-        this.setState({ choices: choices, field_highlighted: index, showAlert: false })
+    if(solve){
+      this.setState({ error: "The exercise has ended." })
+    }else{
+      if (index == 0) {
+        this.setState({ error: "The first line (0) is an example! Click on any other." })
       } else {
-        this.setState({ showAlert: true })
+        choices[index] = ind
+        this.setState({ choices: choices, field_highlighted: index, error: null })
       }
     }
   }
@@ -68,11 +69,11 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
 
   renderOptions = () => {
     const { options } = this.props
-    const { field_highlighted, showAlert } = this.state
+    const { field_highlighted, error } = this.state
 
     return (
       <div className="multiple-choice-options">
-        {showAlert ? <Alert variant="danger">The first line (0) is an example!</Alert> : <></>}
+        {error ? <Alert variant="danger">{error}</Alert> : <></>}
         <table>
           {options.map((line_options, index) => {
             return (
