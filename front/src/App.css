@@ -60,6 +60,7 @@ input.wrong-answer {
 
 .multiple-choice-options {
   padding-top: 20px;
+  padding-bottom: 20px;
   text-align: left;
 }
 

@@ -39,7 +39,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
       this.setState({ error: "The exercise has ended." })
     }else{
       if (index == 0) {
-        this.setState({ error: "The first line (0) is an example! Click on any other." })
+        this.setState({ error: "The first line (0) is an example! Click on any other.", field_highlighted: 0 })
       } else {
         choices[index] = ind
         this.setState({ choices: choices, field_highlighted: index, error: null })
