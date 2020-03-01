@@ -140,7 +140,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
             <p className="description">
               {description}
             </p>
-            <div className="multiple-choice-text">
+            <div className="justify-text">
               {content.map((piece, row_index) => {
                 return(
                   <>{piece}{row_index < content_length - 1 ? this.renderChoice(row_index) : <></>}</>
