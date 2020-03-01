@@ -10,6 +10,7 @@ interface IState {
   solve: boolean
   content: string[]
   options: number[]
+  choice_highlighted: number | null
 }
 
 class KeyWordTransformationExercise extends React.Component<IProps, IState> {
@@ -22,7 +23,8 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     this.state = {
       solve: false,
       content: content,
-      options: options
+      options: options,
+      choice_highlighted: null
     }
   }
 
@@ -30,7 +32,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     const { options } = this.state
     const { choices }= this.props
     options[index] = ind
-    this.setState({ options: options })
+    this.setState({ options: options, choice_highlighted: index })
   }
 
   renderChoice = (index: number, ind: number, word: string) => {
@@ -45,31 +47,38 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
 
   renderChoices = () => {
     const { choices } = this.props
+    const { choice_highlighted } = this.state
+
     return (
       <div className="choices">
         <table className="multiple-choice-choices">
           {choices.map((line_choices, index) => {
             return (
-            <tr>
-              {index}:&nbsp;{line_choices.map((word, ind) => {
-                return(this.renderChoice(index, ind, word))
-              })}
-            </tr>)
+              <tr className={choice_highlighted == index ? 'multiple-choice-option' : ''}>
+                {index}:&nbsp;{line_choices.map((word, ind) => {
+                  return(this.renderChoice(index, ind, word))
+                })}
+              </tr>
+            )
           })}
         </table>
       </div>
     );
   }
 
+  mouseOver = (row_index: number) => {
+    this.setState({ choice_highlighted: row_index })
+  }
+
   renderOption = (row_index: number) => {
-    const { options } = this.state
+    const { options, choice_highlighted } = this.state
     const { choices } = this.props
     const c = options.map((option_index) => {
-      return(choices[row_index][option_index] || "......")
+      return(choices[row_index][option_index])
     })
 
     return(
-      <b>({row_index}) {c[row_index]}</b>
+      <b className={choice_highlighted == row_index ? 'multiple-choice-option' : ''} onMouseEnter={() => this.mouseOver(row_index)}>({row_index}) {c[row_index] || "......"}</b>
     )
   }
 

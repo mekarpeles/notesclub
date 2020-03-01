@@ -63,3 +63,7 @@ input.wrong-answer {
 .multiple-choice-choices {
   width: 100%;
 }
+
+.multiple-choice-option {
+  background-color: aquamarine;
+}
