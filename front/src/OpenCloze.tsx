@@ -10,6 +10,7 @@ interface IState {
   content: string[]
   gaps: string[]
   solve: boolean
+  rightOrWrong: string[]
 }
 
 class OpenCloze extends React.Component<IProps, IState> {
@@ -22,7 +23,8 @@ class OpenCloze extends React.Component<IProps, IState> {
     this.state = {
       content: content,
       gaps: gaps,
-      solve: false
+      solve: false,
+      rightOrWrong: Array(content.length - 1).fill("")
     }
   }
 
@@ -35,28 +37,23 @@ class OpenCloze extends React.Component<IProps, IState> {
   }
 
   renderGap = (row_index: number) => {
-    const { gaps, solve } = this.state
-    const { solutions } = this.props
+    const { gaps, rightOrWrong } = this.state
 
-    let classN = ""
-    if (solve) {
-      if (solutions[row_index][0] == gaps[row_index]) {
-        classN = classN + " right-answer"
-      } else {
-        classN = classN + " wrong-answer"
-      }
-    }
     return(
-      <b className={classN}>({row_index}) {gaps[row_index] || "......"}</b>
+      <b className={rightOrWrong[row_index] ? rightOrWrong[row_index] + "-answer" : ""}>({row_index}) {gaps[row_index] || "......"}</b>
     )
   }
 
   check = () => {
-    this.setState({ solve: true })
+    const { gaps } = this.state
+    const { solutions } = this.props
+
+    const rightOrWrong = gaps.map((gap, index) => solutions[index].includes(gaps[index]) ? "right" : "wrong")
+    this.setState({ solve: true, rightOrWrong: rightOrWrong })
   }
 
   render() {
-    const { content, gaps, solve } = this.state
+    const { content, gaps, solve, rightOrWrong } = this.state
     const { solutions } = this.props
     const content_length = content.length
     const all_solutions = solutions.map((solution, index) => solution.join("/"))
@@ -86,9 +83,11 @@ class OpenCloze extends React.Component<IProps, IState> {
                   <Form.Label>({index})&nbsp;</Form.Label>
                   <Form.Control
                     type="text"
-                    value={solve ? all_solutions[index] : gaps[index]}
+                    value={gap}
                     name={"gap_" + String(index)}
+                    className={solve ? rightOrWrong[index] + "-answer" : ""}
                     onChange={this.handleChange as any} autoFocus />
+                  <Form.Label>&nbsp;{solve ? all_solutions[index] : <></>}</Form.Label>
                 </Form.Group>
               )
             })}
