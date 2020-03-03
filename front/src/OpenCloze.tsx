@@ -4,6 +4,8 @@ import { Form, Button } from 'react-bootstrap';
 interface IProps {
   text: string
   solutions: string[][]
+  description: string
+  title: string
 }
 
 interface IState {
@@ -54,7 +56,7 @@ class OpenCloze extends React.Component<IProps, IState> {
 
   render() {
     const { content, gaps, solve, rightOrWrong } = this.state
-    const { solutions } = this.props
+    const { solutions, description, title } = this.props
     const content_length = content.length
     const all_solutions = solutions.map((solution, index) => solution.join("/"))
 
@@ -63,15 +65,19 @@ class OpenCloze extends React.Component<IProps, IState> {
         <div className="row">
           <div className="col-lg-1"></div>
           <div className="col-lg-6 ">
-            <div className="justify-text">
-                {content.map((piece, row_index) => {
-                  return (
-                    <>
-                      {piece}
-                      {row_index < content_length - 1 ? this.renderGap(row_index) : <></>}
-                    </>
-                  )
-                })}
+            <p><b>{title}</b></p>
+            <div className="justify-text open-cloze-core">
+              <p className="description">
+                {description}
+              </p>
+              {content.map((piece, row_index) => {
+                return (
+                  <>
+                    {piece}
+                    {row_index < content_length - 1 ? this.renderGap(row_index) : <></>}
+                  </>
+                )
+              })}
             </div>
             <Button onClick={this.check}>Check</Button>
 

@@ -80,3 +80,8 @@ input.wrong-answer {
 .multiple-choice-choice {
   background-color: antiquewhite;
 }
+
+.open-cloze-core {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
