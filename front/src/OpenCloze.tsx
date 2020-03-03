@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Alert, Form, Button } from 'react-bootstrap';
 
 interface IProps {
   text: string
@@ -13,6 +13,7 @@ interface IState {
   gaps: string[]
   solve: boolean
   rightOrWrong: string[]
+  error: string | null
 }
 
 class OpenCloze extends React.Component<IProps, IState> {
@@ -26,16 +27,25 @@ class OpenCloze extends React.Component<IProps, IState> {
       content: content,
       gaps: gaps,
       solve: false,
-      rightOrWrong: Array(content.length - 1).fill("")
+      rightOrWrong: Array(content.length - 1).fill(""),
+      error: null
     }
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target
-    const index = Number(target.name.replace("gap_", ""))
-    const { gaps } = this.state
-    gaps[index] = target.value
-    this.setState({ gaps: gaps })
+    const { solve, gaps } = this.state
+    if(solve) {
+      this.setState({ error: "The exercise has ended." })
+    }else{
+      const target = event.target
+      const index = Number(target.name.replace("gap_", ""))
+      gaps[index] = target.value
+      this.setState({ gaps: gaps })
+    }
+  }
+
+  closeError = () => {
+    this.setState({ error: null })
   }
 
   renderGap = (row_index: number) => {
@@ -55,7 +65,7 @@ class OpenCloze extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { content, gaps, solve, rightOrWrong } = this.state
+    const { content, gaps, solve, rightOrWrong, error } = this.state
     const { solutions, description, title } = this.props
     const content_length = content.length
     const all_solutions = solutions.map((solution, index) => solution.join("/"))
@@ -70,6 +80,7 @@ class OpenCloze extends React.Component<IProps, IState> {
               <p className="description">
                 {description}
               </p>
+              {error ? <Alert variant="danger" onClose={() => this.closeError()} dismissible>{error}</Alert> : <></>}
               {content.map((piece, row_index) => {
                 return (
                   <>
