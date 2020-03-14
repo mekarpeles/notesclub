@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
+  before_action :authenticate_param_user!
 
   def show
   end
@@ -13,6 +14,10 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def authenticate_param_user!
+    head :unauthorized if current_user.id.to_s != params[:id]
+  end
 
   def user_params
     params.require(:user).permit(:name, :username, :email, :password)
