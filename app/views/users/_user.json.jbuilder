@@ -1,2 +1,2 @@
 json.(user, :id, :email, :username, :name)
-json.token user.generate_jwt
+json.token user.jwt_token

@@ -1,4 +1,6 @@
 class SessionsController < Devise::SessionsController
+  skip_before_action :authenticate_user!
+
   def create
     user = User.find_by_email(sign_in_params[:email])
 

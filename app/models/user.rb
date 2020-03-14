@@ -4,11 +4,19 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable
 
-  before_create :set_provisional_username
+  before_create :set_provisional_username, :set_jwt_token
 
   PROVISIONAL_USERNAME_LENGTH = 10
 
   validates_uniqueness_of :username, :email
+
+
+  def set_jwt_token
+    # Need to expire it in X days (see generate_jwt)
+    self.jwt_token = generate_jwt
+  end
+
+  private
 
   def generate_jwt
     JWT.encode(
@@ -19,8 +27,6 @@ class User < ApplicationRecord
       Rails.application.secrets.secret_key_base
     )
   end
-
-  private
 
   def set_provisional_username
     loop do
