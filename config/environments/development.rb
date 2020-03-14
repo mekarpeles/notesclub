@@ -34,6 +34,7 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  # Avoid devise error "Missing host to link to! Please provide the :host parameter" when creating a user
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
