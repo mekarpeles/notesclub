@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
   PROVISIONAL_USERNAME_LENGTH = 10
 
-  validate_uniqueness_of :username, :email
+  validates_uniqueness_of :username, :email
 
   def generate_jwt
     JWT.encode(
