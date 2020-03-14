@@ -23,8 +23,8 @@ class App extends React.Component {
         </header>
         {/* <OpenCloze text={text4} solutions={solutions4} title="Word Formation" description="Use the word given in capitals to form a word that fits in the gap. There is an example at the beginning (0)." /> */}
         <OpenCloze text={text3} solutions={solutions3} title="Open Cloze" description="Read the text below and think of a word which best fits each gap. Use only one word in each gap. There is an example at the beginning (0)." />
-        {/* <KeyWordTransformationExercise description={description} word="IDEA" part1="I thought it would be" part2="to the cinema." solutions={solutions} originalSentence = "I was in favour of going to the cinema."/> */}
-        {/* <MultipleChoiceClozeExercise text={text2} options={options2} description="Read the text below and click on the answer at the bottom that best fits each gap. There is an example at the beginning (0)." solutions={solutions2}/> */}
+        <KeyWordTransformationExercise description={description} word="IDEA" part1="I thought it would be" part2="to the cinema." solutions={solutions} originalSentence = "I was in favour of going to the cinema."/>
+        <MultipleChoiceClozeExercise text={text2} options={options2} description="Read the text below and click on the answer at the bottom that best fits each gap. There is an example at the beginning (0)." solutions={solutions2}/>
       </div>
     );
   }
