@@ -8,7 +8,7 @@ class SessionsController < Devise::SessionsController
       Rails.logger.info("action:user_login:#{user.id}")
       @current_user = user
     else
-      render json: { errors: { 'email or password' => ['is invalid'] }}, status: :unprocessable_entity
+      render json: { errors: { 'email or password' => ['is invalid'] }}, status: :unauthorized
     end
   end
 end
