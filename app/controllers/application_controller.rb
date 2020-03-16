@@ -1,7 +1,5 @@
 class ApplicationController < ActionController::API
   include ::ActionController::Cookies
-  include ActionController::HttpAuthentication::Basic::ControllerMethods
-  include ActionController::HttpAuthentication::Token::ControllerMethods
 
   respond_to :json
 
