@@ -5,13 +5,14 @@ import Login from './Login';
 import MultipleChoiceClozeExercise from './MultipleChoiceClozeExercise';
 import OpenCloze from './OpenCloze';
 import Header from './Header';
+import { Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 interface User {
   id: number
   email: string
   username: string
   name: string
-  token: string
 }
 
 interface AppProps {
@@ -26,13 +27,30 @@ class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props)
 
+    const currentUserStr = localStorage.getItem('current_user')
+
     this.state = {
-      user: undefined
+      user: currentUserStr ? JSON.parse(currentUserStr) : undefined
     }
   }
   setCurrentUser = (user: User) => {
     this.setState({ user: user })
+    localStorage.setItem('current_user', JSON.stringify(user))
   }
+
+  test = () => {
+    // axios.defaults.withCredentials = true
+    axios.get(`http://localhost:3000/api/users/1`, { withCredentials: true })
+      .then(res => {
+        console.log(res)
+        console.log(res.data)
+      })
+      .catch(res => {
+        console.log("error ");
+        console.log(res);
+      })
+  }
+
   public render() {
     const solutions = ["a good idea to go", "to go"]
     const description = "Write a second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between three and six words, including the word given."
@@ -51,6 +69,7 @@ class App extends React.Component<AppProps, AppState> {
           <Header />
         </header>
         {user ? "Hi" : <Login setCurrentUser={this.setCurrentUser} />}
+        <Button onClick={this.test}>Test</Button>
         {/* <OpenCloze text={text4} solutions={solutions4} title="Word Formation" description="Use the word given in capitals to form a word that fits in the gap. There is an example at the beginning (0)." /> */}
         {/* <OpenCloze text={text3} solutions={solutions3} title="Open Cloze" description="Read the text below and think of a word which best fits each gap. Use only one word in each gap. There is an example at the beginning (0)." />
         <KeyWordTransformationExercise description={description} word="IDEA" part1="I thought it would be" part2="to the cinema." solutions={solutions} originalSentence = "I was in favour of going to the cinema."/>

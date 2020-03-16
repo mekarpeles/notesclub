@@ -1,4 +1,8 @@
 class ApplicationController < ActionController::API
+  include ::ActionController::Cookies
+  include ActionController::HttpAuthentication::Basic::ControllerMethods
+  include ActionController::HttpAuthentication::Token::ControllerMethods
+
   respond_to :json
 
   before_action :authenticate_user!
@@ -6,19 +10,20 @@ class ApplicationController < ActionController::API
   private
 
   def current_user_id
-    @current_user_id = begin
-      return nil if jwt_token.blank?
-      begin
-        jwt_payload = JWT.decode(jwt_token, Rails.application.secrets.secret_key_base).first
-        jwt_payload['id']
-      rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
-        head :unauthorized
-      end
+    @current_user_id ||= authenticate
+  end
+
+  def authenticate
+    begin
+      jwt_payload = JWT.decode(jwt_token, Rails.application.secrets.secret_key_base).first
+      jwt_payload['id']
+    rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
+      head :unauthorized
     end
   end
 
   def jwt_token
-    @jwt_token ||= request.headers['Authorization']
+    @jwt_token ||= request.cookies["jwt"]
   end
 
   def authenticate_user!(options = {})

@@ -40,7 +40,8 @@ class Login extends React.Component<LoginProps, LoginState> {
       email: email,
       password: password
     }
-    axios.post(`http://localhost:3000/api/users/login`, { user })
+    // axios.defaults.withCredentials = true
+    axios.post(`http://localhost:3000/api/users/login`, { user }, { withCredentials: true })
       .then(res => {
         console.log(res)
         console.log(res.data)
