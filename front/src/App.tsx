@@ -52,13 +52,26 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public render() {
+    const data1 = {
+      title: "Key Word Transformation",
+      description: "Write a second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between three and six words, including the word given.",
+      originalSentence: "I was in favour of going to the cinema.",
+      part1: "I thought it would be",
+      word: "IDEA",
+      part2: "to the cinema.",
+      solutions: ["a good idea to go", "to go"]
+    }
+
+    const data1a = JSON.stringify(data1)
+    const data1b = JSON.parse(data1a)
+
     const title1 = "Key Word Transformation"
     const description1 = "Write a second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between three and six words, including the word given."
     const word1 = "IDEA"
     const part1 = "I thought it would be"
     const part2 = "to the cinema."
     const solutions1 = ["a good idea to go", "to go"]
-    const originalSentence = "I was in favour of going to the cinema."
+    const originalSentence1 = "I was in favour of going to the cinema."
 
     const title2 = "Multiple Choice Cloze"
     const description2 = "Read the text below and click on the answer at the bottom that best fits each gap. There is an example at the beginning (0)."
@@ -86,8 +99,8 @@ class App extends React.Component<AppProps, AppState> {
         <Button onClick={this.test}>Test</Button>
         {/* <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> */}
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}
-        {/* <KeyWordTransformationExercise title={title1} description={description1} word={word1} part1={part1} part2={part2} solutions={solutions1} originalSentence = {originalSentence}/> */}
-        <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/>
+        <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/>
+        {/* <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/> */}
       </div>
     );
   }
