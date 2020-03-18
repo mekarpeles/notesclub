@@ -8,6 +8,7 @@ interface IProps {
   part2: string
   solutions: string[]
   description: string
+  title: string
 }
 
 interface IState {
@@ -61,7 +62,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
 
   public render() {
     const { answer, solve, rightOrWrong } = this.state
-    const { originalSentence, word, part1, part2, description } = this.props
+    const { originalSentence, word, part1, part2, description, title } = this.props
 
     return (
       <div className="exercise container">
@@ -69,7 +70,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
           <div className="col-lg-3"></div>
           <div className="col-lg-6">
             <div>
-              <p><b>Key Word Transformation</b></p>
+              <p><b>{title}</b></p>
               <p className="description">
                 {description}
               </p>

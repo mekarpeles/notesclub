@@ -6,6 +6,7 @@ interface IProps {
   options: string[][]
   description: string
   solutions: number[]
+  title: string
 }
 
 interface IState {
@@ -128,7 +129,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
 
   public render() {
     const { content } = this.state
-    const { description } = this.props
+    const { description, title } = this.props
     const content_length = content.length
 
     return (
@@ -136,7 +137,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
         <div className="row">
           <div className="col-lg-3"></div>
           <div className="col-lg-6">
-            <p><b>Multiple Choice Cloze</b></p>
+            <p><b>{title}</b></p>
             <p className="description">
               {description}
             </p>
