@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './App.css';
 import KeyWordTransformationExercise from './KeyWordTransformationExercise';
+import KeyWordTransformationCreator from './KeyWordTransformationCreator';
 import Login from './Login';
 import MultipleChoiceClozeExercise from './MultipleChoiceClozeExercise';
 import OpenCloze from './OpenCloze';
@@ -99,7 +100,8 @@ class App extends React.Component<AppProps, AppState> {
         <Button onClick={this.test}>Test</Button>
         {/* <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> */}
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}
-        <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/>
+        {/* <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/> */}
+        <KeyWordTransformationCreator />
         {/* <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/> */}
       </div>
     );

@@ -85,3 +85,7 @@ input.wrong-answer {
   padding-top: 20px;
   padding-bottom: 20px;
 }
+
+.preview {
+  padding-top: 40px;
+}
