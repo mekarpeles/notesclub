@@ -4,7 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable
 
-  before_create :set_provisional_username, :reset_jwt_token
+  before_validation :set_provisional_username, on: :create
+  after_create :reset_jwt_token
 
   PROVISIONAL_USERNAME_LENGTH = 10
 
@@ -32,5 +33,6 @@ class User < ApplicationRecord
       self.username = SecureRandom.alphanumeric(10)
       break unless User.where(username: PROVISIONAL_USERNAME_LENGTH).exists?
     end
+    true
   end
 end
