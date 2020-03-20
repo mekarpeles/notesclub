@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :request do
+  fixtures(:users)
+
   context "#show" do
     it "should return success and attributes" do
-      params = { email: "hec@hec.com", password: "hec7hec" }
-      user = User.create!(params)
-
+      user = users(:user1)
       log_in(user)
       get "/api/users/#{user.id}"
       expect(response).to have_http_status(:success)
