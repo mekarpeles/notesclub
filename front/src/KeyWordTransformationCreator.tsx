@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap'
 import KeyWordTransformationExercise from './KeyWordTransformationExercise';
 
 interface IProps {
-
+  createExercise: Function
 }
 
 interface IState {
@@ -83,8 +83,8 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
       part2: part2,
       solutions: solutions
     }
-
-    JSON.stringify(data)
+    const json_data = JSON.stringify(data)
+    this.props.createExercise(json_data)
   }
 
   public render() {

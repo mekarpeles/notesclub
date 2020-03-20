@@ -6,7 +6,7 @@ import Login from './Login';
 import MultipleChoiceClozeExercise from './MultipleChoiceClozeExercise';
 import OpenCloze from './OpenCloze';
 import Header from './Header';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
 interface User {
@@ -20,8 +20,14 @@ interface AppProps {
 
 }
 
+interface alert {
+  variant: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "dark" | "light"
+  message: string
+}
+
 interface AppState {
   user?: User
+  alert: alert | undefined
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -31,7 +37,8 @@ class App extends React.Component<AppProps, AppState> {
     const currentUserStr = localStorage.getItem('current_user')
 
     this.state = {
-      user: currentUserStr ? JSON.parse(currentUserStr) : undefined
+      user: currentUserStr ? JSON.parse(currentUserStr) : undefined,
+      alert: undefined
     }
   }
   setCurrentUser = (user: User) => {
@@ -49,6 +56,37 @@ class App extends React.Component<AppProps, AppState> {
       .catch(res => {
         console.log("error ");
         console.log(res);
+      })
+  }
+
+  capitalize = (str: string): string => {
+    return (str.charAt(0).toUpperCase() + str.slice(1))
+  }
+
+  createExercise = (data: string) => {
+    console.log(data)
+    const params = {
+      name: "KeyWordTransformation",
+      data: data
+    }
+    axios.post(`http://localhost:3000/api/exercises`, params, { withCredentials: true})
+      .then(res => {
+        this.setState({ alert: { variant: "success", message: "Exercise created." } })
+        console.log(res)
+        console.log(res.data)
+      })
+      .catch(res => {
+        const errors = res.response.data["errors"]
+        let msg = ""
+        errors["data"].forEach((error: string) => {
+          msg = msg + this.capitalize(error) + " "
+        })
+
+
+        this.setState({ alert: { variant: "danger", message: msg } })
+
+        console.log("error:");
+        console.log(res.response.data["errors"]);
       })
   }
 
@@ -90,18 +128,19 @@ class App extends React.Component<AppProps, AppState> {
     const description4 = "Use the word given in capitals to form a word that fits in the gap. There is an example at the beginning (0)."
     const solutions4 = [["commonly"], ["producer"], ["illness", "illnesses"], ["effective"], ["scientists"], ["addition"], ["pressure"], ["disadvantage"], ["spicy"]]
 
-    const { user } = this.state
+    const { user, alert } = this.state
     return (
       <div className="App">
         <header className="App-header">
           <Header />
         </header>
+        {alert ? <Alert variant={alert["variant"]}>{alert["message"]}</Alert> : <></>}
         {user ? "Hi" : <Login setCurrentUser={this.setCurrentUser} />}
         <Button onClick={this.test}>Test</Button>
         {/* <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> */}
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}
         {/* <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/> */}
-        <KeyWordTransformationCreator />
+        <KeyWordTransformationCreator createExercise={this.createExercise} />
         {/* <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/> */}
       </div>
     );

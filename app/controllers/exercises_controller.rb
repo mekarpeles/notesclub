@@ -10,7 +10,7 @@ class ExercisesController < ApplicationController
     if exercise.save
       render :show, locals: { exercise: exercise }
     else
-      render json: { errors: current_user.errors }, status: :unprocessable_entity
+      render json: { errors: exercise.errors }, status: :unprocessable_entity
     end
   end
 
