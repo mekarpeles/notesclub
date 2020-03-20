@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './App.css';
+import '@ionic/react/css/core.css';
 import KeyWordTransformationExercise from './KeyWordTransformationExercise';
 import KeyWordTransformationCreator from './KeyWordTransformationCreator';
 import Login from './Login';

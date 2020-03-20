@@ -1,7 +1,11 @@
 import * as React from 'react'
 import { Form, Button } from 'react-bootstrap'
-import KeyWordTransformationExercise from './KeyWordTransformationExercise';
+import KeyWordTransformationExercise from './KeyWordTransformationExercise'
 import { humanize } from './stringTools'
+import '@ionic/react/css/core.css';
+
+import { IonIcon, IonDatetime } from '@ionic/react';
+import { addCircleOutline } from 'ionicons/icons'
 
 interface IProps {
   createExercise: Function
@@ -86,7 +90,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     return (
       <>
         { renderedSolutions }
-        <Button onClick={this.addSolution} variant="link">Add solution</Button>
+        <IonIcon onClick={this.addSolution} icon={addCircleOutline} size="large" />
       </>
     )
   }
