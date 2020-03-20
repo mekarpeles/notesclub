@@ -15,6 +15,8 @@ interface IState {
   part1: string
   part2: string
   solutions: string[]
+
+  showPreview: boolean
 }
 
 class KeyWordTransformationCreator extends React.Component<IProps, IState> {
@@ -28,7 +30,9 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
       part2: "to the cinema.",
       solutions: ["a good idea to go", "to go"],
       description: "Write a second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between three and six words, including the word given.",
-      title: "Key Word Transformation"
+      title: "Key Word Transformation",
+
+      showPreview: false
     }
   }
 
@@ -88,8 +92,12 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     this.props.createExercise(json_data)
   }
 
+  togglePreview = () => {
+    this.setState({ showPreview: !this.state.showPreview })
+  }
+
   public render() {
-    const { title, description, originalSentence, part1, word, part2, solutions } = this.state
+    const { title, description, originalSentence, part1, word, part2, solutions, showPreview } = this.state
 
     return (
       <>
@@ -109,8 +117,8 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
           </div>
         </div>
         <div className="preview">
-          Preview:
-          <KeyWordTransformationExercise title={title} description={description} word={word} part1={part1} part2={part2} solutions={solutions} originalSentence = {originalSentence}/>
+          <Button onClick={this.togglePreview} variant="link">{showPreview ? "Hide" : "Show"} preview</Button>
+          {showPreview ? <KeyWordTransformationExercise title={title} description={description} word={word} part1={part1} part2={part2} solutions={solutions} originalSentence = {originalSentence}/> : <></>}
         </div>
       </>
     )
