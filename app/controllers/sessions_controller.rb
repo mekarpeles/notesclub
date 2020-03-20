@@ -3,7 +3,6 @@ class SessionsController < Devise::SessionsController
 
   def create
     user = User.find_by_email(sign_in_params[:email])
-
     if user && user.valid_password?(sign_in_params[:password])
       Rails.logger.info("action:user_login:#{user.id}")
       user.reset_jwt_token
