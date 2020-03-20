@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Form, Button } from 'react-bootstrap'
 import KeyWordTransformationExercise from './KeyWordTransformationExercise';
+import { humanize } from './stringTools'
 
 interface IProps {
   createExercise: Function
@@ -46,7 +47,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     const value = eval("this.state." + fieldName)
     return (
       <Form.Group className="">
-        <Form.Label>{fieldName}:&nbsp;</Form.Label>
+        <Form.Label>{humanize(fieldName)}:&nbsp;</Form.Label>
         <Form.Control
           type="text"
           value={value}
@@ -61,7 +62,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     const value = eval("this.state." + fieldName)
     return (
       <Form.Group className="">
-        <Form.Label>{fieldName}:&nbsp;</Form.Label>
+        <Form.Label>{humanize(fieldName)}:&nbsp;</Form.Label>
         <Form.Control
           as="textarea"
           value={value}

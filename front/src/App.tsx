@@ -8,6 +8,7 @@ import OpenCloze from './OpenCloze';
 import Header from './Header';
 import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
+import { humanize } from './stringTools'
 
 interface User {
   id: number
@@ -59,10 +60,6 @@ class App extends React.Component<AppProps, AppState> {
       })
   }
 
-  capitalize = (str: string): string => {
-    return (str.charAt(0).toUpperCase() + str.slice(1))
-  }
-
   createExercise = (data: string) => {
     console.log(data)
     const params = {
@@ -79,7 +76,7 @@ class App extends React.Component<AppProps, AppState> {
         const errors = res.response.data["errors"]
         let msg = ""
         errors["data"].forEach((error: string) => {
-          msg = msg + this.capitalize(error) + " "
+          msg = msg + humanize(error) + " "
         })
 
 
