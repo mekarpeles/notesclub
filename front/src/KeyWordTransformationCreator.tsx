@@ -72,7 +72,19 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
   }
 
   create = () => {
-    this.setState({ title: this.state.title + " 2"})
+    const { title, description, originalSentence, part1, word, part2, solutions } = this.state
+
+    const data = {
+      title: title,
+      description: description,
+      originalSentence: originalSentence,
+      part1: part1,
+      word: word,
+      part2: part2,
+      solutions: solutions
+    }
+
+    JSON.stringify(data)
   }
 
   public render() {
@@ -87,8 +99,8 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
               {this.renderInput("title")}
               {this.renderTextArea("description")}
               {this.renderInput("originalSentence")}
-              {this.renderInput("part1")}
               {this.renderInput("word")}
+              {this.renderInput("part1")}
               {this.renderInput("part2")}
               <Button onClick={this.create}>Create</Button>
             </div>
