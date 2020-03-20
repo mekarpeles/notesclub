@@ -48,10 +48,10 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
   }
 
   renderInput = (fieldName: string) => {
-    const value = eval("this.state." + fieldName)
+    const value = eval("this.state." + fieldName) // Is there sth like "send" from ruby so we don't need to use eval?
     return (
-      <Form.Group className="">
-        <Form.Label>{humanize(fieldName)}:&nbsp;</Form.Label>
+      <Form.Group>
+        <Form.Label className="label-creator">{humanize(fieldName)}:</Form.Label>
         <Form.Control
           type="text"
           value={value}
@@ -63,14 +63,42 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
 
 
   renderTextArea = (fieldName: string) => {
-    const value = eval("this.state." + fieldName)
+    const value = eval("this.state." + fieldName) // Is there sth like "send" from ruby so we don't need to use eval?
     return (
-      <Form.Group className="">
-        <Form.Label>{humanize(fieldName)}:&nbsp;</Form.Label>
+      <Form.Group>
+        <Form.Label>{humanize(fieldName)}:</Form.Label>
         <Form.Control
           as="textarea"
           value={value}
           name={fieldName}
+          onChange={this.handleChange as any} />
+      </Form.Group>
+    )
+  }
+
+  addSolution = () => {
+    this.setState({ solutions: this.state.solutions.concat([""]) })
+  }
+
+  renderSolutions = () => {
+    const { solutions } = this.state
+    const renderedSolutions = solutions.map((solution, index) => this.renderSolution(solution, index))
+    return (
+      <>
+        { renderedSolutions }
+        <Button onClick={this.addSolution} variant="link">Add solution</Button>
+      </>
+    )
+  }
+
+  renderSolution = (solution: string, index: number) => {
+    return (
+      <Form.Group>
+        <Form.Label>{"Solution " + String(index + 1) + ":"}</Form.Label>
+        <Form.Control
+          type="text"
+          value={solution}
+          name={"solution_" + String(index)}
           onChange={this.handleChange as any} />
       </Form.Group>
     )
@@ -111,12 +139,13 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
               {this.renderInput("word")}
               {this.renderInput("part1")}
               {this.renderInput("part2")}
+              {this.renderSolutions()}
               <Button onClick={this.create}>Create</Button>
             </div>
             <div className="col-lg-3"></div>
           </div>
         </div>
-        <div className="preview">
+        <div className="preview text-center">
           <Button onClick={this.togglePreview} variant="link">{showPreview ? "Hide" : "Show"} preview</Button>
           {showPreview ? <KeyWordTransformationExercise title={title} description={description} word={word} part1={part1} part2={part2} solutions={solutions} originalSentence = {originalSentence}/> : <></>}
         </div>

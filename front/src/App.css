@@ -1,5 +1,9 @@
-.App {
+.center {
   text-align: center;
+}
+
+.App {
+  text-align: left;
 }
 
 .App-header {
