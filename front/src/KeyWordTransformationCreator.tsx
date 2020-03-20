@@ -5,10 +5,11 @@ import { humanize } from './stringTools'
 import '@ionic/react/css/core.css';
 
 import { IonIcon, IonDatetime } from '@ionic/react';
-import { addCircleOutline } from 'ionicons/icons'
+import { addCircleOutline, removeCircleOutline } from 'ionicons/icons'
 
 interface IProps {
   createExercise: Function
+  updateAlert: Function
 }
 
 interface IState {
@@ -84,6 +85,16 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     this.setState({ solutions: this.state.solutions.concat([""]) })
   }
 
+  removeSolution = () => {
+    let solutions = this.state.solutions
+    if(solutions.length > 1){
+      solutions.pop()
+      this.setState({ solutions: solutions })
+    }else{
+      this.props.updateAlert("danger", "You must have at least one solution.")
+    }
+  }
+
   renderSolutions = () => {
     const { solutions } = this.state
     const renderedSolutions = solutions.map((solution, index) => this.renderSolution(solution, index))
@@ -91,6 +102,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
       <>
         { renderedSolutions }
         <IonIcon onClick={this.addSolution} icon={addCircleOutline} size="large" />
+        <IonIcon onClick={this.removeSolution} icon={removeCircleOutline} size="large" />
       </>
     )
   }
@@ -144,7 +156,9 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
               {this.renderInput("part1")}
               {this.renderInput("part2")}
               {this.renderSolutions()}
-              <Button onClick={this.create}>Create</Button>
+              <div>
+                <Button onClick={this.create}>Create</Button>
+              </div>
             </div>
             <div className="col-lg-3"></div>
           </div>

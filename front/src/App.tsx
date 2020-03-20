@@ -21,7 +21,6 @@ interface User {
 interface AppProps {
 
 }
-
 interface alert {
   variant: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "dark" | "light"
   message: string
@@ -61,6 +60,10 @@ class App extends React.Component<AppProps, AppState> {
       })
   }
 
+  updateAlert = (variant: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "dark" | "light", message: string) => {
+    this.setState({ alert: { variant: variant, message: message } })
+  }
+
   createExercise = (data: string) => {
     console.log(data)
     const params = {
@@ -69,7 +72,7 @@ class App extends React.Component<AppProps, AppState> {
     }
     axios.post(`http://localhost:3000/api/exercises`, params, { withCredentials: true})
       .then(res => {
-        this.setState({ alert: { variant: "success", message: "Exercise created." } })
+        this.updateAlert("success", "Exercise created.")
         console.log(res)
         console.log(res.data)
       })
@@ -80,8 +83,7 @@ class App extends React.Component<AppProps, AppState> {
           msg = msg + humanize(error) + " "
         })
 
-
-        this.setState({ alert: { variant: "danger", message: msg } })
+        this.updateAlert("danger", msg)
 
         console.log("error:");
         console.log(res.response.data["errors"]);
@@ -140,7 +142,7 @@ class App extends React.Component<AppProps, AppState> {
         {/* <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> */}
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}
         {/* <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/> */}
-        <KeyWordTransformationCreator createExercise={this.createExercise} />
+        <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/>
         {/* <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/> */}
       </div>
     );
