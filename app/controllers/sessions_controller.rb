@@ -13,7 +13,7 @@ class SessionsController < Devise::SessionsController
         :jwt,
         {
           value: user.jwt_token,
-          expires: 7.days.from_now,
+          expires: 30.days.from_now,
           path: '/api',
           httponly: true
         }

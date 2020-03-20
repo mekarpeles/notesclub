@@ -2,14 +2,23 @@ require 'rails_helper'
 
 RSpec.describe SessionsController, type: :request do
   describe "Login" do
-    it "returns http success and user attributes" do
-      params = { email: "hec@hec.com", password: "hec7hec" }
-      headers = { "ContentType" => "application/json" }
-      user = User.create!(params)
-      post "/api/users/login", { params: { user: params }, headers: headers }
+    before do
+      params = { email: "hec2@hec.com", password: "hec2hec" }
+      @user = User.create!(params)
+      post "/api/users/login", { params: { user: params } }
+    end
+
+    it "returns http success" do
       expect(response).to have_http_status(:success)
+    end
+
+    it "sets cookie" do
+      expect(cookies[:jwt]).to eq(@user.jwt_token)
+    end
+
+    it "returns user attributes" do
       json = JSON.parse(response.body)
-      expect(json).to eq({"user" => {"id" => user.id, "email" => user.email, "name" => user.name, "username" => user.username}})
+      expect(json).to eq({"user" => {"id" => @user.id, "email" => @user.email, "name" => @user.name, "username" => @user.username}})
     end
   end
 end
