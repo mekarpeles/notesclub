@@ -131,7 +131,7 @@ class App extends React.Component<AppProps, AppState> {
     const { user, alert } = this.state
     return (
       <div className="App">
-        <header className="App-header text-center">
+        <header className="text-center">
           <Header />
         </header>
         <div className="text-center">
