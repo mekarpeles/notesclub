@@ -29,13 +29,13 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     super(props)
 
     this.state = {
-      originalSentence: "I was in favour of going to the cinema.",
-      word: "IDEA",
-      part1: "I thought it would be",
-      part2: "to the cinema.",
-      solutions: ["a good idea to go", "to go"],
-      description: "Write a second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between three and six words, including the word given.",
       title: "Key Word Transformation",
+      description: "Write a second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between three and six words, including the word given.",
+      originalSentence: "",
+      word: "",
+      part1: "",
+      part2: "",
+      solutions: [""],
 
       showPreview: false
     }
@@ -107,6 +107,15 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     )
   }
 
+  handleSolutionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target
+    const value = target.value
+    const index = Number(target.name.split("_")[1])
+    const { solutions } = this.state
+    solutions[index] = value
+    this.setState({ solutions: solutions })
+  }
+
   renderSolution = (solution: string, index: number) => {
     return (
       <Form.Group>
@@ -115,7 +124,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
           type="text"
           value={solution}
           name={"solution_" + String(index)}
-          onChange={this.handleChange as any} />
+          onChange={this.handleSolutionChange as any} />
       </Form.Group>
     )
   }
