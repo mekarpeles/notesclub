@@ -19,8 +19,8 @@ class Exercise::KeyWordTransformationValidator < ActiveModel::Validator
   def validate_array_of_objects(field, klass)
     value = data[field]
     obj_names = klass.to_s.downcase.pluralize
-    yield(:data, "must include #{field} (array of #{obj_names})") if value.blank?
-    yield(:data, "#{field} must be an array of #{obj_names})") if value && (!value.is_a?(Array) || value.any?{|s| !s.is_a?(klass) || s.blank?})
+    yield(:data, "#{field} can't be blank.") if value.blank? || (value.is_a?(Array) && value.any?{|s| s.blank?})
+    yield(:data, "#{field} must be an array of #{obj_names}") if value && (!value.is_a?(Array) || value.any?{|s| !s.is_a?(klass)})
   end
 
   def validate_object(field, klass)
