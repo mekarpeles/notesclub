@@ -47,10 +47,12 @@ class App extends React.Component<AppProps, AppState> {
     // axios.defaults.withCredentials = true
     axios.get(apiDomain() + "/v1/users/1", { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
       .then(res => {
+        this.updateAlert("success", "Good!")
         console.log(res)
         console.log(res.data)
       })
       .catch(res => {
+        this.updateAlert("danger", "Error!")
         console.log("error ");
         console.log(res);
       })
