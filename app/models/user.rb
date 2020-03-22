@@ -7,7 +7,7 @@ class User < ApplicationRecord
   self.skip_session_storage = [:http_auth, :params_auth]
 
   before_validation :set_provisional_username, on: :create
-  after_commit :reset_jwt_token, on: :create
+  after_create :reset_jwt_token
 
   PROVISIONAL_USERNAME_LENGTH = 10
 
