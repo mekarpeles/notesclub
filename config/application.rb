@@ -45,5 +45,10 @@ module Arbol
         methods: [:get, :post, :put, :patch, :delete, :options, :head]
       end
     end
+
+    config.action_dispatch.default_headers = {
+      'Referrer-Policy' => 'origin-when-cross-origin',
+      'Access-Control-Expose-Headers' => 'x-pagination, Content-Length'
+    }
   end
 end
