@@ -50,7 +50,7 @@ class App extends React.Component<AppProps, AppState> {
 
   testUserShow = () => {
     // axios.defaults.withCredentials = true
-    axios.get(`http://localhost:3000/api/users/1`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
+    axios.get(`http://localhost:3000/v1/users/1`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
       .then(res => {
         console.log(res)
         console.log(res.data)
@@ -65,7 +65,7 @@ class App extends React.Component<AppProps, AppState> {
 
     localStorage.removeItem('current_user')
     this.setState({ user: undefined })
-    axios.delete(`http://localhost:3000/api/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
+    axios.delete(`http://localhost:3000/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
       .then(res => {
         localStorage.removeItem('current_user')
         this.setState({ user: undefined })
@@ -88,7 +88,7 @@ class App extends React.Component<AppProps, AppState> {
       name: "KeyWordTransformation",
       data: data
     }
-    axios.post(`http://localhost:3000/api/exercises`, params, { withCredentials: true})
+    axios.post(`http://localhost:3000/v1/exercises`, params, { withCredentials: true})
       .then(res => {
         this.updateAlert("success", "Exercise created.")
         console.log(res)
