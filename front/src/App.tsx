@@ -10,13 +10,7 @@ import Header from './Header';
 import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { humanize } from './stringTools'
-
-interface User {
-  id: number
-  email: string
-  username: string
-  name: string
-}
+import { User } from './User'
 
 interface AppProps {
 
@@ -61,25 +55,13 @@ class App extends React.Component<AppProps, AppState> {
       })
   }
 
-  testLogout = () => {
-
-    localStorage.removeItem('current_user')
-    this.setState({ user: undefined })
-    axios.delete(`http://localhost:3000/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
-      .then(res => {
-        localStorage.removeItem('current_user')
-        this.setState({ user: undefined })
-        console.log(res)
-        console.log(res.data)
-      })
-      .catch(res => {
-        console.log("error ");
-        console.log(res);
-      })
-  }
-
   updateAlert = (variant: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "dark" | "light", message: string) => {
     this.setState({ alert: { variant: variant, message: message } })
+  }
+
+  updateState = (partialState: Partial<AppState>) => {
+    const newState: AppState = { ...this.state, ...partialState };
+    this.setState(newState);
   }
 
   createExercise = (data: string) => {
@@ -149,17 +131,15 @@ class App extends React.Component<AppProps, AppState> {
     const { user, alert } = this.state
     return (
       <div className="App">
-        <Header />
+        <Header setParentState={this.updateState} currentUser={user}/>
         <div className="text-center">
           {alert ? <Alert variant={alert["variant"]}>{alert["message"]}</Alert> : <></>}
-          {user ? <></> : <Login setCurrentUser={this.setCurrentUser} />}
-          <Button onClick={this.testUserShow} variant="link">show</Button>
-          <Button onClick={this.testLogout} variant="link">logout</Button>
+          {user ? <Button onClick={this.testUserShow} variant="link">show</Button> : <Login setCurrentUser={this.setCurrentUser} />}
         </div>
         {/* <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> */}
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}
         {/* <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/> */}
-        <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/>
+        {user ? <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/> : <></>}
         {/* <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/> */}
       </div>
     );

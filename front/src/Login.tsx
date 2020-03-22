@@ -17,8 +17,8 @@ class Login extends React.Component<LoginProps, LoginState> {
     super(props)
 
     this.state = {
-      email: "hec@hec.com",
-      password: "hec7hec",
+      email: "",
+      password: "",
       error: ""
     }
   }
