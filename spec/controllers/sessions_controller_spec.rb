@@ -5,7 +5,7 @@ RSpec.describe SessionsController, type: :request do
     before do
       params = { email: "hec2@hec.com", password: "hec2hec" }
       @user = User.create!(params)
-      post "/api/users/login", { params: { user: params } }
+      post "/v1/users/login", { params: { user: params } }
     end
 
     it "returns http success" do

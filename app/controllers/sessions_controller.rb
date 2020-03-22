@@ -15,12 +15,11 @@ class SessionsController < Devise::SessionsController
         {
           value: user.jwt_token,
           expires: 30.days.from_now,
-          path: '/api',
+          path: '/v1',
           httponly: true
         }
       )
       @current_user = user
-      render 'users/show', locals: { current_user: user }
     else
       render json: { errors: { 'email or password' => ['is invalid'] }}, status: :unauthorized
     end

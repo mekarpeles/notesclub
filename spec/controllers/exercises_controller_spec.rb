@@ -10,7 +10,7 @@ RSpec.describe ExercisesController, type: :request do
 
   describe "GET #index" do
     before do
-      get "/api/exercises"
+      get "/v1/exercises"
     end
 
     it "returns http success" do

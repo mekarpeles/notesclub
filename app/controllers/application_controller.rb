@@ -14,7 +14,6 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate
-    puts "jwt: #{jwt_token}"
     begin
       jwt_payload = JWT.decode(jwt_token, Rails.application.secrets.secret_key_base).first
       jwt_payload['id']
