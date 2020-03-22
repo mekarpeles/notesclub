@@ -140,7 +140,7 @@ class App extends React.Component<AppProps, AppState> {
       <div className="App">
         <Header setParentState={this.updateState} currentUser={user}/>
         <div className="text-center">
-          {alert ? <Alert variant={alert["variant"]}>{alert["message"]}</Alert> : <></>}
+          {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
           {user ? <Button onClick={this.testUserShow} variant="link">show</Button> : <Login setCurrentUser={this.setCurrentUser} />}
         </div>
         {/* <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> */}
