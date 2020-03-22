@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::API
   include ::ActionController::Cookies
+  include ActionController::HttpAuthentication::Basic::ControllerMethods
+  include ActionController::HttpAuthentication::Token::ControllerMethods
 
   respond_to :json
 
@@ -12,6 +14,7 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate
+    puts "jwt: #{jwt_token}"
     begin
       jwt_payload = JWT.decode(jwt_token, Rails.application.secrets.secret_key_base).first
       jwt_payload['id']

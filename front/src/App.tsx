@@ -42,15 +42,33 @@ class App extends React.Component<AppProps, AppState> {
       alert: undefined
     }
   }
+
   setCurrentUser = (user: User) => {
     this.setState({ user: user })
     localStorage.setItem('current_user', JSON.stringify(user))
   }
 
-  test = () => {
+  testUserShow = () => {
     // axios.defaults.withCredentials = true
-    axios.get(`http://localhost:3000/api/users/1`, { withCredentials: true })
+    axios.get(`http://localhost:3000/api/users/1`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
       .then(res => {
+        console.log(res)
+        console.log(res.data)
+      })
+      .catch(res => {
+        console.log("error ");
+        console.log(res);
+      })
+  }
+
+  testLogout = () => {
+
+    localStorage.removeItem('current_user')
+    this.setState({ user: undefined })
+    axios.delete(`http://localhost:3000/api/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
+      .then(res => {
+        localStorage.removeItem('current_user')
+        this.setState({ user: undefined })
         console.log(res)
         console.log(res.data)
       })
@@ -131,13 +149,12 @@ class App extends React.Component<AppProps, AppState> {
     const { user, alert } = this.state
     return (
       <div className="App">
-        <header className="text-center">
-          <Header />
-        </header>
+        <Header />
         <div className="text-center">
           {alert ? <Alert variant={alert["variant"]}>{alert["message"]}</Alert> : <></>}
-          {user ? "Hi" : <Login setCurrentUser={this.setCurrentUser} />}
-          <Button onClick={this.test}>Test</Button>
+          {user ? <></> : <Login setCurrentUser={this.setCurrentUser} />}
+          <Button onClick={this.testUserShow} variant="link">show</Button>
+          <Button onClick={this.testLogout} variant="link">logout</Button>
         </div>
         {/* <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> */}
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}

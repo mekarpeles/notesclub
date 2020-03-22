@@ -38,7 +38,7 @@ module Arbol
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'http://hec.localhost.hec:3001', 'http://localhost:3000', 'https://www.englishconf.com'
+        origins 'http://hec.localhost.hec:3001', 'http://localhost:3000', 'https://www.treeconf.com'
         resource '*',
         credentials: true,
         headers: :any,

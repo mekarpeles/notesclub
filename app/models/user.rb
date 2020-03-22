@@ -4,6 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable
 
+  self.skip_session_storage = [:http_auth, :params_auth]
+
   before_validation :set_provisional_username, on: :create
   after_create :reset_jwt_token
 

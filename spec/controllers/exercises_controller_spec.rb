@@ -22,15 +22,4 @@ RSpec.describe ExercisesController, type: :request do
       expect(hash_body.first.keys).to match_array(%w(id name data created_by_id created_at updated_at))
     end
   end
-
-  describe "POST #create" do
-    it "should create exercise" do
-      data = {"bla" => "bla"}.to_json
-      expect { post "/api/exercises", params: { exercise: { name: "KeyWordTransformation", data: data}} }.to change{ Exercise.count }.by(1)
-      exercise = Exercise.last
-      expect(exercise.name).to eq "KeyWordTransformation"
-      expect(exercise.data).to eq data
-      expect(exercise.created_by).to eq user
-    end
-  end
 end

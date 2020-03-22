@@ -17,8 +17,8 @@ class Login extends React.Component<LoginProps, LoginState> {
     super(props)
 
     this.state = {
-      email: "",
-      password: "",
+      email: "hec@hec.com",
+      password: "hec7hec",
       error: ""
     }
   }
@@ -41,7 +41,7 @@ class Login extends React.Component<LoginProps, LoginState> {
       password: password
     }
     // axios.defaults.withCredentials = true
-    axios.post(`http://localhost:3000/api/users/login`, { user }, { withCredentials: true })
+    axios.post(`http://localhost:3000/api/users/login`, { user }, { headers: { 'Content-Type' : 'application/json' }, withCredentials: true })
       .then(res => {
         console.log(res)
         console.log(res.data)
@@ -56,29 +56,35 @@ class Login extends React.Component<LoginProps, LoginState> {
     const { email, password, error } = this.state
 
     return(
-      <>
-        {error}
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-4"></div>
+          <div className="col-lg-4">
+            {error}
 
-        <Form.Group>
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="text"
-            value={email}
-            name="email"
-            onChange={this.handleChange as any} autoFocus />
-        </Form.Group>
+            <Form.Group>
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="text"
+                value={email}
+                name="email"
+                onChange={this.handleChange as any} autoFocus />
+            </Form.Group>
 
-        <Form.Group>
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            name="password"
-            onChange={this.handleChange as any} autoFocus />
-        </Form.Group>
+            <Form.Group>
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                value={password}
+                name="password"
+                onChange={this.handleChange as any} autoFocus />
+            </Form.Group>
 
-        <Button onClick={this.submit}>Login</Button>
-      </>
+            <Button onClick={this.submit}>Login</Button>
+          </div>
+          <div className="col-lg-4"></div>
+        </div>
+      </div>
     )
   }
 }

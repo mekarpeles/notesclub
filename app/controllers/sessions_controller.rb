@@ -8,6 +8,7 @@ class SessionsController < Devise::SessionsController
       user.reset_jwt_token
       user.save!
       # session[:user_id] = 1
+      # session[:jwt] = user.jwt_token
       # cookies.signed[:jwt] = {value: user.jwt_token, httponly: true}
       response.set_cookie(
         :jwt,
@@ -19,8 +20,14 @@ class SessionsController < Devise::SessionsController
         }
       )
       @current_user = user
+      render 'users/show', locals: { current_user: user }
     else
       render json: { errors: { 'email or password' => ['is invalid'] }}, status: :unauthorized
     end
   end
+
+  # def destroy
+  #   response.delete_cookie(:jwt)
+  #   render json: "done".to_json, status: :successful
+  # end
 end
