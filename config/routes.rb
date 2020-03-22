@@ -5,5 +5,7 @@ Rails.application.routes.draw do
 
     resources :users, only: [:show, :update]
     resources :exercises, only: [:index, :create, :show]
+
+    get 'ping', to: 'ping#ping'
   end
 end
