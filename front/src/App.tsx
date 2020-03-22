@@ -80,9 +80,13 @@ class App extends React.Component<AppProps, AppState> {
       .catch(res => {
         const errors = res.response.data["errors"]
         let msg = ""
-        errors["data"].forEach((error: string) => {
-          msg = msg + humanize(error) + " "
-        })
+        if(errors){
+          errors["data"].forEach((error: string) => {
+            msg = msg + humanize(error) + " "
+          })
+        }else{
+          msg = "Unknown error."
+        }
 
         this.updateAlert("danger", msg)
 
