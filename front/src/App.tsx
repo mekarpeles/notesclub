@@ -10,6 +10,7 @@ import Header from './Header';
 import { Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { humanize } from './stringTools'
+import { apiDomain } from './appConfig'
 import { User } from './User'
 
 interface AppProps {
@@ -44,7 +45,7 @@ class App extends React.Component<AppProps, AppState> {
 
   testUserShow = () => {
     // axios.defaults.withCredentials = true
-    axios.get(`http://localhost:3000/v1/users/1`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
+    axios.get(apiDomain() + "/v1/users/1", { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
       .then(res => {
         console.log(res)
         console.log(res.data)
@@ -70,7 +71,7 @@ class App extends React.Component<AppProps, AppState> {
       name: "KeyWordTransformation",
       data: data
     }
-    axios.post(`http://localhost:3000/v1/exercises`, params, { withCredentials: true})
+    axios.post(apiDomain() + "/v1/exercises", params, { withCredentials: true})
       .then(res => {
         this.updateAlert("success", "Exercise created.")
         console.log(res)

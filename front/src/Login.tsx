@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+import { apiDomain } from './appConfig'
 
 interface LoginProps {
   setCurrentUser: Function
@@ -41,7 +42,7 @@ class Login extends React.Component<LoginProps, LoginState> {
       password: password
     }
     // axios.defaults.withCredentials = true
-    axios.post(`http://localhost:3000/v1/users/login`, { user }, { headers: { 'Content-Type' : 'application/json' }, withCredentials: true })
+    axios.post(apiDomain() + "/v1/users/login", { user }, { headers: { 'Content-Type' : 'application/json' }, withCredentials: true })
       .then(res => {
         console.log(res)
         console.log(res.data)
