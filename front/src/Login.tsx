@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { apiDomain } from './appConfig'
+import { humanize } from './stringTools'
 
 interface LoginProps {
-  setCurrentUser: Function
+  setParentState: Function
 }
 
 interface LoginState {
@@ -46,9 +47,16 @@ class Login extends React.Component<LoginProps, LoginState> {
       .then(res => {
         console.log(res)
         console.log(res.data)
-        this.props.setCurrentUser(res.data["user"])
+        this.props.setParentState({user: res.data["user"]})
       })
       .catch(res => {
+        let msg = ""
+        if (res.response) {
+          msg = "Invalid email or password."
+        } else {
+          msg = "There was an error. Try again later."
+        }
+        this.props.setParentState({ alert: { variant: "danger", message: msg } })
         console.log("error ");
         console.log(res);
       })
