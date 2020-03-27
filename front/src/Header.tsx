@@ -29,8 +29,15 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     //     console.log(res);
     //   })
   }
-
   renderLoggedInHeader = () => {
+    const { currentUser } = this.props
+
+    return(
+      (currentUser && currentUser["role"] === "teacher") ? this.renderTeacherHeader() : this.renderStudentHeader()
+    )
+  }
+
+  renderStudentHeader = () => {
     return (
       <>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -38,10 +45,28 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           <Nav className="mr-auto">
           </Nav>
           <Nav.Link href="/do">Practice</Nav.Link>
+          <Nav.Link href="/history">History</Nav.Link>
+          <Nav.Link onClick={this.logout}>Logout</Nav.Link>
+          <Form inline>
+            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+            <Button variant="outline-success">Search</Button>
+          </Form>
+        </Navbar.Collapse>
+      </>
+    )
+  }
+  renderTeacherHeader = () => {
+    return (
+      <>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+          </Nav>
+          <Nav.Link href="/do">Class</Nav.Link>
+          <Nav.Link href="/exercises">Exercises</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
             <NavDropdown.Item href="/exercises/new">Exercise</NavDropdown.Item>
             <NavDropdown.Item href="/exercises/new">List</NavDropdown.Item>
-            <NavDropdown.Item href="/exercises/new">Class</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link href="/history">History</Nav.Link>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>

@@ -128,7 +128,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
   renderSolution = (solution: string, index: number) => {
     return (
       <Form.Group>
-        <Form.Label>{"Solution for (" + String(index) + "):"}</Form.Label>
+        <Form.Label>{"Solution (" + String(index) + "):"}</Form.Label>
         <Form.Text className="text-muted">Separate multiple valid solutions with vertical bars. E.g. shall | could</Form.Text>
         <Form.Control
           type="text"
