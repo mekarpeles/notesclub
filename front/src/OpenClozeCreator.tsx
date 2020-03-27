@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Form, Button } from 'react-bootstrap'
-import KeyWordTransformationExercise from './KeyWordTransformationExercise'
+import OpenCloze from './OpenCloze'
 import { humanize } from './stringTools'
 import '@ionic/react/css/core.css';
 
@@ -15,12 +15,8 @@ interface IProps {
 interface IState {
   title: string
   description: string
-  originalSentence: string
-  word: string
-  part1: string
-  part2: string
+  text: string
   solutions: string[]
-
   showPreview: boolean
 }
 
@@ -29,12 +25,9 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     super(props)
 
     this.state = {
-      title: "Key Word Transformation",
-      description: "Write a second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between three and six words, including the word given.",
-      originalSentence: "",
-      word: "",
-      part1: "",
-      part2: "",
+      title: "Open Cloze",
+      description: "Use the word given in capitals to form a word that fits in the gap. There is an example at the beginning (0).",
+      text: "",
       solutions: [""],
 
       showPreview: false
@@ -66,8 +59,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     )
   }
 
-
-  renderTextArea = (fieldName: string) => {
+  renderTextArea = (fieldName: string, rows: number) => {
     const value = eval("this.state." + fieldName) // Is there sth like "send" from ruby so we don't need to use eval?
     return (
       <Form.Group>
@@ -75,7 +67,24 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
         <Form.Control
           as="textarea"
           value={value}
+          rows={rows}
           name={fieldName}
+          onChange={this.handleChange as any} />
+      </Form.Group>
+    )
+  }
+
+  renderText = () => {
+    const { text } = this.state
+    return (
+      <Form.Group>
+        <Form.Label>Text with gaps:</Form.Label>
+        <Form.Text className="text-muted">Each gap must be preceded by a number in parentheses and three dots. E.g. When (0) ... we three meet again in thunder, lightning, or in rain?</Form.Text>
+        <Form.Control
+          as="textarea"
+          value={text}
+          rows="10"
+          name="text"
           onChange={this.handleChange as any} />
       </Form.Group>
     )
@@ -119,7 +128,8 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
   renderSolution = (solution: string, index: number) => {
     return (
       <Form.Group>
-        <Form.Label>{"Solution " + String(index + 1) + ":"}</Form.Label>
+        <Form.Label>{"Solution for (" + String(index) + "):"}</Form.Label>
+        <Form.Text className="text-muted">Separate multiple valid solutions with vertical bars. E.g. shall | could</Form.Text>
         <Form.Control
           type="text"
           value={solution}
@@ -129,20 +139,22 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     )
   }
 
-  create = () => {
-    const { title, description, originalSentence, part1, word, part2, solutions } = this.state
+  transformSolutions = (solutions: string[]) => {
+    return (
+      solutions.map((s) => s.split('|').map((sol) => sol.trim()))
+    )
+  }
 
+  create = () => {
+    const { title, description, text, solutions } = this.state
     const data = {
       title: title,
       description: description,
-      originalSentence: originalSentence,
-      part1: part1,
-      word: word,
-      part2: part2,
-      solutions: solutions
+      text: text,
+      solutions: this.transformSolutions(solutions)
     }
     const json_data = JSON.stringify(data)
-    this.props.createExercise("KeyWordTransformation", json_data)
+    this.props.createExercise("OpenCloze", json_data)
   }
 
   togglePreview = () => {
@@ -150,7 +162,9 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
   }
 
   public render() {
-    const { title, description, originalSentence, part1, word, part2, solutions, showPreview } = this.state
+    const { title, description, text, solutions, showPreview } = this.state
+
+    const sol = this.transformSolutions(solutions)
 
     return (
       <>
@@ -159,11 +173,8 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
             <div className="col-lg-3"></div>
             <div className="col-lg-6">
               {this.renderInput("title")}
-              {this.renderTextArea("description")}
-              {this.renderInput("originalSentence")}
-              {this.renderInput("word")}
-              {this.renderInput("part1")}
-              {this.renderInput("part2")}
+              {this.renderTextArea("description", 3)}
+              {this.renderText()}
               {this.renderSolutions()}
               <div>
                 <Button onClick={this.create}>Create</Button>
@@ -174,7 +185,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
         </div>
         <div className="preview text-center">
           <Button onClick={this.togglePreview} variant="link">{showPreview ? "Hide" : "Show"} preview</Button>
-          {showPreview ? <KeyWordTransformationExercise title={title} description={description} word={word} part1={part1} part2={part2} solutions={solutions} originalSentence = {originalSentence}/> : <></>}
+          {showPreview ? <OpenCloze title={title} description={description} text={text} solutions={sol} /> : <></>}
         </div>
       </>
     )

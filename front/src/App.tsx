@@ -3,6 +3,7 @@ import './App.css';
 import '@ionic/react/css/core.css';
 import KeyWordTransformationExercise from './KeyWordTransformationExercise';
 import KeyWordTransformationCreator from './KeyWordTransformationCreator';
+import OpenClozeCreator from './OpenClozeCreator';
 import Login from './Login';
 import MultipleChoiceClozeExercise from './MultipleChoiceClozeExercise';
 import OpenCloze from './OpenCloze';
@@ -30,7 +31,7 @@ class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props)
 
-    const currentUserStr = localStorage.getItem('current_user')
+    const currentUserStr = localStorage.getItem('currentUser')
 
     this.state = {
       user: currentUserStr ? JSON.parse(currentUserStr) : undefined,
@@ -40,7 +41,7 @@ class App extends React.Component<AppProps, AppState> {
 
   setCurrentUser = (user: User) => {
     this.setState({ user: user })
-    localStorage.setItem('current_user', JSON.stringify(user))
+    localStorage.setItem('currentUser', JSON.stringify(user))
   }
 
   testUserShow = () => {
@@ -67,10 +68,10 @@ class App extends React.Component<AppProps, AppState> {
     this.setState(newState);
   }
 
-  createExercise = (data: string) => {
+  createExercise = (name: string, data: string) => {
     console.log(data)
     const params = {
-      name: "KeyWordTransformation",
+      name: name,
       data: data
     }
     axios.post(apiDomain() + "/v1/exercises", params, { withCredentials: true})
@@ -82,7 +83,7 @@ class App extends React.Component<AppProps, AppState> {
       .catch(res => {
         const errors = res.response.data["errors"]
         let msg = ""
-        if(errors){
+        if (errors && errors["data"]){
           errors["data"].forEach((error: string) => {
             msg = msg + humanize(error) + " "
           })
@@ -143,10 +144,11 @@ class App extends React.Component<AppProps, AppState> {
           {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
           {user ? <Button onClick={this.testUserShow} variant="link">show</Button> : <Login setParentState={this.updateState} />}
         </div>
-        {/* <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> */}
+        <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} />
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}
         {/* <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/> */}
-        {user ? <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/> : <></>}
+        {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/> : <></>}
+        {/* {user ? <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/> : <></>} */}
         {/* <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/> */}
       </div>
     );

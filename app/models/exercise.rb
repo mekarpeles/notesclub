@@ -1,5 +1,5 @@
 class Exercise < ApplicationRecord
-  NAMES = %w(KeyWordTransformation)
+  NAMES = %w(OpenCloze KeyWordTransformation)
   belongs_to :created_by, class_name: "User"
 
   validate :data_format
@@ -9,12 +9,15 @@ class Exercise < ApplicationRecord
   def data_format
     begin
       klass = "Exercise::#{name}Validator".constantize
+    rescue => e
+      Rails.logger.error("Tried to validate an exercise with name: #{name}")
+      errors.add(:name, "must be one of these: #{NAMES.join(', ')}")
+    end
+    if klass
       validator = klass.new(data)
       validator.validate do |error, msg|
         errors.add(error, msg)
       end
-    rescue NameError => e
-      errors.add(:name, "must be one of these: #{NAMES.join(', ')}")
     end
   end
 end

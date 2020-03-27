@@ -15,11 +15,11 @@ interface HeaderState {
 class Header extends React.Component<HeaderProps, HeaderState> {
 
   logout = () => {
-    localStorage.removeItem('current_user')
+    localStorage.removeItem('currentUser')
     this.props.setParentState({ user: undefined })
     // axios.delete(`http://localhost:3000/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
     //   .then(res => {
-    //     localStorage.removeItem('current_user')
+    //     localStorage.removeItem('currentUser')
     //     this.props.setParentState({ user: undefined })
     //     console.log(res)
     //     console.log(res.data)
