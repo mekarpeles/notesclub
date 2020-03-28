@@ -85,7 +85,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
                   value={answer}
                   name="answer"
                   className={rightOrWrong + "-answer"}
-                  onChange={this.handleChange as any} autoFocus/>
+                  onChange={this.handleChange as any} />
                 <Form.Label>&nbsp;{part2}</Form.Label>
               </Form.Group>
               <Button onClick={this.check}>Check</Button>

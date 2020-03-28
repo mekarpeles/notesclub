@@ -50,6 +50,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           <Nav className="mr-auto">
           </Nav>
           <Nav.Link href="/">Practice</Nav.Link>
+          <NavDropdown title="Create" id="basic-nav-dropdown">
+            <NavDropdown.Item href="/exercises/key-word-transformation/new">Key Word Transf.</NavDropdown.Item>
+            <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
+          </NavDropdown>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
           {/* <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
@@ -66,11 +70,11 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
+          <Nav.Link href="/exercises">Exercises</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/exercises/key-word-transformation/new">Key Word Transformation</NavDropdown.Item>
+            <NavDropdown.Item href="/exercises/key-word-transformation/new">Key Word Transf.</NavDropdown.Item>
             <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link href="/exercises">Exercises</Nav.Link>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
           {/* <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
