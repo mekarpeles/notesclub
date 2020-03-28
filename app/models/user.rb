@@ -15,7 +15,7 @@ class User < ApplicationRecord
 
   def reset_jwt_token
     # Need to expire it in X days (see generate_jwt)
-    self.jwt_token = generate_jwt
+    self.update(jwt_token: generate_jwt)
   end
 
   private
