@@ -36,13 +36,13 @@ module Arbol
 
     config.middleware.use ActionDispatch::Cookies
 
-    config.middleware.insert_before 0, Rack::Cors do
+    config.middleware.insert_before 0, Rack::Cors, debug: true do
       allow do
-        origins 'http://hec.localhost.hec:3001', 'http://localhost:3000', 'https://www.treeconf.com'
+        origins 'http://hec.localhost.hec:3001', 'https://www.treeconf.com'
         resource '*',
-        credentials: true,
-        headers: :any,
-        methods: [:get, :post, :put, :patch, :delete, :options, :head]
+          credentials: true,
+          headers: :any,
+          methods: [:get, :post, :put, :patch, :delete, :options, :head]
       end
     end
 

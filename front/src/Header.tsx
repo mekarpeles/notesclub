@@ -17,7 +17,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   logout = () => {
     localStorage.removeItem('currentUser')
-    this.props.setParentState({ user: undefined })
+    this.props.setParentState({ user: undefined, alert: undefined })
     return (
       <Redirect to="/" push />
     )
@@ -69,8 +69,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           <Nav.Link href="/class">Class</Nav.Link>
           <Nav.Link href="/exercises">Exercises</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/exercises/new/key-word-transformation">Key Word Transformation</NavDropdown.Item>
-            <NavDropdown.Item href="/exercises/new/open-cloze">Open Cloze</NavDropdown.Item>
+            <NavDropdown.Item href="/exercises/key-word-transformation/new">Key Word Transformation</NavDropdown.Item>
+            <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
           {/* <Form inline>

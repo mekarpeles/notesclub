@@ -148,10 +148,10 @@ class App extends React.Component<AppProps, AppState> {
 
           </div>
           <Switch>
-            <Route path="/exercises/new/open-cloze">
+            <Route path="/exercises/open-cloze/new">
               {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
             </Route>
-            <Route path="/exercises/new/key-word-transformation">
+            <Route path="/exercises/key-word-transformation/new">
               {user ? <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/lists/new">
