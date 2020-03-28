@@ -49,13 +49,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          <Nav.Link href="/do">Practice</Nav.Link>
-          <Nav.Link href="/history">History</Nav.Link>
+          <Nav.Link href="/">Practice</Nav.Link>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
-          <Form inline>
+          {/* <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
             <Button variant="outline-success">Search</Button>
-          </Form>
+          </Form> */}
         </Navbar.Collapse>
       </>
     )
@@ -70,16 +69,14 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           <Nav.Link href="/class">Class</Nav.Link>
           <Nav.Link href="/exercises">Exercises</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/exercises/new/key-word-transformation">Key Word Transformation Exercise</NavDropdown.Item>
-            <NavDropdown.Item href="/exercises/new/open-cloze">Open Cloze Exercise</NavDropdown.Item>
-            <NavDropdown.Item href="/lists/new">List</NavDropdown.Item>
+            <NavDropdown.Item href="/exercises/new/key-word-transformation">Key Word Transformation</NavDropdown.Item>
+            <NavDropdown.Item href="/exercises/new/open-cloze">Open Cloze</NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link href="/history">History</Nav.Link>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
-          <Form inline>
+          {/* <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
             <Button variant="outline-success">Search</Button>
-          </Form>
+          </Form> */}
         </Navbar.Collapse>
       </>
     )

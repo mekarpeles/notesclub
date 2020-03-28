@@ -158,19 +158,16 @@ class App extends React.Component<AppProps, AppState> {
               {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/class">
-              {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
+              {user ? <Exercises updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/exercises">
               {user ? <Exercises updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
-            </Route>
-            <Route path="/do">
-              {user ? <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/history">
               {user ? "Yeah" : <Redirect to="/" push />}
             </Route>
             <Route path="/">
-              {user ? "Yeah" : <Login setParentState={this.updateState} />}
+              {user ? <Exercises updateAlert={this.updateAlert} /> : <Login setParentState={this.updateState} />}
             </Route>
           </Switch>
         </Router>
