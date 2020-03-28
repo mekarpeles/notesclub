@@ -22,7 +22,7 @@ class OpenCloze extends React.Component<IProps, IState> {
     const { text, solutions }= this.props
     const content = text.split(/\(\d+\)\ \.+/)
     const gaps = Array(content.length - 1).fill("")
-    gaps[0] = solutions[0].join("/")
+    gaps[0] = solutions[0][0] // We display the first possible solution of the gap 0.
     this.state = {
       content: content,
       gaps: gaps,
@@ -68,7 +68,7 @@ class OpenCloze extends React.Component<IProps, IState> {
     const { content, gaps, solve, rightOrWrong, error } = this.state
     const { solutions, description, title } = this.props
     const content_length = content.length
-    const all_solutions = solutions.map((solution, index) => solution.join("/"))
+    const all_solutions = solutions.map((solution, index) => solution.join(" | "))
 
     return(
       <div className="exercise container">

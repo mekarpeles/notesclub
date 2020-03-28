@@ -148,8 +148,11 @@ class App extends React.Component<AppProps, AppState> {
 
           </div>
           <Switch>
-            <Route path="/exercises/new">
+            <Route path="/exercises/new/open-cloze">
               {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
+            </Route>
+            <Route path="/exercises/new/key-word-transformation">
+              {user ? <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/lists/new">
               {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
@@ -173,8 +176,6 @@ class App extends React.Component<AppProps, AppState> {
         </Router>
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}
         {/* <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/> */}
-
-        {/* {user ? <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/> : <></>} */}
         {/* <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/> */}
       </div>
     );
