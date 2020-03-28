@@ -24,11 +24,11 @@ class ApplicationController < ActionController::API
   end
 
   def jwt_token
-    @jwt_token ||= cookies.signed[:jwt] || ""
+    @jwt_token ||= (cookies.signed[:jwt] || "")
   end
 
   def jwt2
-    request.cookies["jwt"] || ""
+    request.cookies["jwt"] || ""
   end
 
   def authenticate_user!(options = {})
