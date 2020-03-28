@@ -66,7 +66,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          <Nav.Link href="/class">Class</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
             <NavDropdown.Item href="/exercises/key-word-transformation/new">Key Word Transformation</NavDropdown.Item>
             <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>

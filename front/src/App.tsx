@@ -146,7 +146,7 @@ class App extends React.Component<AppProps, AppState> {
           <Switch>
             <Route path="/exercises/open-cloze/new" component={() => <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />} />
             <Route path="/exercises/key-word-transformation/new" component={() => <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />} />
-            <Route path="/class">
+            <Route path="/exercises">
               {user ? <Exercises updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/" exact>
