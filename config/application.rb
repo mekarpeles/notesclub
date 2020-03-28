@@ -40,7 +40,6 @@ module Arbol
       allow do
         origins 'http://hec.localhost.hec:3001', 'https://www.treeconf.com'
         resource '*',
-          credentials: true,
           headers: :any,
           methods: [:get, :post, :put, :patch, :delete, :options, :head]
       end
