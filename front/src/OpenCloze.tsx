@@ -75,8 +75,8 @@ class OpenCloze extends React.Component<IProps, IState> {
         <div className="row">
           <div className="col-lg-1"></div>
           <div className="col-lg-6 ">
-            <p><b>{title}</b></p>
             <div className="justify-text open-cloze-core">
+              <p><b>{title}</b></p>
               <p className="description">
                 {description}
               </p>
@@ -91,7 +91,6 @@ class OpenCloze extends React.Component<IProps, IState> {
               })}
             </div>
             <Button onClick={this.check}>Check</Button>
-
           </div>
           <div className="col-lg-4">
             {gaps.map((gap, index) => {

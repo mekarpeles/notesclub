@@ -69,7 +69,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
         <div className="row">
           <div className="col-lg-1"></div>
           <div className="col-lg-6">
-            <div>
+            <div className="justify-text">
               <p><b>{title}</b></p>
               <p className="description">
                 {description}
