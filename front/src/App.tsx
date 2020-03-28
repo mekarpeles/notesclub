@@ -1,14 +1,11 @@
 import * as React from 'react';
 import './App.css';
 import '@ionic/react/css/core.css';
-import KeyWordTransformationExercise from './KeyWordTransformationExercise';
 import KeyWordTransformationCreator from './KeyWordTransformationCreator';
 import OpenClozeCreator from './OpenClozeCreator';
 import Login from './Login';
-import MultipleChoiceClozeExercise from './MultipleChoiceClozeExercise';
-import OpenCloze from './OpenCloze';
 import Header from './Header';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { humanize } from './stringTools'
 import { apiDomain } from './appConfig'
@@ -145,7 +142,6 @@ class App extends React.Component<AppProps, AppState> {
           <Header setParentState={this.updateState} currentUser={user}/>
           <div className="text-center">
             {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
-
           </div>
           <Switch>
             <Route path="/exercises/open-cloze/new">
