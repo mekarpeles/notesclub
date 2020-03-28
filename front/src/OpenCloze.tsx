@@ -2,10 +2,10 @@ import * as React from 'react';
 import { Alert, Form, Button } from 'react-bootstrap';
 
 interface IProps {
+  title: string
+  description: string
   text: string
   solutions: string[][]
-  description: string
-  title: string
 }
 
 interface IState {

@@ -14,6 +14,7 @@ import { humanize } from './stringTools'
 import { apiDomain } from './appConfig'
 import { User } from './User'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import Exercises from './Exercises'
 
 interface AppProps {
 
@@ -148,16 +149,22 @@ class App extends React.Component<AppProps, AppState> {
           </div>
           <Switch>
             <Route path="/exercises/new">
-              {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : < Redirect to="/" push />}
+              {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
+            </Route>
+            <Route path="/lists/new">
+              {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
+            </Route>
+            <Route path="/class">
+              {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/exercises">
-              {user ? <Button onClick={this.testUserShow} variant="link">show</Button> : <Login setParentState={this.updateState} />}
+              {user ? <Exercises updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/do">
-              {user ? <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> : < Redirect to="/" push />}
+              {user ? <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> : <Redirect to="/" push />}
             </Route>
             <Route path="/history">
-              {user ? "Yeah" : < Redirect to="/" push />}
+              {user ? "Yeah" : <Redirect to="/" push />}
             </Route>
             <Route path="/">
               {user ? "Yeah" : <Login setParentState={this.updateState} />}

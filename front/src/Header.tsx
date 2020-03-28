@@ -67,13 +67,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          <Nav.Link href="/exercises">Class</Nav.Link>
+          <Nav.Link href="/class">Class</Nav.Link>
           <Nav.Link href="/exercises">Exercises</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
             <NavDropdown.Item href="/exercises/new">Exercise</NavDropdown.Item>
-            <NavDropdown.Item href="/exercises/new">List</NavDropdown.Item>
+            <NavDropdown.Item href="/lists/new">List</NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link href="/exercises">History</Nav.Link>
+          <Nav.Link href="/history">History</Nav.Link>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
           <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
