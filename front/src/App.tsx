@@ -144,11 +144,11 @@ class App extends React.Component<AppProps, AppState> {
             {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
           </div>
           <Switch>
-            <Route path="/exercises/open-cloze/new" exact>
-              {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
+            <Route path="/exercises/open-cloze/new">
+              <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />
             </Route>
-            <Route path="/exercises/key-word-transformation/new" exact>
-              {user ? <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
+            <Route path="/exercises/key-word-transformation/new">
+              <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />
             </Route>
             <Route path="/lists/new">
               {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
@@ -162,7 +162,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/history">
               {user ? "Yeah" : <Redirect to="/" push />}
             </Route>
-            <Route path="/">
+            <Route path="/" exact>
               {user ? <Exercises updateAlert={this.updateAlert} /> : <Login setParentState={this.updateState} />}
             </Route>
           </Switch>
