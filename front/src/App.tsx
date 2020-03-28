@@ -13,6 +13,7 @@ import axios from 'axios';
 import { humanize } from './stringTools'
 import { apiDomain } from './appConfig'
 import { User } from './User'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
 interface AppProps {
 
@@ -139,15 +140,33 @@ class App extends React.Component<AppProps, AppState> {
     const { user, alert } = this.state
     return (
       <div className="App">
-        <Header setParentState={this.updateState} currentUser={user}/>
-        <div className="text-center">
-          {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
-          {user ? <Button onClick={this.testUserShow} variant="link">show</Button> : <Login setParentState={this.updateState} />}
-        </div>
-        {user ? <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> : <></>}
+        <Router>
+          <Header setParentState={this.updateState} currentUser={user}/>
+          <div className="text-center">
+            {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
+
+          </div>
+          <Switch>
+            <Route path="/exercises/new">
+              {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : < Redirect to="/" push />}
+            </Route>
+            <Route path="/exercises">
+              {user ? <Button onClick={this.testUserShow} variant="link">show</Button> : <Login setParentState={this.updateState} />}
+            </Route>
+            <Route path="/do">
+              {user ? <OpenCloze text={text4} solutions={solutions4} title={title4} description={description4} /> : < Redirect to="/" push />}
+            </Route>
+            <Route path="/history">
+              {user ? "Yeah" : < Redirect to="/" push />}
+            </Route>
+            <Route path="/">
+              {user ? "Yeah" : <Login setParentState={this.updateState} />}
+            </Route>
+          </Switch>
+        </Router>
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}
         {/* <KeyWordTransformationExercise title={data1b["title"]} description={data1b["description"]} word={data1b["word"]} part1={data1b["part1"]} part2={data1b["part2"]} solutions={data1b["solutions"]} originalSentence = {data1b["originalSentence"]}/> */}
-        {user ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/> : <></>}
+
         {/* {user ? <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert}/> : <></>} */}
         {/* <MultipleChoiceClozeExercise title={title2} text={text2} options={options2} description={description2} solutions={solutions2}/> */}
       </div>

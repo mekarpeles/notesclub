@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap'
 import axios from 'axios'
 import { User } from './User'
+import { Redirect } from 'react-router-dom'
 
 interface HeaderProps {
   setParentState: Function
@@ -17,6 +18,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   logout = () => {
     localStorage.removeItem('currentUser')
     this.props.setParentState({ user: undefined })
+    return (
+      <Redirect to="/" push />
+    )
+
     // axios.delete(`http://localhost:3000/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
     //   .then(res => {
     //     localStorage.removeItem('currentUser')
@@ -62,13 +67,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          <Nav.Link href="/do">Class</Nav.Link>
+          <Nav.Link href="/exercises">Class</Nav.Link>
           <Nav.Link href="/exercises">Exercises</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
             <NavDropdown.Item href="/exercises/new">Exercise</NavDropdown.Item>
             <NavDropdown.Item href="/exercises/new">List</NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link href="/history">History</Nav.Link>
+          <Nav.Link href="/exercises">History</Nav.Link>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
           <Form inline>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
