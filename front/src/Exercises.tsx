@@ -32,7 +32,7 @@ class Exercises extends React.Component<IProps, IState> {
   }
 
   fetchExercises = () => {
-    axios.get(apiDomain() + "/v1/exercises", { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
+    axios.get(apiDomain() + "/v1/exercises", { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
         console.log(res)
         console.log(res.data)
