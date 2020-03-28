@@ -78,7 +78,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
             <div className="exercise-core">
               <p>{originalSentence}</p>
               <p><b>{word}</b></p>
-              <Form.Group className="form-inline sentence-to-complete">
+              <Form.Group className="form-inline">
                 <Form.Label>{part1}&nbsp;</Form.Label>
                 <Form.Control
                   type="text"
