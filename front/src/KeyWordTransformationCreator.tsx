@@ -118,7 +118,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
 
   renderSolution = (solution: string, index: number) => {
     return (
-      <Form.Group>
+      <Form.Group key={"solution_" + String(index)}>
         <Form.Label>{"Solution " + String(index + 1) + ":"}</Form.Label>
         <Form.Control
           type="text"
