@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, Form, Button } from 'react-bootstrap';
+import { Alert, Form, Button, InputGroup } from 'react-bootstrap';
 
 interface IProps {
   title: string
@@ -96,7 +96,9 @@ class OpenCloze extends React.Component<IProps, IState> {
             {gaps.map((gap, index) => {
               return(
                 <Form.Group className="form-inline">
-                  <Form.Label>({index})&nbsp;</Form.Label>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon1">({index})</InputGroup.Text>
+                  </InputGroup.Prepend>
                   <Form.Control
                     type="text"
                     value={gap}
