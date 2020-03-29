@@ -2,7 +2,9 @@ class UsersController < ApplicationController
   before_action :authenticate_param_user!, only: :update
 
   def index
-    render json: User.limit(100).select(%w(id name username created_at updated_at)).order(id: :desc).to_json
+    users = User.select(%w(id name username created_at updated_at))
+    users.where(id: params["ids"].split(",")) if params["ids"].present?
+    render json: users.order(id: :desc).limit(100).to_json
   end
 
   def show
