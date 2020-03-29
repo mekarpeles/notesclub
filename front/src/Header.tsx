@@ -16,23 +16,25 @@ interface HeaderState {
 class Header extends React.Component<HeaderProps, HeaderState> {
 
   logout = () => {
-    localStorage.removeItem('currentUser')
-    this.props.setParentState({ user: undefined, alert: undefined })
-    return (
-      <Redirect to="/" push />
-    )
-
-    // axios.delete(`http://localhost:3000/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
-    //   .then(res => {
-    //     localStorage.removeItem('currentUser')
-    //     this.props.setParentState({ user: undefined })
-    //     console.log(res)
-    //     console.log(res.data)
-    //   })
-    //   .catch(res => {
-    //     console.log("error ");
-    //     console.log(res);
-    //   })
+    axios.delete(`http://localhost:3000/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
+      .then(res => {
+        localStorage.removeItem('currentUser')
+        this.props.setParentState({ user: undefined, alert: undefined })
+        console.log(res)
+        console.log(res.data)
+        return (
+          <Redirect to="/" push />
+        )
+      })
+      .catch(res => {
+        localStorage.removeItem('currentUser')
+        this.props.setParentState({ user: undefined, alert: undefined })
+        console.log("error ");
+        console.log(res);
+        return (
+          <Redirect to="/" push />
+        )
+      })
   }
   renderLoggedInHeader = () => {
     const { currentUser } = this.props
