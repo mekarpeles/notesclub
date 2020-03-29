@@ -97,6 +97,16 @@ class App extends React.Component<AppProps, AppState> {
       })
   }
 
+  renderRoutes = () => {
+    return (
+      <>
+        <Route path="/exercises/open-cloze/new" component={() => <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />} />
+        <Route path="/exercises/key-word-transformation/new" component={() => <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />} />
+        <Route path="/exercises" exact component={() => <Exercises updateAlert={this.updateAlert} />} />
+      </>
+    )
+  }
+
   public render() {
     const data1 = {
       title: "Key Word Transformation",
@@ -144,14 +154,10 @@ class App extends React.Component<AppProps, AppState> {
             {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
           </div>
           <Switch>
-            <Route path="/exercises/open-cloze/new" component={() => <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />} />
-            <Route path="/exercises/key-word-transformation/new" component={() => <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />} />
-            <Route path="/exercises">
-              {user ? <Exercises updateAlert={this.updateAlert} /> : <Redirect to="/" push />}
-            </Route>
             <Route path="/" exact>
               {user ? <Redirect to="/exercises" /> : <Login setParentState={this.updateState} />}
             </Route>
+            {user ? this.renderRoutes() : <Redirect to="/" />}
           </Switch>
         </Router>
         {/* <OpenCloze text={text3} solutions={solutions3} title={title3} description={description3} /> */}

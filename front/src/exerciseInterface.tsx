@@ -5,4 +5,6 @@ export default interface exerciseInterface {
   id: number
   name: string
   data: openClozeInterface | keyWordTransformationInterface
+  createdAt: string
+  createdById: number
 }

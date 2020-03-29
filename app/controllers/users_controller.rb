@@ -1,5 +1,9 @@
 class UsersController < ApplicationController
-  before_action :authenticate_param_user!
+  before_action :authenticate_param_user!, only: :update
+
+  def index
+    render json: User.limit(100).select(%w(id name username created_at updated_at)).order(id: :desc).to_json
+  end
 
   def show
   end

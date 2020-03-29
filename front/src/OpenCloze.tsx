@@ -74,7 +74,7 @@ class OpenCloze extends React.Component<IProps, IState> {
       <div className="exercise container">
         <div className="row">
           <div className="col-lg-1"></div>
-          <div className="col-lg-6 ">
+          <div className="col-lg-6">
             <div className="justify-text open-cloze-core">
               <p><b>{title}</b></p>
               <p className="description">

@@ -1,6 +1,6 @@
 class ExercisesController < ApplicationController
   def index
-    render json: Exercise.limit(100).to_json
+    render json: Exercise.limit(100).order(id: :desc).to_json
   end
 
   def create

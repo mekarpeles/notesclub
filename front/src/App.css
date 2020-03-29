@@ -84,5 +84,11 @@ input.wrong-answer {
 }
 
 .exercise {
-  padding-bottom: 50px;
+  padding-bottom: 10px;
+}
+
+.exercise-footer {
+  padding-bottom: 30px;
+  font-size:75%;
+  color: grey;
 }
