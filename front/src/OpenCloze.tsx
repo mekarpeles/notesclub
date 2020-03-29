@@ -102,7 +102,7 @@ class OpenCloze extends React.Component<IProps, IState> {
                     value={gap}
                     name={"gap_" + String(index)}
                     className={solve ? rightOrWrong[index] + "-answer" : ""}
-                    onChange={this.handleChange as any} autoFocus />
+                    onChange={this.handleChange as any} />
                   <Form.Label>&nbsp;{solve ? all_solutions[index] : <></>}</Form.Label>
                 </Form.Group>
               )
