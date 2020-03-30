@@ -96,16 +96,18 @@ class OpenCloze extends React.Component<IProps, IState> {
             {gaps.map((gap, index) => {
               return(
                 <Form.Group className="form-inline">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon1">({index})</InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    type="text"
-                    value={gap}
-                    name={"gap_" + String(index)}
-                    className={solve ? rightOrWrong[index] + "-answer" : ""}
-                    onChange={this.handleChange as any} />
-                  <Form.Label>&nbsp;{solve ? all_solutions[index] : <></>}</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text id="basic-addon1">({index})</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <Form.Control
+                      type="text"
+                      value={gap}
+                      name={"gap_" + String(index)}
+                      className={solve ? rightOrWrong[index] + "-answer" : ""}
+                      onChange={this.handleChange as any} />
+                    <Form.Label>&nbsp;{solve ? all_solutions[index] : <></>}</Form.Label>
+                  </InputGroup>
                 </Form.Group>
               )
             })}
