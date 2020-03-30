@@ -23,7 +23,7 @@ interface alert {
 
 interface AppState {
   user?: User
-  alert: alert | undefined
+  alert?: alert
 }
 
 class App extends React.Component<AppProps, AppState> {

@@ -13,7 +13,7 @@ interface IState {
   content: string[]
   choices: number[]
   field_highlighted: number | null
-  error: string | null
+  error?: string
   solve: boolean
 }
 
@@ -29,7 +29,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
       content: content,
       choices: choices,
       field_highlighted: 0,
-      error: null,
+      error: undefined,
       solve: false
     }
   }
@@ -43,7 +43,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
         this.setState({ error: "The first gap (0) is an example! Click on any other.", field_highlighted: 0 })
       } else {
         choices[index] = ind
-        this.setState({ choices: choices, field_highlighted: index, error: null })
+        this.setState({ choices: choices, field_highlighted: index, error: undefined })
       }
     }
   }
@@ -69,7 +69,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
   }
 
   closeError = () => {
-    this.setState({ error: null })
+    this.setState({ error: undefined })
   }
 
   renderOptions = () => {

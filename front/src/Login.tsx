@@ -45,12 +45,11 @@ class Login extends React.Component<LoginProps, LoginState> {
     // axios.defaults.withCredentials = true
     axios.post(apiDomain() + "/v1/users/login", { user }, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
-        this.props.setParentState()
         console.log(res)
         console.log(res.data)
         const currentUser = res.data["user"]
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
-        this.props.setParentState({ user: currentUser, alert: { undefined }})
+        this.props.setParentState({ user: currentUser, alert: undefined })
       })
       .catch(res => {
         let msg = ""
