@@ -39,8 +39,12 @@ class OpenCloze extends React.Component<IProps, IState> {
     }else{
       const target = event.target
       const index = Number(target.name.replace("gap_", ""))
-      gaps[index] = target.value
-      this.setState({ gaps: gaps })
+      if(index == 0){
+        this.setState({ error: "Can't change the example (0)."})
+      }else{
+        gaps[index] = target.value
+        this.setState({ gaps: gaps })
+      }
     }
   }
 
