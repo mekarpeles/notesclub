@@ -92,3 +92,9 @@ input.wrong-answer {
   font-size:75%;
   color: grey;
 }
+
+@media (min-width: 992px) {
+  .open-cloze-solutions{
+    padding-top: 65px;
+  }
+}

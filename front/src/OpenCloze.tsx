@@ -90,9 +90,9 @@ class OpenCloze extends React.Component<IProps, IState> {
                 )
               })}
             </div>
-            <Button onClick={this.check}>Check</Button>
+
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-4 open-cloze-solutions">
             {gaps.map((gap, index) => {
               return(
                 <Form.Group className="form-inline">
@@ -112,8 +112,14 @@ class OpenCloze extends React.Component<IProps, IState> {
               )
             })}
           </div>
-          <div className="col-lg-1"></div>
-
+          <div className="col-lg-1" />
+        </div>
+        <div className="row">
+          <div className="col-lg-1" />
+          <div className="col-lg-6">
+            <Button onClick={this.check}>Check</Button>
+          </div>
+          <div className="col-lg-5" />
         </div>
       </div>
     )
