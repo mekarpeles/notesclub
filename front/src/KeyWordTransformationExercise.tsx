@@ -78,15 +78,14 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
             <div className="exercise-core">
               <p>{originalSentence}</p>
               <p><b>{word}</b></p>
-              <Form.Group className="form-inline">
-                <Form.Label>{part1}&nbsp;</Form.Label>
+              <Form.Group>
+                <Form.Label>{part1} ......... {part2}</Form.Label>
                 <Form.Control
                   type="text"
                   value={answer}
                   name="answer"
                   className={rightOrWrong + "-answer"}
                   onChange={this.handleChange as any} />
-                <Form.Label>&nbsp;{part2}</Form.Label>
               </Form.Group>
               <Button onClick={this.check}>Check</Button>
               <div>
