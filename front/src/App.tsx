@@ -100,8 +100,16 @@ class App extends React.Component<AppProps, AppState> {
   renderRoutes = () => {
     return (
       <>
-        <Route path="/exercises/open-cloze/new" component={() => <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />} />
-        <Route path="/exercises/key-word-transformation/new" component={() => <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} />} />
+        <Route path="/exercises/open-cloze/new" children={({match}) => (
+          <>
+            {match ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <></>}
+          </>
+        )} />
+        <Route path="/exercises/key-word-transformation/new" children={({match}) => (
+          <>
+            { match && <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> }
+          </>
+        )} />
         <Route path="/exercises" exact component={() => <Exercises updateAlert={this.updateAlert} />} />
       </>
     )

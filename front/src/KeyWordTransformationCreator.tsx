@@ -76,6 +76,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
           as="textarea"
           value={value}
           name={fieldName}
+          rows="3"
           onChange={this.handleChange as any} />
       </Form.Group>
     )
