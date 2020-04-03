@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 
 interface IProps {
   originalSentence: string
@@ -15,6 +15,7 @@ interface IState {
   answer: string
   rightOrWrong: string
   solve: boolean
+  error?: string
 }
 
 class KeyWordTransformationExercise extends React.Component<IProps, IState> {
@@ -47,7 +48,11 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     const target = event.target
     const value = target.value
 
-    this.setState({ answer: value })
+    if(!this.state.solve) {
+      this.setState({ answer: value })
+    }else{
+      this.setState({ error: "The exercise has ended." })
+    }
   }
 
   renderSolutions = () => {
@@ -60,8 +65,12 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
     )
   }
 
+  closeError = () => {
+    this.setState({ error: undefined })
+  }
+
   public render() {
-    const { answer, solve, rightOrWrong } = this.state
+    const { answer, solve, rightOrWrong, error } = this.state
     const { originalSentence, word, part1, part2, description, title } = this.props
 
     return (
@@ -75,6 +84,7 @@ class KeyWordTransformationExercise extends React.Component<IProps, IState> {
                 {description}
               </p>
             </div>
+            {error ? <Alert variant="danger" onClose={() => this.closeError()} dismissible>{error}</Alert> : <></>}
             <div className="exercise-core">
               <p>{originalSentence}</p>
               <p><b>{word}</b></p>
