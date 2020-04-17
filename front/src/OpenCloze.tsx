@@ -31,6 +31,21 @@ class OpenCloze extends React.Component<IProps, IState> {
     }
   }
 
+  componentDidUpdate(prevProps: IProps) {
+    if (prevProps.text !== this.props.text || prevProps.solutions !== this.props.solutions) {
+      const { text } = this.props
+      const content = text.split(/\(\d+\)\ \.+/)
+      const gaps = Array(content.length - 1).fill("")
+      this.setState({
+        content: content,
+        gaps: gaps,
+        solve: false,
+        rightOrWrong: Array(content.length - 1).fill(""),
+        error: null
+      })
+    }
+  }
+
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { solve, gaps } = this.state
     if(solve) {
