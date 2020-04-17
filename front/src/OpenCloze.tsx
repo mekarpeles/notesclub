@@ -66,7 +66,7 @@ class OpenCloze extends React.Component<IProps, IState> {
     const { gaps, rightOrWrong } = this.state
 
     return(
-      <b className={rightOrWrong[row_index] ? rightOrWrong[row_index] + "-answer" : ""}>({row_index}) {gaps[row_index] || "......"}</b>
+      <b className={rightOrWrong[row_index] ? rightOrWrong[row_index] + "-answer" : ""}>({row_index + 1}) {gaps[row_index] || "......"}</b>
     )
   }
 
