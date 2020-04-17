@@ -9,6 +9,7 @@ class Exercise::OpenClozeValidator < Exercise::Validator
       if text.present? && text.is_a?(String)
         n_gaps = text.split(/\(\d+\)\ \.+/).size - 1
         n_solutions = data["solutions"].size
+        yield(:data, "You must have at least one gap.") if n_gaps == 0
         yield(:data, "You must have #{n_gaps} solutions (instead of #{n_solutions}) as you have #{n_gaps} gaps.") if n_solutions != n_gaps
       end
     else
