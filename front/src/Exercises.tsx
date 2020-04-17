@@ -16,7 +16,8 @@ interface IState {
   users: userInterface[]
 }
 
-function isOpenCloze(data: openClozeInterface | keyWordTransformationInterface): data is openClozeInterface {
+// function isOpenCloze(data: openClozeInterface | keyWordTransformationInterface): data is openClozeInterface {
+function isOpenCloze(data: openClozeInterface): data is openClozeInterface {
   return (data as openClozeInterface)["text"] !== undefined
 }
 
@@ -126,17 +127,18 @@ class Exercises extends React.Component<IProps, IState> {
     )
   }
   renderExerciseCore = (exercise: exerciseInterface) => {
-    const data: openClozeInterface | keyWordTransformationInterface = exercise["data"]
+    // const data: openClozeInterface | keyWordTransformationInterface = exercise["data"]
+    const data: openClozeInterface = exercise["data"]
     if (exercise["name"] === "OpenCloze"){
       const d = data as openClozeInterface
       return(
         <OpenCloze text = { d.text } solutions = { d.solutions } title = { d.title } description = { d.description } />
       )
-    }else if (exercise["name"] === "KeyWordTransformation"){
-      const d = data as keyWordTransformationInterface
-      return(
-        <KeyWordTransformationExercise title={d["title"]} description={d["description"]} originalSentence={d["originalSentence"]} part1={d["part1"]} word={d["word"]} part2={d["part2"]} solutions={d["solutions"]}/>
-      )
+    // }else if (exercise["name"] === "KeyWordTransformation"){
+    //   const d = data as keyWordTransformationInterface
+    //   return(
+    //     <KeyWordTransformationExercise title={d["title"]} description={d["description"]} originalSentence={d["originalSentence"]} part1={d["part1"]} word={d["word"]} part2={d["part2"]} solutions={d["solutions"]}/>
+    //   )
     }else{
       return(
         <></>
