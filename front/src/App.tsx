@@ -67,49 +67,19 @@ class App extends React.Component<AppProps, AppState> {
     this.setState(newState);
   }
 
-  createExercise = (name: string, data: string) => {
-    console.log(data)
-    const params = {
-      name: name,
-      data: data
-    }
-    axios.post(apiDomain() + "/v1/exercises", params, { withCredentials: true})
-      .then(res => {
-        this.updateAlert("success", "Exercise created.")
-        console.log(res)
-        console.log(res.data)
-      })
-      .catch(res => {
-        const errors = res.response.data["errors"]
-        let msg = ""
-        if (errors && errors["data"]){
-          errors["data"].forEach((error: string) => {
-            msg = msg + humanize(error) + " "
-          })
-        }else{
-          msg = "Unknown error."
-        }
-
-        this.updateAlert("danger", msg)
-
-        console.log("error:");
-        console.log(res.response.data["errors"]);
-      })
-  }
-
   renderRoutes = () => {
     return (
       <>
         <Route path="/exercises/open-cloze/new" children={({match}) => (
           <>
-            {match ? <OpenClozeCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> : <></>}
+            {match ? <OpenClozeCreator updateAlert={this.updateAlert} /> : <></>}
           </>
         )} />
-        <Route path="/exercises/key-word-transformation/new" children={({match}) => (
+        {/* <Route path="/exercises/key-word-transformation/new" children={({match}) => (
           <>
             { match && <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> }
           </>
-        )} />
+        )} /> */}
         <Route path="/exercises" exact component={() => <Exercises updateAlert={this.updateAlert} />} />
       </>
     )

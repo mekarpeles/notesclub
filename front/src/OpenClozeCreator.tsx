@@ -2,13 +2,14 @@ import * as React from 'react'
 import { Form, Button } from 'react-bootstrap'
 import OpenCloze from './OpenCloze'
 import { humanize } from './stringTools'
-import '@ionic/react/css/core.css';
-
+import '@ionic/react/css/core.css'
+import { AxiosResponse } from 'axios'
 import { IonIcon, IonDatetime } from '@ionic/react';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons'
+import { apiDomain } from './appConfig'
+import axios from 'axios'
 
 interface IProps {
-  createExercise: Function
   updateAlert: Function
 }
 
@@ -21,17 +22,18 @@ interface IState {
 }
 
 class KeyWordTransformationCreator extends React.Component<IProps, IState> {
+  static readonly initialState = {
+    title: "Open Cloze",
+    description: "Use the word given in capitals to form a word that fits in each gap.",
+    text: "",
+    solutions: [],
+    showPreview: false
+  }
+
   constructor(props: IProps) {
     super(props)
 
-    this.state = {
-      title: "Open Cloze",
-      description: "Use the word given in capitals to form a word that fits in the gap. There is an example at the beginning (0).",
-      text: "",
-      solutions: [],
-
-      showPreview: false
-    }
+    this.state = KeyWordTransformationCreator.initialState
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,7 +158,34 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
       solutions: this.transformSolutions(solutions)
     }
     const json_data = JSON.stringify(data)
-    this.props.createExercise("OpenCloze", json_data)
+    console.log(data)
+    const params = {
+      name: "OpenCloze",
+      data: json_data
+    }
+    axios.post(apiDomain() + "/v1/exercises", params, { withCredentials: true })
+      .then(res => {
+        this.props.updateAlert("success", "Exercise created.")
+        console.log(res)
+        console.log(res.data)
+        this.setState(KeyWordTransformationCreator.initialState)
+      })
+      .catch(res => {
+        const errors = res.response.data["errors"]
+        let msg = ""
+        if (errors && errors["data"]) {
+          errors["data"].forEach((error: string) => {
+            msg = msg + humanize(error) + " "
+          })
+        } else {
+          msg = "Unknown error."
+        }
+
+        this.props.updateAlert("danger", msg)
+
+        console.log("error:");
+        console.log(res.response.data["errors"]);
+      })
   }
 
   togglePreview = () => {
