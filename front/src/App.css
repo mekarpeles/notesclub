@@ -98,3 +98,12 @@ input.wrong-answer {
     padding-top: 65px;
   }
 }
+
+.check {
+  text-align: left;
+}
+
+
+.open-cloze-solutions-txt{
+  text-align: right;
+}

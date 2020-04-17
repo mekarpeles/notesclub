@@ -87,7 +87,7 @@ class OpenCloze extends React.Component<IProps, IState> {
     return(
       <div className="exercise container">
         <div className="row">
-          <div className="col-lg-1"></div>
+          <div className="col-lg-3"></div>
           <div className="col-lg-6">
             <div className="justify-text open-cloze-core">
               <p><b>{title}</b></p>
@@ -105,11 +105,17 @@ class OpenCloze extends React.Component<IProps, IState> {
               })}
             </div>
 
-          </div>
-          <div className="col-lg-4 open-cloze-solutions">
+            {solve && gaps.length > 0 &&
+              <div className="open-cloze-solutions-txt">
+                <b>
+                  {gaps.length == 1 ? "Solution:" : "Solutions:"}
+                </b>
+              </div>
+            }
+
             {gaps.map((gap, index) => {
               return(
-                <Form.Group className="form-inline">
+                <Form.Group>
                   <InputGroup>
                     <InputGroup.Prepend>
                       <InputGroup.Text id="basic-addon1">({index + 1})</InputGroup.Text>
@@ -125,15 +131,11 @@ class OpenCloze extends React.Component<IProps, IState> {
                 </Form.Group>
               )
             })}
+            <div className="check">
+              <Button onClick={this.check}>Check</Button>
+            </div>
           </div>
-          <div className="col-lg-1" />
-        </div>
-        <div className="row">
-          <div className="col-lg-1" />
-          <div className="col-lg-6">
-            <Button onClick={this.check}>Check</Button>
-          </div>
-          <div className="col-lg-5" />
+          <div className="col-lg-3" />
         </div>
       </div>
     )

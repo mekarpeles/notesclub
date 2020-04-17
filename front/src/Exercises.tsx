@@ -102,7 +102,7 @@ class Exercises extends React.Component<IProps, IState> {
     return (
       <div className="container exercise-footer">
         <div className="row">
-          <div className="col-lg-1"></div>
+          <div className="col-lg-3"></div>
           <div className="col-lg-6">
             Created by {this.renderUserName(exercise.createdById)} · {
               new Intl.DateTimeFormat("en-GB", {
@@ -112,7 +112,7 @@ class Exercises extends React.Component<IProps, IState> {
               }).format(Date.parse(exercise.createdAt))
             }
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
           </div>
         </div>
       </div>
