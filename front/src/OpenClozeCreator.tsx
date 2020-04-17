@@ -3,9 +3,6 @@ import { Form, Button } from 'react-bootstrap'
 import OpenCloze from './OpenCloze'
 import { humanize } from './stringTools'
 import '@ionic/react/css/core.css'
-import { AxiosResponse } from 'axios'
-import { IonIcon, IonDatetime } from '@ionic/react';
-import { addCircleOutline, removeCircleOutline } from 'ionicons/icons'
 import { apiDomain } from './appConfig'
 import axios from 'axios'
 

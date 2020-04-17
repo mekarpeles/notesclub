@@ -3,8 +3,6 @@ import axios from 'axios';
 import { apiDomain } from './appConfig';
 import exerciseInterface from './exerciseInterface';
 import OpenCloze from './OpenCloze';
-import KeyWordTransformationExercise from './KeyWordTransformationExercise';
-import keyWordTransformationInterface from './keyWordTransformationInterface'
 import openClozeInterface from './openClozeInterface'
 import userInterface from './userInterface'
 

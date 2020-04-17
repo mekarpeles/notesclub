@@ -1,13 +1,11 @@
 import * as React from 'react';
 import './App.css';
 import '@ionic/react/css/core.css';
-import KeyWordTransformationCreator from './KeyWordTransformationCreator';
 import OpenClozeCreator from './OpenClozeCreator';
 import Login from './Login';
 import Header from './Header';
 import { Alert } from 'react-bootstrap';
 import axios from 'axios';
-import { humanize } from './stringTools'
 import { apiDomain } from './appConfig'
 import { User } from './User'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
