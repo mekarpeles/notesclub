@@ -22,7 +22,6 @@ class OpenCloze extends React.Component<IProps, IState> {
     const { text, solutions }= this.props
     const content = text.split(/\(\d+\)\ \.+/)
     const gaps = Array(content.length - 1).fill("")
-    gaps[0] = solutions[0][0] // We display the first possible solution of the gap 0.
     this.state = {
       content: content,
       gaps: gaps,
@@ -39,12 +38,8 @@ class OpenCloze extends React.Component<IProps, IState> {
     }else{
       const target = event.target
       const index = Number(target.name.replace("gap_", ""))
-      if(index == 0){
-        this.setState({ error: "Can't change the example (0)."})
-      }else{
-        gaps[index] = target.value
-        this.setState({ gaps: gaps })
-      }
+      gaps[index - 1] = target.value
+      this.setState({ gaps: gaps })
     }
   }
 
@@ -102,12 +97,12 @@ class OpenCloze extends React.Component<IProps, IState> {
                 <Form.Group className="form-inline">
                   <InputGroup>
                     <InputGroup.Prepend>
-                      <InputGroup.Text id="basic-addon1">({index})</InputGroup.Text>
+                      <InputGroup.Text id="basic-addon1">({index + 1})</InputGroup.Text>
                     </InputGroup.Prepend>
                     <Form.Control
                       type="text"
                       value={gap}
-                      name={"gap_" + String(index)}
+                      name={"gap_" + String(index + 1)}
                       className={solve ? rightOrWrong[index] + "-answer" : ""}
                       onChange={this.handleChange as any} />
                     <Form.Label>&nbsp;{solve ? all_solutions[index] : <></>}</Form.Label>

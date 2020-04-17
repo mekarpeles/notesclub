@@ -28,7 +28,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
       title: "Open Cloze",
       description: "Use the word given in capitals to form a word that fits in the gap. There is an example at the beginning (0).",
       text: "",
-      solutions: [""],
+      solutions: [],
 
       showPreview: false
     }
@@ -38,11 +38,29 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     const target = event.target
     const value = target.value
     const name = target.name
+    const content = value.split(/\(\d+\)\ \.\.\.\.\.+/).join('.....').split(/\.\.\.\.\.+/)
+    let new_value = ""
+    const content_length = content.length
+    content.map((a, index) => {
+      if (index > 0 && index < content_length) {
+        new_value = new_value + "(" + index + ") ....." + a
+      } else {
+        new_value = new_value + a
+      }
+    })
+    let { solutions } = this.state
+    while (solutions.length < content_length - 1) {
+      solutions = solutions.concat([""])
+    }
+    while (solutions.length > content_length - 1) {
+      solutions.pop()
+    }
 
     this.setState((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: new_value
     }))
+    this.setState({ solutions: solutions })
   }
 
   renderInput = (fieldName: string) => {
@@ -79,7 +97,7 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     return (
       <Form.Group>
         <Form.Label>Text with gaps:</Form.Label>
-        <Form.Text className="text-muted">Each gap must be preceded by a number in parentheses and three dots. E.g. When (0) ... we three meet again in thunder, lightning, or in rain?</Form.Text>
+        <Form.Text className="text-muted">Each gap must have five dots. E.g. When ..... we three meet again in thunder, lightning, or in rain?</Form.Text>
         <Form.Control
           as="textarea"
           value={text}
@@ -90,28 +108,12 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     )
   }
 
-  addSolution = () => {
-    this.setState({ solutions: this.state.solutions.concat([""]) })
-  }
-
-  removeSolution = () => {
-    let solutions = this.state.solutions
-    if(solutions.length > 1){
-      solutions.pop()
-      this.setState({ solutions: solutions })
-    }else{
-      this.props.updateAlert("danger", "You must have at least one solution.")
-    }
-  }
-
   renderSolutions = () => {
     const { solutions } = this.state
     const renderedSolutions = solutions.map((solution, index) => this.renderSolution(solution, index))
     return (
       <>
         { renderedSolutions }
-        <IonIcon onClick={this.addSolution} icon={addCircleOutline} size="large" />
-        <IonIcon onClick={this.removeSolution} icon={removeCircleOutline} size="large" />
       </>
     )
   }
@@ -121,19 +123,19 @@ class KeyWordTransformationCreator extends React.Component<IProps, IState> {
     const value = target.value
     const index = Number(target.name.split("_")[1])
     const { solutions } = this.state
-    solutions[index] = value
+    solutions[index - 1] = value
     this.setState({ solutions: solutions })
   }
 
   renderSolution = (solution: string, index: number) => {
     return (
-      <Form.Group key={"solution_" + String(index)}>
-        <Form.Label>{"Solution (" + String(index) + "):"}</Form.Label>
+      <Form.Group key={"solution_" + String(index + 1)}>
+        <Form.Label>{"Solution (" + String(index + 1) + "):"}</Form.Label>
         <Form.Text className="text-muted">Separate multiple valid solutions with vertical bars. E.g. shall | could</Form.Text>
         <Form.Control
           type="text"
           value={solution}
-          name={"solution_" + String(index)}
+          name={"solution_" + String(index + 1)}
           onChange={this.handleSolutionChange as any} />
       </Form.Group>
     )
