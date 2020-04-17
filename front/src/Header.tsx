@@ -52,7 +52,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           </Nav>
           <Nav.Link href="/">Practice</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/exercises/key-word-transformation/new">Key Word Transf.</NavDropdown.Item>
             <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
@@ -73,7 +72,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           </Nav>
           <Nav.Link href="/exercises">Exercises</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/exercises/key-word-transformation/new">Key Word Transf.</NavDropdown.Item>
             <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>

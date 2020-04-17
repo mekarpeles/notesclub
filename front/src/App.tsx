@@ -75,11 +75,6 @@ class App extends React.Component<AppProps, AppState> {
             {match ? <OpenClozeCreator updateAlert={this.updateAlert} /> : <></>}
           </>
         )} />
-        {/* <Route path="/exercises/key-word-transformation/new" children={({match}) => (
-          <>
-            { match && <KeyWordTransformationCreator createExercise={this.createExercise} updateAlert={this.updateAlert} /> }
-          </>
-        )} /> */}
         <Route path="/exercises" exact component={() => <Exercises updateAlert={this.updateAlert} />} />
       </>
     )

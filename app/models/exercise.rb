@@ -1,5 +1,5 @@
 class Exercise < ApplicationRecord
-  NAMES = %w(OpenCloze KeyWordTransformation)
+  NAMES = %w(OpenCloze)
   belongs_to :created_by, class_name: "User"
 
   validate :data_format

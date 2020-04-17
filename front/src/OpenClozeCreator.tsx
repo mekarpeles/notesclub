@@ -24,7 +24,7 @@ interface IState {
 class KeyWordTransformationCreator extends React.Component<IProps, IState> {
   static readonly initialState = {
     title: "Open Cloze",
-    description: "Use the word given in capitals to form a word that fits in each gap.",
+    description: "",
     text: "",
     solutions: [],
     showPreview: false
