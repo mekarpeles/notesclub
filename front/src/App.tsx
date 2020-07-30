@@ -9,7 +9,8 @@ import axios from 'axios';
 import { apiDomain } from './appConfig'
 import { User } from './User'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
-import Topic from './Topic'
+import TopicPage from './TopicPage'
+import { Topic } from './Topic'
 
 interface AppProps {
 
@@ -22,6 +23,8 @@ interface alert {
 interface AppState {
   user?: User
   alert?: alert
+  currentTopic: Topic
+  currentTopicIndex: number
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -32,7 +35,9 @@ class App extends React.Component<AppProps, AppState> {
 
     this.state = {
       user: currentUserStr ? JSON.parse(currentUserStr) : undefined,
-      alert: undefined
+      alert: undefined,
+      currentTopic: { id: undefined, content: "2020-07-30", subTopics: [{id: undefined, content: "", subTopics: []}] },
+      currentTopicIndex: 0
     }
   }
 
@@ -66,9 +71,11 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
+    const { currentTopic, currentTopicIndex } = this.state
+
     return (
       <>
-        <Route path="/hec" exact component={() => <Topic updateAlert={this.updateAlert} username="hec" topic="2020-07-29" />} />
+        <Route path={`/topic/${currentTopic.content}`} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} currentTopic={currentTopic} currentTopicIndex={currentTopicIndex} />} />
       </>
     )
   }
