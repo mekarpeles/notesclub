@@ -12,6 +12,11 @@ interface IProps {
 interface IState {
 }
 
+function emptyTopic(): Topic {
+  return(
+    { id: undefined, content: "", subTopics: [] }
+  )
+}
 class TopicPage extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
@@ -41,18 +46,28 @@ class TopicPage extends React.Component<IProps, IState> {
     const { currentTopicIndex } = this.props
 
     switch (event.key) {
-      case "Enter": // Enter key
-        currentTopic.subTopics.push({id: undefined, content: "", subTopics: []})
+      case "Enter":
+        currentTopic.subTopics.push(emptyTopic())
         this.props.updateState({ currentTopic: currentTopic, currentTopicIndex: currentTopicIndex + 1})
         break;
-      case "ArrowUp": // Up key
+      case "ArrowUp":
         if (currentTopicIndex > 0) {
           this.props.updateState({ currentTopicIndex: currentTopicIndex - 1 })
         }
         break;
-      case "ArrowDown": // Down key
+      case "ArrowDown":
         if (currentTopicIndex < currentTopic.subTopics.length - 1) {
           this.props.updateState({ currentTopicIndex: currentTopicIndex + 1 })
+        }
+        break;
+      case "Tab":
+        if (currentTopicIndex > 0) {
+          const newParent = currentTopic.subTopics[currentTopicIndex - 1]
+          // Add current topic to newParent
+          newParent.subTopics.push(currentTopic.subTopics[currentTopicIndex])
+          // Delete from currentTopic
+          currentTopic.subTopics.splice(currentTopicIndex, 1)
+          this.props.updateState({ currentTopicIndex: currentTopicIndex - 1 })
         }
     }
   }
@@ -61,21 +76,42 @@ class TopicPage extends React.Component<IProps, IState> {
     const { currentTopicIndex } = this.props
 
     return (
-      <div>
+      <li>
         {index === currentTopicIndex &&
-          <Form.Group>
-            <Form.Control
-              type="text"
-              value={topic.content}
-              name={`topic${index}`}
-              onKeyDown={this.onKeyDown}
-              onChange={this.handleChange as any} autoFocus />
-          </Form.Group>
+          <>
+            {this.renderSelectedTopic(topic, index)}
+          </>
         }
         {index != currentTopicIndex &&
           <p onClick={() => this.props.updateState({ currentTopicIndex: index })}>{this.renderUnselectedTopic(topic)}</p>
         }
-      </div>
+      </li>
+    )
+  }
+
+  renderSelectedTopic = (topic: Topic, index: number) => {
+    const hasSubTopics = topic.subTopics.some(topic => typeof topic === 'object')
+
+    return(
+      <>
+        <Form.Group>
+          <Form.Control
+            type="text"
+            value={topic.content}
+            name={`topic${index}`}
+            onKeyDown={this.onKeyDown}
+            onChange={this.handleChange as any} autoFocus />
+        </Form.Group>
+        {hasSubTopics &&
+          <ul>
+            {topic.subTopics.map((topicChild, indexChild) => {
+              return (
+                this.renderTopic(topicChild, index)
+              )
+            })}
+          </ul>
+        }
+      </>
     )
   }
 
@@ -107,7 +143,9 @@ class TopicPage extends React.Component<IProps, IState> {
 
     return (
       <div className="container">
-        {currentTopic.subTopics.map((topic, index) => this.renderTopic(topic, index))}
+        <ul>
+          {currentTopic.subTopics.map((topic, index) => this.renderTopic(topic, index))}
+        </ul>
       </div>
     )
   }
