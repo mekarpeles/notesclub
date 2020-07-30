@@ -9,6 +9,7 @@ interface IProps {
 
 interface IState {
   topics: string[]
+  currentTopicIndex: number
 }
 
 class Topic extends React.Component<IProps, IState> {
@@ -16,10 +17,11 @@ class Topic extends React.Component<IProps, IState> {
     super(props)
 
     this.state = {
-      topics: [""]
+      topics: ["aaa", "bbb"],
+      currentTopicIndex: 0
     }
 
-    this.onKeyUp = this.onKeyUp.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,12 +38,51 @@ class Topic extends React.Component<IProps, IState> {
     }))
   }
 
-  onKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.charCode === 13) { // Enter key
-      let { topics } = this.state
-      topics.push("")
-      this.setState({topics: topics})
+  onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    let { topics } = this.state
+    const { currentTopicIndex } = this.state
+
+    switch (event.key) {
+      case "Enter": // Enter key
+        topics.push("")
+        this.setState({ topics: topics, currentTopicIndex: topics.length - 1})
+        break;
+      case "ArrowUp": // Up key
+        if (currentTopicIndex > 0) {
+          this.setState({currentTopicIndex: currentTopicIndex - 1})
+        }
+        break;
+      case "ArrowDown": // Down key
+        if (currentTopicIndex < topics.length - 1) {
+          this.setState({ currentTopicIndex: currentTopicIndex + 1 })
+        }
     }
+  }
+
+  renderTopic = (topic: string, index: number) => {
+    const { currentTopicIndex } = this.state
+
+    return (
+      <div>
+        {index === currentTopicIndex &&
+          <Form.Group>
+            <Form.Control
+              type="text"
+              value={topic}
+              name={`topic${index}`}
+              onKeyDown={this.onKeyDown}
+              onChange={this.handleChange as any} autoFocus />
+          </Form.Group>
+        }
+        {index != currentTopicIndex &&
+          <p onClick={() => this.selectTopic(index)}>{topic}</p>
+        }
+      </div>
+    )
+  }
+
+  selectTopic = (index: number) => {
+    this.setState({currentTopicIndex: index})
   }
 
   public render () {
@@ -49,18 +90,7 @@ class Topic extends React.Component<IProps, IState> {
 
     return (
       <div className="container">
-        {topics.map((topic, index) => {
-          return (
-            <Form.Group>
-              <Form.Control
-                type="text"
-                value={topic}
-                name={`topic${index}`}
-                onKeyPress={this.onKeyUp}
-                onChange={this.handleChange as any} autoFocus />
-            </Form.Group>
-          )
-        })}
+        {topics.map((topic, index) => this.renderTopic(topic, index))}
       </div>
     )
   }
