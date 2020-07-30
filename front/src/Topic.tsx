@@ -75,9 +75,32 @@ class Topic extends React.Component<IProps, IState> {
           </Form.Group>
         }
         {index != currentTopicIndex &&
-          <p onClick={() => this.selectTopic(index)}>{topic}</p>
+          <p onClick={() => this.selectTopic(index)}>{this.renderUnselectedTopic(topic)}</p>
         }
       </div>
+    )
+  }
+
+  renderUnselectedTopic = (topic: string) => {
+    const t = topic.split("#")
+    return(
+      <>
+        {t.map((part, index) => {
+          if (index === 0){
+            return (
+              <>
+                {part}
+              </>
+            )
+          } else {
+            return (
+              <>
+                <a href={"/" + part}>#{part}</a>
+              </>
+            )
+          }
+        })}
+      </>
     )
   }
 
