@@ -98,8 +98,8 @@ class TopicPage extends React.Component<IProps, IState> {
             const previousSiblingKey = siblingsKeys[i - 1]
             selectedTopicPath[last] = previousSiblingKey
             // Add under the new parent
-            selectedTopicPath.push(currentTopicKey)
-            topics[previousSiblingKey].subTopics.push(currentTopicKey)
+            selectedTopicPath.push(selectedTopic.key)
+            topics[previousSiblingKey].subTopics.push(selectedTopic.key)
             this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
           }
       }
@@ -109,8 +109,7 @@ class TopicPage extends React.Component<IProps, IState> {
   renderTopic = (topic: Topic) => {
     const { selectedTopicPath } = this.props
     const lastSelectedKey = selectedTopicPath[selectedTopicPath.length - 1]
-    const hasSubTopics = topic.subTopics.some(topic => typeof topic === 'object')
-
+    const hasSubTopics = topic.subTopics.some(topic => typeof topic === 'string')
     return (
       <li>
         {topic.key === lastSelectedKey &&
