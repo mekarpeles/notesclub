@@ -84,7 +84,24 @@ class TopicPage extends React.Component<IProps, IState> {
           }
           break;
         case "ArrowDown":
-          if (i < siblingsKeys.length - 1) {
+          if (selectedTopic.subTopics.length > 0) {
+            // Move to the first child
+            const newSelectedTopic = topics[selectedTopic.subTopics[0]]
+            selectedTopicPath = this.path(newSelectedTopic).map((topic) => topic.key)
+            this.props.updateState({ selectedTopicPath: selectedTopicPath })
+          } else if (parent.parentKey) {
+            // Move to the next aunt
+            const grandma = topics[parent.parentKey]
+            const auntsAndParent = grandma.subTopics
+            const j = auntsAndParent.indexOf(parent.key)
+            if (auntsAndParent && j < auntsAndParent.length - 1) {
+              const newSelectedTopic = topics[auntsAndParent[j + 1]]
+              selectedTopicPath = this.path(newSelectedTopic).map((topic) => topic.key)
+              console.log("newSelectedTopic: ")
+              console.log(newSelectedTopic)
+              this.props.updateState({ selectedTopicPath: selectedTopicPath })
+            }
+          } else if (i < siblingsKeys.length - 1) {
             const newSelectedKey = siblingsKeys[i + 1]
             selectedTopicPath[last] = newSelectedKey
             this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
@@ -100,7 +117,9 @@ class TopicPage extends React.Component<IProps, IState> {
             // Add under the new parent
             selectedTopicPath.push(selectedTopic.key)
             topics[previousSiblingKey].subTopics.push(selectedTopic.key)
+            selectedTopic.parentKey = previousSiblingKey
             this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
+            event.preventDefault()
           }
       }
     }
