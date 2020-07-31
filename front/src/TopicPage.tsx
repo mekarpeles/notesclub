@@ -33,6 +33,11 @@ function emptyTopic(parentKey: string): Topic {
   )
 }
 
+function replacer(match: string, word: string, offset: number, all: string): string {
+  console.log(word)
+  return ("kk")
+}
+
 class TopicPage extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
@@ -188,16 +193,29 @@ class TopicPage extends React.Component<IProps, IState> {
     return(
       <>
         {t.map((part, index) => {
-          if (index === 0){
+          if (index != 0){
+            // Start with tag
+            const i = part.indexOf(" ")
+            let tag: string
+            let rest: string
+            if (i == -1){
+              // No space
+              rest = ""
+              tag = part
+            } else {
+              tag = part.slice(0, i)
+              rest = part.slice(i + 1, part.length)
+            }
             return (
               <>
-                {part}
+                <a href={"/topic/" + tag}>#{tag}</a>
+                {` ${rest}`}
               </>
             )
           } else {
             return (
               <>
-                <a href={"/topic/" + part}>#{part}</a>
+                {part}
               </>
             )
           }
