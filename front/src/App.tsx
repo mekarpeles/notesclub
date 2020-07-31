@@ -23,7 +23,6 @@ interface alert {
 interface AppState {
   user?: User
   alert?: alert
-  currentTopicKey: string
   selectedTopicPath: string[]
   topics: Topics<Topic>
 }
@@ -48,8 +47,7 @@ class App extends React.Component<AppProps, AppState> {
       user: currentUserStr ? JSON.parse(currentUserStr) : undefined,
       alert: undefined,
       topics: topics,
-      selectedTopicPath: ["2020-07-30", "000"],
-      currentTopicKey: "2020-07-30"
+      selectedTopicPath: ["2020-07-30", "000"]
     }
 
   }
@@ -84,11 +82,11 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
-    const { selectedTopicPath, currentTopicKey, topics } = this.state
+    const { selectedTopicPath, topics } = this.state
 
     return (
       <>
-        <Route path={`/topic/${currentTopicKey}`} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} currentTopicKey={currentTopicKey} selectedTopicPath={selectedTopicPath} topics={topics} />} />
+        <Route path={'/topic/*'} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} topics={topics} />} />
       </>
     )
   }

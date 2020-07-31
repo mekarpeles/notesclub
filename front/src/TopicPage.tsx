@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { Form, Button } from 'react-bootstrap';
 import { Topic, Topics } from './Topic'
+import { isUndefined } from 'util';
+import { Link } from 'react-router-dom';
 
 interface IProps {
-  currentTopicKey: string
   selectedTopicPath: string[]
   topics: Topics<Topic>
   updateState: Function
@@ -11,6 +12,7 @@ interface IProps {
 }
 
 interface IState {
+  currentTopicKey: string
 }
 
 // TO DO: We should make sure it's unique
@@ -27,7 +29,7 @@ function makeKey(length: number) {
   return result;
 }
 
-function emptyTopic(parentKey: string): Topic {
+function emptyTopic(parentKey: string | undefined): Topic {
   return(
     { id: undefined, key: makeKey(10), parentKey: parentKey, content: "", subTopics: [] }
   )
@@ -42,7 +44,10 @@ class TopicPage extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
 
+    console.log("pathname:")
+    console.log(window.location.pathname.replace("/topic/", ""))
     this.state = {
+      currentTopicKey: window.location.pathname.replace("/topic/", "")
     }
 
     this.onKeyDown = this.onKeyDown.bind(this)
@@ -63,7 +68,7 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    let { selectedTopicPath, topics, currentTopicKey } = this.props
+    let { selectedTopicPath, topics } = this.props
     const last = selectedTopicPath.length - 1
     const selectedTopic = this.selectedTopic()
     if (selectedTopic && selectedTopic.parentKey) {
@@ -189,6 +194,8 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   renderUnselectedTopic = (topic: Topic) => {
+    const { topics } = this.props
+    let { selectedTopicPath } = this.props
     const t = topic.content.split("#")
     return(
       <>
@@ -206,9 +213,30 @@ class TopicPage extends React.Component<IProps, IState> {
               tag = part.slice(0, i)
               rest = part.slice(i + 1, part.length)
             }
+            let key: string | undefined
+            for (let topicKey in topics) {
+              const t = topics[topicKey]
+              if (t.content === tag){
+                key = t.key
+                break
+              }
+            }
+            if (key === undefined){
+              const newTopic = emptyTopic(undefined)
+              newTopic.content = tag
+              topics[newTopic.key] = newTopic
+              key = newTopic.key
+              // Create a subtopic
+              const newSubTopic = emptyTopic(newTopic.key)
+              topics[newSubTopic.key] = newSubTopic
+              newTopic.subTopics.push(newSubTopic.key)
+              selectedTopicPath = this.path(newSubTopic).map((ttopic) => ttopic.key)
+              console.log("hec selectedTopicPath:")
+              console.log(selectedTopicPath)
+            }
             return (
               <>
-                <a href={"/topic/" + tag}>#{tag}</a>
+                <Link onClick={() => this.changeCurrentTopic(key as string, selectedTopicPath)} to={`/topic/${key}`}>#{tag}</Link>
                 {` ${rest}`}
               </>
             )
@@ -224,9 +252,14 @@ class TopicPage extends React.Component<IProps, IState> {
     )
   }
 
+  changeCurrentTopic = (key: string, selectedTopicPath: string[]) => {
+    this.props.updateState({ selectedTopicPath: selectedTopicPath })
+    this.setState({ currentTopicKey: key })
+  }
 
   currentTopic = (): Topic => {
-    const { topics, currentTopicKey } = this.props
+    const { topics } = this.props
+    const { currentTopicKey } = this.state
 
     return (topics[currentTopicKey])
   }
@@ -252,7 +285,7 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   path = (topic: Topic): Topic[] => {
-    const { currentTopicKey } = this.props
+    const { currentTopicKey } = this.state
 
     if (topic.parentKey == currentTopicKey) {
       return ([topic])
@@ -278,6 +311,7 @@ class TopicPage extends React.Component<IProps, IState> {
   public render () {
     return (
       <div className="container">
+        <h1>{this.currentTopic().content}</h1>
         <ul>
           {this.subTopics(this.currentTopic()).map((subTopic) => this.renderTopic(subTopic))}
         </ul>
