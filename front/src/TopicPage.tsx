@@ -77,9 +77,25 @@ class TopicPage extends React.Component<IProps, IState> {
           }
           break;
         case "ArrowUp":
-          if (i > 0) {
-            const newSelectedKey = siblingsKeys[i - 1]
-            selectedTopicPath[last] = newSelectedKey
+          const previousSibling = topics[siblingsKeys[i - 1]]
+          if (previousSibling) {
+            if (previousSibling.subTopics.length > 0) {
+              // Previous sibling has children
+              const lastCousinKey = previousSibling.subTopics[previousSibling.subTopics.length - 1]
+              const lastCousin = topics[lastCousinKey]
+              selectedTopicPath = this.path(lastCousin).map((topic) => topic.key)
+              this.props.updateState({ selectedTopicPath: selectedTopicPath })
+            } else if (i > 0) {
+              // Has siblings above
+              const newSelectedKey = siblingsKeys[i - 1]
+              selectedTopicPath[last] = newSelectedKey
+              this.props.updateState({ selectedTopicPath: selectedTopicPath })
+            }
+          } else if (parent) {
+            // If it doesn't have a previous sibling, go to the parent
+            console.log("parent:")
+            console.log(parent)
+            selectedTopicPath = this.path(parent).map((topic) => topic.key)
             this.props.updateState({ selectedTopicPath: selectedTopicPath })
           }
           break;
@@ -119,8 +135,8 @@ class TopicPage extends React.Component<IProps, IState> {
             topics[previousSiblingKey].subTopics.push(selectedTopic.key)
             selectedTopic.parentKey = previousSiblingKey
             this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
-            event.preventDefault()
           }
+          event.preventDefault()
       }
     }
   }
