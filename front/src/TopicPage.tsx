@@ -4,7 +4,7 @@ import { Topic } from './Topic'
 
 interface IProps {
   currentTopic: Topic
-  currentTopicIndex: number
+  indexesToSelectedTopic: number[]
   updateState: Function
   updateAlert: Function
 }
@@ -17,6 +17,21 @@ function emptyTopic(): Topic {
     { id: undefined, content: "", subTopics: [] }
   )
 }
+
+function getSelectedSubTopic (topic: Topic, indexesToSelectedTopic: number[]): Topic | undefined {
+  let i = indexesToSelectedTopic.pop()
+  const subTopic = topic.subTopics[i]
+  if (i) {
+    if (indexesToSelectedTopic.length == 0) {
+      return (subTopic)
+    } else {
+      return (getSelectedSubTopic(subTopic, indexesToSelectedTopic))
+    }
+  } else{
+    return (undefined)
+  }
+}
+
 class TopicPage extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
@@ -43,25 +58,35 @@ class TopicPage extends React.Component<IProps, IState> {
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     let currentTopic = this.props.currentTopic
-    const { currentTopicIndex } = this.props
+    let { indexesToSelectedTopic } = this.props
+    const selectedSubTopic = getSelectedSubTopic(currentTopic, indexesToSelectedTopic)
+    const i = indexesToSelectedTopic.length - 1
 
     switch (event.key) {
       case "Enter":
-        currentTopic.subTopics.push(emptyTopic())
-        this.props.updateState({ currentTopic: currentTopic, currentTopicIndex: currentTopicIndex + 1})
+        if (selectedSubTopic) {
+          // Add topic
+          selectedSubTopic.subTopics.push(emptyTopic())
+          const i = indexesToSelectedTopic.length - 1
+          indexesToSelectedTopic[i] = indexesToSelectedTopic[i] + 1
+          this.props.updateState({ currentTopic: currentTopic, indexesToSelectedTopic: indexesToSelectedTopic })
+        }
         break;
       case "ArrowUp":
-        if (currentTopicIndex > 0) {
-          this.props.updateState({ currentTopicIndex: currentTopicIndex - 1 })
+        if (indexesToSelectedTopic[i] > 0) {
+          indexesToSelectedTopic[i] = indexesToSelectedTopic[i] - 1
+          this.props.updateState({ indexesToSelectedTopic: indexesToSelectedTopic })
         }
         break;
       case "ArrowDown":
-        if (currentTopicIndex < currentTopic.subTopics.length - 1) {
-          this.props.updateState({ currentTopicIndex: currentTopicIndex + 1 })
+        if (parent(selectedSubTopic).subTopics.length - 1 > indexesToSelectedTopic[i]) {
+          indexesToSelectedTopic[i] = indexesToSelectedTopic[i] + 1
+          this.props.updateState({ indexesToSelectedTopic: indexesToSelectedTopic })
         }
         break;
       case "Tab":
-        if (currentTopicIndex > 0) {
+        if (indexesToSelectedTopic[i] > 0) {
+          TO DO
           const newParent = currentTopic.subTopics[currentTopicIndex - 1]
           // Add current topic to newParent
           newParent.subTopics.push(currentTopic.subTopics[currentTopicIndex])
