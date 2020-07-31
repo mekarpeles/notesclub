@@ -58,14 +58,13 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    let currentTopicKey = this.props.currentTopicKey
-    let { selectedTopicPath, topics } = this.props
+    let { selectedTopicPath, topics, currentTopicKey } = this.props
     const last = selectedTopicPath.length - 1
-    const key = this.selectedSubTopic()?.parentKey
-    if (key) {
-      const parent = topics[key]
+    const selectedTopic = this.selectedTopic()
+    if (selectedTopic && selectedTopic.parentKey) {
+      const parent = topics[selectedTopic.parentKey]
       const siblingsKeys = parent.subTopics
-      const i = siblingsKeys.indexOf(currentTopicKey)
+      const i = siblingsKeys.indexOf(selectedTopic.key)
 
       switch (event.key) {
         case "Enter":
@@ -112,8 +111,6 @@ class TopicPage extends React.Component<IProps, IState> {
     const lastSelectedKey = selectedTopicPath[selectedTopicPath.length - 1]
     const hasSubTopics = topic.subTopics.some(topic => typeof topic === 'object')
 
-    console.log("hec")
-    console.log(topic)
     return (
       <li>
         {topic.key === lastSelectedKey &&
@@ -182,7 +179,7 @@ class TopicPage extends React.Component<IProps, IState> {
     return (topics[currentTopicKey])
   }
 
-  selectedSubTopic = (): Topic | undefined => {
+  selectedTopic = (): Topic | undefined => {
     const { topics, selectedTopicPath } = this.props
     const last = selectedTopicPath[selectedTopicPath.length - 1]
     if (last) {
@@ -223,10 +220,6 @@ class TopicPage extends React.Component<IProps, IState> {
     const { topics } = this.props
 
     const subTopicKeys = topics[topic.key].subTopics
-    console.log("topic:")
-    console.log(topic)
-    console.log("subtopics:")
-    console.log(subTopicKeys)
     return (subTopicKeys.map((key: string) => topics[key]))
   }
 
