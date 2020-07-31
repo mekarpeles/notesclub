@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import { Topic, Topics } from './Topic'
 
 interface IProps {
-  currentTopic: Topic
+  currentTopicKey: string
   selectedSubTopic: Topic
   selectedSubTopicPath: string[]
   topics: Topics<Topic>
@@ -28,9 +28,9 @@ function makeKey(length: number) {
   return result;
 }
 
-function emptyTopic(parent_key: string): Topic {
+function emptyTopic(parentKey: string): Topic {
   return(
-    { id: undefined, key: makeKey(10), parent_key: parent_key, content: "", subTopics: [] }
+    { id: undefined, key: makeKey(10), parentKey: parentKey, content: "", subTopics: [] }
   )
 }
 
@@ -59,13 +59,13 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    let currentTopic = this.props.currentTopic
+    let currentTopicKey = this.props.currentTopicKey
     let { selectedSubTopicPath, selectedSubTopic, topics } = this.props
     const last = selectedSubTopicPath.length - 1
-    if (selectedSubTopic.parent_key) {
-      const parent = topics[selectedSubTopic.parent_key]
+    if (selectedSubTopic.parentKey) {
+      const parent = topics[selectedSubTopic.parentKey]
       const siblingsKeys = parent.subTopics
-      const i = siblingsKeys.indexOf(currentTopic.key)
+      const i = siblingsKeys.indexOf(currentTopicKey)
 
       switch (event.key) {
         case "Enter":
@@ -74,7 +74,7 @@ class TopicPage extends React.Component<IProps, IState> {
             topics[t.key] = t
             selectedSubTopic = t
             selectedSubTopicPath[last] = t.key
-            this.props.updateState({ topics: topics, currentTopic: currentTopic, selectedSubTopicPath: selectedSubTopicPath })
+            this.props.updateState({ topics: topics, selectedSubTopic: selectedSubTopic, selectedSubTopicPath: selectedSubTopicPath })
           }
           break;
         case "ArrowUp":
@@ -99,11 +99,11 @@ class TopicPage extends React.Component<IProps, IState> {
             topics[parent.key].subTopics.splice(i, 1)
             // Replace old parent with previous sibling
             const previousSiblingKey = siblingsKeys[i - 1]
-            currentTopic.parent_key = previousSiblingKey
+            selectedSubTopic.parentKey = previousSiblingKey
             selectedSubTopicPath[last] = previousSiblingKey
             // Add under the new parent
-            selectedSubTopicPath.push(currentTopic.key)
-            topics[previousSiblingKey].subTopics.push(currentTopic.key)
+            selectedSubTopicPath.push(currentTopicKey)
+            topics[previousSiblingKey].subTopics.push(currentTopicKey)
             this.props.updateState({ selectedSubTopicPath: selectedSubTopicPath, selectedSubTopic: selectedSubTopic })
           }
       }
@@ -182,6 +182,12 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
 
+  currentTopic = (): Topic => {
+    const { topics, currentTopicKey } = this.props
+
+    return (topics[currentTopicKey])
+  }
+
   subTopics = (topic: Topic): Topic[] => {
     const { topics } = this.props
 
@@ -190,12 +196,12 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   public render () {
-    const { currentTopic } = this.props
+    const { currentTopicKey, topics } = this.props
 
     return (
       <div className="container">
         <ul>
-          {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic, [subTopic.key]))}
+          {this.subTopics(this.currentTopic()).map((subTopic) => this.renderTopic(subTopic, [subTopic.key]))}
         </ul>
       </div>
     )

@@ -23,7 +23,7 @@ interface alert {
 interface AppState {
   user?: User
   alert?: alert
-  currentTopic: Topic
+  currentTopicKey: string
   selectedSubTopic: Topic
   selectedSubTopicPath: string[]
   topics: Topics<Topic>
@@ -38,11 +38,11 @@ class App extends React.Component<AppProps, AppState> {
     let topics : Topics<Topic> = {}
     topics["000"] = {
       id: undefined, key: "000", content: "first",
-      subTopics: [], parent_key: "aaa"
+      subTopics: [], parentKey: "aaa"
     }
     topics["aaa"] = {
       id: undefined, key: "aaa", content: "2020-07-30",
-      subTopics: ["000"], parent_key: undefined
+      subTopics: ["000"], parentKey: undefined
     }
 
     this.state = {
@@ -51,7 +51,7 @@ class App extends React.Component<AppProps, AppState> {
       topics: topics,
       selectedSubTopicPath: ["000"],
       selectedSubTopic: topics["000"],
-      currentTopic: topics["aaa"]
+      currentTopicKey: "aaa"
     }
 
   }
@@ -86,11 +86,11 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
-    const { selectedSubTopic, selectedSubTopicPath, currentTopic, topics } = this.state
+    const { selectedSubTopic, selectedSubTopicPath, currentTopicKey, topics } = this.state
 
     return (
       <>
-        <Route path={`/topic/${currentTopic.key}`} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} currentTopic={currentTopic} selectedSubTopic={selectedSubTopic} selectedSubTopicPath={selectedSubTopicPath} topics={topics} />} />
+        <Route path={`/topic/${currentTopicKey}`} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} currentTopicKey={currentTopicKey} selectedSubTopic={selectedSubTopic} selectedSubTopicPath={selectedSubTopicPath} topics={topics} />} />
       </>
     )
   }
