@@ -10,7 +10,7 @@ import { apiDomain } from './appConfig'
 import { User } from './User'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import TopicPage from './TopicPage'
-import { Topic } from './Topic'
+import { Topic, Topics } from './Topic'
 
 interface AppProps {
 
@@ -24,7 +24,9 @@ interface AppState {
   user?: User
   alert?: alert
   currentTopic: Topic
-  currentTopicIndexes: number[]
+  selectedSubTopic: Topic
+  selectedSubTopicPath: string[]
+  topics: Topics<Topic>
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -33,12 +35,25 @@ class App extends React.Component<AppProps, AppState> {
 
     const currentUserStr = localStorage.getItem('currentUser')
 
+    let topics : Topics<Topic> = {}
+    topics["000"] = {
+      id: undefined, key: "000", content: "first",
+      subTopics: [], parent_key: "aaa"
+    }
+    topics["aaa"] = {
+      id: undefined, key: "aaa", content: "2020-07-30",
+      subTopics: ["000"], parent_key: undefined
+    }
+
     this.state = {
       user: currentUserStr ? JSON.parse(currentUserStr) : undefined,
       alert: undefined,
-      currentTopic: { id: undefined, content: "2020-07-30", subTopics: [{id: undefined, content: "", subTopics: []}] },
-      currentTopicIndexes: [0]
+      topics: topics,
+      selectedSubTopicPath: ["000"],
+      selectedSubTopic: topics["000"],
+      currentTopic: topics["aaa"]
     }
+
   }
 
   setCurrentUser = (user: User) => {
@@ -71,11 +86,11 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
-    const { currentTopic, currentTopicIndexes } = this.state
+    const { selectedSubTopic, selectedSubTopicPath, currentTopic, topics } = this.state
 
     return (
       <>
-        <Route path={`/topic/${currentTopic.content}`} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} currentTopic={currentTopic} currentTopicIndexes={currentTopicIndexes} />} />
+        <Route path={`/topic/${currentTopic.key}`} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} currentTopic={currentTopic} selectedSubTopic={selectedSubTopic} selectedSubTopicPath={selectedSubTopicPath} topics={topics} />} />
       </>
     )
   }

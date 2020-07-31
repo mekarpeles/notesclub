@@ -1,5 +1,11 @@
 export interface Topic {
   id: number | undefined
   content: string
-  subTopics: Topic[]
+  key: string
+  parent_key: string | undefined
+  subTopics: string[]
+}
+
+export interface Topics<Topic> {
+  [key: string]: Topic
 }
