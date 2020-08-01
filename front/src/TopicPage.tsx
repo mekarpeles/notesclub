@@ -151,30 +151,41 @@ class TopicPage extends React.Component<IProps, IState> {
     }
   }
 
+  selectTopic = (topic: Topic, isSelected: boolean) => {
+    if (!isSelected) {
+      const path = this.path(topic).map((topic) => topic.key)
+      this.props.updateState({ selectedTopicPath: path })
+    }
+  }
   renderTopic = (topic: Topic) => {
     const { selectedTopicPath } = this.props
     const lastSelectedKey = selectedTopicPath[selectedTopicPath.length - 1]
     const hasSubTopics = topic.subTopics.some(topic => typeof topic === 'string')
+    const isSelected = topic.key === lastSelectedKey
     return (
-      <li>
-        {topic.key === lastSelectedKey &&
-          <>
+      <>
+        {isSelected &&
+          <li>
             {this.renderSelectedTopic(topic)}
-          </>
+          </li>
         }
-        {topic.key != lastSelectedKey &&
-          <p onClick={() => this.props.updateState({ selectedTopicPath: this.path(topic).map((topic) => topic.key) })}>{this.renderUnselectedTopic(topic)}</p>
+        {!isSelected &&
+          <li onClick={() => this.selectTopic(topic, isSelected)}>
+            {this.renderUnselectedTopic(topic)}
+          </li>
         }
         {hasSubTopics &&
-          <ul>
-            {this.subTopics(topic).map((topicChild) => {
-              return (
-                this.renderTopic(topicChild)
-              )
-            })}
-          </ul>
+          <li className="hide-bullet">
+            <ul>
+              {this.subTopics(topic).map((topicChild) => {
+                return (
+                  this.renderTopic(topicChild)
+                )
+              })}
+            </ul>
+          </li>
         }
-      </li>
+      </>
     )
   }
 

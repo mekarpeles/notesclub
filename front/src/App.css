@@ -107,3 +107,7 @@ input.wrong-answer {
 .open-cloze-solutions-txt{
   text-align: right;
 }
+
+.hide-bullet {
+  list-style-type: none;
+}
