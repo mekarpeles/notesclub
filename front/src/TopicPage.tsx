@@ -81,7 +81,8 @@ class TopicPage extends React.Component<IProps, IState> {
           if (selectedTopicPath) {
             const t = emptyTopic(parent.key)
             topics[t.key] = t
-            siblingsKeys.push(t.key)
+            // Insert new topic t after selected topic
+            siblingsKeys.splice(i + 1, 0, t.key)
             selectedTopicPath[last] = t.key
             this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
           }
