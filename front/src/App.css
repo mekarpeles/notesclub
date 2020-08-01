@@ -111,3 +111,7 @@ input.wrong-answer {
 .hide-bullet {
   list-style-type: none;
 }
+
+.grey {
+  color: grey;
+}

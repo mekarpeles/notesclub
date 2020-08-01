@@ -253,11 +253,23 @@ class TopicPage extends React.Component<IProps, IState> {
               </>
             )
           } else {
-            return (
-              <>
-                {part}
-              </>
-            )
+            const { currentTopicKey } = this.state
+            const parent = topic.parentKey ? topics[topic.parentKey] : undefined
+            const siblingsKeys = parent ? parent.subTopics : undefined
+
+            if (part === "" && topic.parentKey == currentTopicKey && siblingsKeys && siblingsKeys.length == 1) {
+              return (
+                <span className="grey">
+                  Click here to start writing
+                </span>
+              )
+            } else {
+              return (
+                <>
+                  {part}
+                </>
+              )
+            }
           }
         })}
       </>
