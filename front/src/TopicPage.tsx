@@ -35,17 +35,10 @@ function emptyTopic(parentKey: string | undefined): Topic {
   )
 }
 
-function replacer(match: string, word: string, offset: number, all: string): string {
-  console.log(word)
-  return ("kk")
-}
-
 class TopicPage extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
 
-    console.log("pathname:")
-    console.log(window.location.pathname.replace("/topic/", ""))
     this.state = {
       currentTopicKey: window.location.pathname.replace("/topic/", "")
     }
@@ -104,8 +97,6 @@ class TopicPage extends React.Component<IProps, IState> {
             }
           } else if (parent) {
             // If it doesn't have a previous sibling, go to the parent
-            console.log("parent:")
-            console.log(parent)
             selectedTopicPath = this.path(parent).map((topic) => topic.key)
             this.props.updateState({ selectedTopicPath: selectedTopicPath })
           }
@@ -124,8 +115,6 @@ class TopicPage extends React.Component<IProps, IState> {
             if (auntsAndParent && j < auntsAndParent.length - 1) {
               const newSelectedTopic = topics[auntsAndParent[j + 1]]
               selectedTopicPath = this.path(newSelectedTopic).map((topic) => topic.key)
-              console.log("newSelectedTopic: ")
-              console.log(newSelectedTopic)
               this.props.updateState({ selectedTopicPath: selectedTopicPath })
             }
           } else if (i < siblingsKeys.length - 1) {
@@ -212,18 +201,19 @@ class TopicPage extends React.Component<IProps, IState> {
     return(
       <>
         {t.map((part, index) => {
-          if (index != 0){
-            // Start with tag
-            const i = part.indexOf(" ")
+          if (index != 0) { // Starts with tag
+            const tagSeparators = " ;,.:"
+            const indexesTagSeparators = tagSeparators.split("").map((char) => part.indexOf(char)).filter(j => j != -1)
+            const i = Math.min.apply(null, indexesTagSeparators)
             let tag: string
             let rest: string
             if (i == -1){
-              // No space
+              // No space -> everything is a tag
               rest = ""
               tag = part
             } else {
               tag = part.slice(0, i)
-              rest = part.slice(i + 1, part.length)
+              rest = part.slice(i, part.length)
             }
             let key: string | undefined
             for (let topicKey in topics) {
@@ -243,13 +233,11 @@ class TopicPage extends React.Component<IProps, IState> {
               topics[newSubTopic.key] = newSubTopic
               newTopic.subTopics.push(newSubTopic.key)
               selectedTopicPath = this.path(newSubTopic).map((ttopic) => ttopic.key)
-              console.log("hec selectedTopicPath:")
-              console.log(selectedTopicPath)
             }
             return (
               <>
                 <Link onClick={() => this.changeCurrentTopic(key as string, selectedTopicPath)} to={`/topic/${key}`}>#{tag}</Link>
-                {` ${rest}`}
+                {rest}
               </>
             )
           } else {
