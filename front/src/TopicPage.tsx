@@ -3,12 +3,14 @@ import { Form, Button } from 'react-bootstrap';
 import { Topic, Topics } from './Topic'
 import { isUndefined } from 'util';
 import { Link } from 'react-router-dom';
+import { User } from './User'
 
 interface IProps {
   selectedTopicPath: string[]
   topics: Topics<Topic>
   updateState: Function
   updateAlert: Function
+  user?: User
 }
 
 interface IState {
@@ -40,7 +42,7 @@ class TopicPage extends React.Component<IProps, IState> {
     super(props)
 
     this.state = {
-      currentTopicKey: window.location.pathname.replace("/topic/", "")
+      currentTopicKey: window.location.pathname.replace(/\/\w*\//, "")
     }
 
     this.onKeyDown = this.onKeyDown.bind(this)
@@ -195,9 +197,11 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   renderUnselectedTopic = (topic: Topic) => {
-    const { topics } = this.props
+    const { topics, user } = this.props
     let { selectedTopicPath } = this.props
     const t = topic.content.split("#")
+    const username = user ? user.username : undefined
+
     return(
       <>
         {t.map((part, index) => {
@@ -236,7 +240,7 @@ class TopicPage extends React.Component<IProps, IState> {
             }
             return (
               <>
-                <Link onClick={() => this.changeCurrentTopic(key as string, selectedTopicPath)} to={`/topic/${key}`}>#{tag}</Link>
+                <Link onClick={() => this.changeCurrentTopic(key as string, selectedTopicPath)} to={`/${username}/${key}`}>#{tag}</Link>
                 {rest}
               </>
             )

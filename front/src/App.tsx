@@ -82,11 +82,11 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
-    const { selectedTopicPath, topics } = this.state
+    const { selectedTopicPath, topics, user } = this.state
 
     return (
       <>
-        <Route path={'/topic/*'} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} topics={topics} />} />
+        <Route path={'/hec/*'} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} topics={topics} user={user} />} />
       </>
     )
   }
