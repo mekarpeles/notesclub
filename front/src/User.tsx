@@ -1,7 +1,13 @@
+import { Topic, Topics } from './Topic'
+
 export interface User {
   id: number
-  email: string
+  email?: string
   username: string
   name: string
-  role: string
+  topics: Topics<Topic>
+}
+
+export interface Users<User> {
+  [username: string]: User
 }

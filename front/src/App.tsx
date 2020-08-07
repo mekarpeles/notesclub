@@ -7,7 +7,7 @@ import Header from './Header';
 import { Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { apiDomain } from './appConfig'
-import { User } from './User'
+import { User, Users } from './User'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import TopicPage from './TopicPage'
 import { Topic, Topics } from './Topic'
@@ -21,40 +21,62 @@ interface alert {
 }
 
 interface AppState {
-  user?: User
+  currentUsername: string
+  currentBlogUsername: string
+  users: Users<User>
   alert?: alert
   selectedTopicPath: string[]
-  topics: Topics<Topic>
 }
 
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props)
 
-    const currentUserStr = localStorage.getItem('currentUser')
-
-    let topics : Topics<Topic> = {}
-    topics["000"] = {
-      id: undefined, key: "000", content: "first",
-      subTopics: [], parentKey: "2020-07-30"
+    let users : Users<User> = {}
+    users["curie"] = {
+      id: 1,
+      username: "curie",
+      name: "Marie Curie",
+      topics: {
+        "2020-07-30": {
+          key: "2020-07-30",
+          content: "2020-07-30",
+          subTopics: ["Xqw83jsQza"],
+          parentKey: null // top topic. You can access it from /curie/2020-07-30
+        },
+        "Xqw83jsQza": {
+          key: "Xqw83jsQza",
+          content: "Testing this #Site",
+          subTopics: [],
+          parentKey: "2020-07-30"
+        },
+        "Site": {
+          key: "Site", // We could make the key from the content, replacing spaces with _
+          content: "Site",
+          subTopics: [],
+          parentKey: null // top topic. You can access it from /curie/Site
+        }
+      }
     }
-    topics["2020-07-30"] = {
-      id: undefined, key: "2020-07-30", content: "2020-07-30",
-      subTopics: ["000"], parentKey: undefined
+    users["hec"] = {
+      id: 2,
+      username: "hec",
+      name: "Hector Perez",
+      topics: {}
     }
 
     this.state = {
-      user: currentUserStr ? JSON.parse(currentUserStr) : undefined,
+      currentBlogUsername: "curie", // page: /curie
+      currentUsername: "hec", // logged in user
       alert: undefined,
-      topics: topics,
-      selectedTopicPath: ["2020-07-30", "000"]
+      users: users,
+      selectedTopicPath: ["2020-07-30", "Xqw83jsQza"]
     }
 
   }
 
   setCurrentUser = (user: User) => {
-    this.setState({ user: user })
-    localStorage.setItem('currentUser', JSON.stringify(user))
+    this.setState({ currentUsername: user.username })
   }
 
   testUserShow = () => {
@@ -82,17 +104,19 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
-    const { selectedTopicPath, topics, user } = this.state
+    const { selectedTopicPath, users, currentUsername, currentBlogUsername } = this.state
 
     return (
       <>
-        <Route path={'/hec/*'} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} topics={topics} user={user} />} />
+        <Route path={'/curie/*'} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentUsername={currentUsername} currentBlogUsername={currentBlogUsername} />} />
       </>
     )
   }
 
   public render() {
-    const { user, alert } = this.state
+    const { currentUsername, users, alert } = this.state
+
+    const user = users[currentUsername]
 
     return (
       <div className="App">
@@ -103,7 +127,7 @@ class App extends React.Component<AppProps, AppState> {
           </div>
           <Switch>
             <Route path="/" exact>
-              {user ? <Redirect to="/hec" /> : <Login setParentState={this.updateState} />}
+              {user ? <Redirect to="/curie/2020-07-30" /> : <Login setParentState={this.updateState} />}
             </Route>
             {user ? this.renderRoutes() : <Redirect to="/" />}
           </Switch>

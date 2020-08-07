@@ -1,8 +1,7 @@
 export interface Topic {
-  id: number | undefined
   content: string
   key: string
-  parentKey: string | undefined
+  parentKey: string | null
   subTopics: string[]
 }
 

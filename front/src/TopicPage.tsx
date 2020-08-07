@@ -3,14 +3,15 @@ import { Form, Button } from 'react-bootstrap';
 import { Topic, Topics } from './Topic'
 import { isUndefined } from 'util';
 import { Link } from 'react-router-dom';
-import { User } from './User'
+import { User, Users } from './User'
 
 interface IProps {
   selectedTopicPath: string[]
-  topics: Topics<Topic>
+  users: Users<User>
   updateState: Function
   updateAlert: Function
-  user?: User
+  currentUsername: string | null
+  currentBlogUsername: string
 }
 
 interface IState {
@@ -31,9 +32,9 @@ function makeKey(length: number) {
   return result;
 }
 
-function emptyTopic(parentKey: string | undefined): Topic {
+function emptyTopic(parentKey: string | null): Topic {
   return(
-    { id: undefined, key: makeKey(10), parentKey: parentKey, content: "", subTopics: [] }
+    { key: makeKey(10), parentKey: parentKey, content: "", subTopics: [] }
   )
 }
 
@@ -53,7 +54,9 @@ class TopicPage extends React.Component<IProps, IState> {
     const value = target.value
     const name = target.name
     const topic_key = name.replace("topic_", "")
-    const { topics } = this.props
+    const { users, currentBlogUsername } = this.props
+    const topics = users[currentBlogUsername].topics
+
     let topic = topics[topic_key]
     topic.content = value
     this.setState((prevState) => ({
@@ -63,7 +66,10 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    let { selectedTopicPath, topics } = this.props
+    const { users, currentBlogUsername } = this.props
+    const topics = users[currentBlogUsername].topics
+
+    let { selectedTopicPath } = this.props
     const last = selectedTopicPath.length - 1
     const selectedTopic = this.selectedTopic()
     if (selectedTopic && selectedTopic.parentKey) {
@@ -197,10 +203,11 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   renderUnselectedTopic = (topic: Topic) => {
-    const { topics, user } = this.props
+    const { users, currentBlogUsername, currentUsername } = this.props
+    const topics = users[currentBlogUsername].topics
+
     let { selectedTopicPath } = this.props
     const t = topic.content.split("#")
-    const username = user ? user.username : undefined
 
     return(
       <>
@@ -228,7 +235,7 @@ class TopicPage extends React.Component<IProps, IState> {
               }
             }
             if (key === undefined){
-              const newTopic = emptyTopic(undefined)
+              const newTopic = emptyTopic(null)
               newTopic.content = tag
               topics[newTopic.key] = newTopic
               key = newTopic.key
@@ -240,7 +247,7 @@ class TopicPage extends React.Component<IProps, IState> {
             }
             return (
               <>
-                <Link onClick={() => this.changeCurrentTopic(key as string, selectedTopicPath)} to={`/${username}/${key}`}>#{tag}</Link>
+                <Link onClick={() => this.changeCurrentTopic(key as string, selectedTopicPath)} to={`/${currentBlogUsername}/${key}`}>#{tag}</Link>
                 {rest}
               </>
             )
@@ -274,14 +281,16 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   currentTopic = (): Topic => {
-    const { topics } = this.props
-    const { currentTopicKey } = this.state
-
+    const { users, currentBlogUsername, selectedTopicPath } = this.props
+    const topics = users[currentBlogUsername].topics
+    const currentTopicKey = selectedTopicPath[0]
     return (topics[currentTopicKey])
   }
 
   selectedTopic = (): Topic | undefined => {
-    const { topics, selectedTopicPath } = this.props
+    const { users, currentBlogUsername, selectedTopicPath } = this.props
+    const topics = users[currentBlogUsername].topics
+
     const last = selectedTopicPath[selectedTopicPath.length - 1]
     if (last) {
       return (topics[last])
@@ -291,7 +300,8 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   parent = (topic: Topic): Topic | undefined => {
-    const { topics } = this.props
+    const { users, currentBlogUsername } = this.props
+    const topics = users[currentBlogUsername].topics
     const key = topic.parentKey
     if (key) {
       return (topics[key])
@@ -318,20 +328,25 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   subTopics = (topic: Topic): Topic[] => {
-    const { topics } = this.props
-
-    const subTopicKeys = topics[topic.key].subTopics
+    const { users, currentBlogUsername } = this.props
+    const topics = users[currentBlogUsername].topics
+    const subTopicKeys = topics[topic.key] ? topics[topic.key].subTopics : []
     return (subTopicKeys.map((key: string) => topics[key]))
   }
 
   public render () {
+    const currentTopic = this.currentTopic()
     return (
-      <div className="container">
-        <h1>{this.currentTopic().content}</h1>
-        <ul>
-          {this.subTopics(this.currentTopic()).map((subTopic) => this.renderTopic(subTopic))}
-        </ul>
-      </div>
+      <>
+        { currentTopic &&
+          <div className="container">
+            <h1>{currentTopic.content}</h1>
+            <ul>
+              {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic))}
+            </ul>
+          </div>
+        }
+      </>
     )
   }
 }

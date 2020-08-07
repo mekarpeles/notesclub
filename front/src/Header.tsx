@@ -39,7 +39,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     const { currentUser } = this.props
 
     return(
-      (currentUser && currentUser["role"] === "teacher") ? this.renderTeacherHeader() : this.renderStudentHeader()
+      currentUser && this.renderStudentHeader()
     )
   }
 
