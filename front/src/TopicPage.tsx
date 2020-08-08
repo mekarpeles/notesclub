@@ -346,7 +346,8 @@ class TopicPage extends React.Component<IProps, IState> {
 
   renderReference = (reference: Reference) => {
     const { users, currentBlogUsername } = this.props
-    const topics = users[currentBlogUsername].topics
+    const blogger = users[reference.username]
+    const topics = blogger.topics
     const topic = topics[reference.topicKey]
 
     console.log("path ref:")
@@ -354,23 +355,30 @@ class TopicPage extends React.Component<IProps, IState> {
 
     return (
       <li>
-        {this.renderReferenceTopics(path, reference, 0)}
+        {this.renderReferenceTopics(path, blogger, 0)}
       </li>
     )
   }
 
-  renderReferenceTopics = (path: Topic[], reference: Reference, index: number) => {
+  renderReferenceTopics = (path: Topic[], blogger: User, index: number) => {
     const topic = path[index]
     const isLastIndex = (path.length - 1 === index)
 
     return (
       <>
-        {this.renderTopic(topic, false)}
+        {topic.parentKey === null &&
+          <>
+            <Link to={`/${blogger.username}`}>{blogger.name}</Link>
+            ·
+            <Link to={`/${blogger.username}/${topic.key}`} onClick={() => this.changeCurrentTopic(topic.key)}>{topic.content}</Link>
+          </>
+        }
+        {topic.parentKey != null && this.renderTopic(topic, false)}
         {/* <Link to={`/${reference.username}/${topic.key}`} onClick={() => this.changeCurrentTopic(topic.key)}>{topic.content}</Link> */}
         { !isLastIndex &&
           <ul>
             <li>
-              {this.renderReferenceTopics(path, reference, index + 1)}
+            {this.renderReferenceTopics(path, blogger, index + 1)}
             </li>
           </ul>
         }
