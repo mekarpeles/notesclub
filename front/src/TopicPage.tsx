@@ -4,6 +4,7 @@ import { Topic, Topics } from './Topic'
 import { isUndefined } from 'util';
 import { Link } from 'react-router-dom';
 import { User, Users } from './User'
+import { Reference } from './Reference'
 
 interface IProps {
   selectedTopicPath: string[]
@@ -34,7 +35,7 @@ function makeKey(length: number) {
 
 function emptyTopic(parentKey: string | null): Topic {
   return(
-    { key: makeKey(10), parentKey: parentKey, content: "", subTopics: [] }
+    { key: makeKey(10), parentKey: parentKey, content: "", subTopics: [], references: [] }
   )
 }
 
@@ -236,10 +237,10 @@ class TopicPage extends React.Component<IProps, IState> {
             if (topics[key] === undefined){
               // Create topic
               let newTopic: Topic
-              newTopic = { key: key, parentKey: null, content: tag, subTopics: [] }
+              newTopic = { key: key, parentKey: null, content: tag, subTopics: [], references: [{username: currentBlogUsername, topicKey: topic.key}] }
               topics[newTopic.key] = newTopic
               // Create a subtopic
-              const newSubTopic = { key: makeKey(10), parentKey: newTopic.key, content: "", subTopics: [] }
+              const newSubTopic = { key: makeKey(10), parentKey: newTopic.key, content: "", subTopics: [], references: [] }
               topics[newSubTopic.key] = newSubTopic
 
               newTopic.subTopics.push(newSubTopic.key)
@@ -280,12 +281,12 @@ class TopicPage extends React.Component<IProps, IState> {
     )
   }
 
-  changeCurrentTopic = (key: string, event: React.MouseEvent) => {
-    console.log(`kkkkey: ${key}`)
+  changeCurrentTopic = (key: string, event?: React.MouseEvent) => {
     this.props.updateState({ selectedTopicPath: [key] })
     this.setState({ currentTopicKey: key })
-    console.log("finish changeCurrentTopic")
-    event.stopPropagation()
+    if (event) {
+      event.stopPropagation()
+    }
   }
 
   currentTopic = (): Topic => {
@@ -343,6 +344,21 @@ class TopicPage extends React.Component<IProps, IState> {
     return (subTopicKeys.map((key: string) => topics[key]))
   }
 
+  renderReference = (reference: Reference) => {
+    const { users, currentBlogUsername } = this.props
+    const topics = users[currentBlogUsername].topics
+    const topic = topics[reference.topicKey]
+
+    console.log("path ref:")
+    console.log(this.path(topic))
+
+    return (
+      <li>
+        <Link to={`/${reference.username}/${topic.key}`} onClick={() => this.changeCurrentTopic(topic.key)}>{topic.content}</Link>
+      </li>
+    )
+  }
+
   public render () {
     const currentTopic = this.currentTopic()
     return (
@@ -352,6 +368,10 @@ class TopicPage extends React.Component<IProps, IState> {
             <h1>{currentTopic.content}</h1>
             <ul>
               {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic))}
+            </ul>
+            References:
+            <ul>
+              {currentTopic.references.map((ref) => this.renderReference(ref))}
             </ul>
           </div>
         }

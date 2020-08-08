@@ -42,25 +42,29 @@ class App extends React.Component<AppProps, AppState> {
           key: "2020-07-30",
           content: "2020-07-30",
           subTopics: ["Xqw83jsQza"],
-          parentKey: null // top topic. You can access it from /curie/2020-07-30
+          parentKey: null, // top topic. You can access it from /curie/2020-07-30
+          references: []
         },
         "Xqw83jsQza": {
           key: "Xqw83jsQza",
-          content: "",
+          content: "What a #Site",
           subTopics: [],
-          parentKey: "2020-07-30"
+          parentKey: "2020-07-30",
+          references: []
         },
         "Site": {
           key: "Site", // We could make the key from the content, replacing spaces with _
           content: "Site",
           subTopics: ["U8sa7qwqw"],
-          parentKey: null // top topic. You can access it from /curie/Site
+          parentKey: null, // top topic. You can access it from /curie/Site
+          references: [{ username: "curie", topicKey: "Xqw83jsQza" }]
         },
         "U8sa7qwqw": {
           key: "U8sa7qwqw",
           content: "",
           subTopics: [],
-          parentKey: "Site"
+          parentKey: "Site",
+          references: []
         }
       }
     }
