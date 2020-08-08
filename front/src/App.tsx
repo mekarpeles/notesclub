@@ -46,15 +46,21 @@ class App extends React.Component<AppProps, AppState> {
         },
         "Xqw83jsQza": {
           key: "Xqw83jsQza",
-          content: "Testing this #Site",
+          content: "",
           subTopics: [],
           parentKey: "2020-07-30"
         },
         "Site": {
           key: "Site", // We could make the key from the content, replacing spaces with _
           content: "Site",
-          subTopics: [],
+          subTopics: ["U8sa7qwqw"],
           parentKey: null // top topic. You can access it from /curie/Site
+        },
+        "U8sa7qwqw": {
+          key: "U8sa7qwqw",
+          content: "",
+          subTopics: [],
+          parentKey: "Site"
         }
       }
     }
@@ -70,7 +76,7 @@ class App extends React.Component<AppProps, AppState> {
       currentUsername: "hec", // logged in user
       alert: undefined,
       users: users,
-      selectedTopicPath: ["2020-07-30", "Xqw83jsQza"]
+      selectedTopicPath: ["2020-07-30"]
     }
 
   }
@@ -108,7 +114,7 @@ class App extends React.Component<AppProps, AppState> {
 
     return (
       <>
-        <Route path={'/curie/*'} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentUsername={currentUsername} currentBlogUsername={currentBlogUsername} />} />
+        <Route path={`/${currentBlogUsername}/:topicKey`} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentUsername={currentUsername} currentBlogUsername={currentBlogUsername} />} />
       </>
     )
   }

@@ -43,7 +43,7 @@ class TopicPage extends React.Component<IProps, IState> {
     super(props)
 
     this.state = {
-      currentTopicKey: window.location.pathname.replace(/\/\w*\//, "")
+      currentTopicKey: window.location.pathname.replace(/\/\w*\//, ""),
     }
 
     this.onKeyDown = this.onKeyDown.bind(this)
@@ -202,6 +202,10 @@ class TopicPage extends React.Component<IProps, IState> {
     )
   }
 
+  contentToKey = (content: string): string => {
+    return (content)
+  }
+
   renderUnselectedTopic = (topic: Topic) => {
     const { users, currentBlogUsername, currentUsername } = this.props
     const topics = users[currentBlogUsername].topics
@@ -226,28 +230,29 @@ class TopicPage extends React.Component<IProps, IState> {
               tag = part.slice(0, i)
               rest = part.slice(i, part.length)
             }
-            let key: string | undefined
-            for (let topicKey in topics) {
-              const t = topics[topicKey]
-              if (t.content === tag){
-                key = t.key
-                break
-              }
-            }
-            if (key === undefined){
-              const newTopic = emptyTopic(null)
-              newTopic.content = tag
+            let key = this.contentToKey(tag)
+
+            // If it doesn't exists, we create it:
+            if (topics[key] === undefined){
+              // Create topic
+              let newTopic: Topic
+              newTopic = { key: key, parentKey: null, content: tag, subTopics: [] }
               topics[newTopic.key] = newTopic
-              key = newTopic.key
               // Create a subtopic
-              const newSubTopic = emptyTopic(newTopic.key)
+              const newSubTopic = { key: makeKey(10), parentKey: newTopic.key, content: "", subTopics: [] }
               topics[newSubTopic.key] = newSubTopic
+
               newTopic.subTopics.push(newSubTopic.key)
-              selectedTopicPath = this.path(newSubTopic).map((ttopic) => ttopic.key)
+              topic = newTopic
             }
+
+            console.log("key:")
+            console.log(key)
+            console.log("selectedTopicPath:")
+            console.log(selectedTopicPath)
             return (
               <>
-                <Link onClick={() => this.changeCurrentTopic(key as string, selectedTopicPath)} to={`/${currentBlogUsername}/${key}`}>#{tag}</Link>
+                <Link onClick={(event) => this.changeCurrentTopic(key as string, event)} to={`/${currentBlogUsername}/${key}`}>#{tag}</Link>
                 {rest}
               </>
             )
@@ -275,9 +280,12 @@ class TopicPage extends React.Component<IProps, IState> {
     )
   }
 
-  changeCurrentTopic = (key: string, selectedTopicPath: string[]) => {
-    this.props.updateState({ selectedTopicPath: selectedTopicPath })
+  changeCurrentTopic = (key: string, event: React.MouseEvent) => {
+    console.log(`kkkkey: ${key}`)
+    this.props.updateState({ selectedTopicPath: [key] })
     this.setState({ currentTopicKey: key })
+    console.log("finish changeCurrentTopic")
+    event.stopPropagation()
   }
 
   currentTopic = (): Topic => {
@@ -312,8 +320,9 @@ class TopicPage extends React.Component<IProps, IState> {
 
   path = (topic: Topic): Topic[] => {
     const { currentTopicKey } = this.state
+    console.log(`path topic key: ${topic.key}`)
 
-    if (topic.parentKey == currentTopicKey) {
+    if (topic.key === currentTopicKey) {
       return ([topic])
     } else {
       const parent = this.parent(topic)
