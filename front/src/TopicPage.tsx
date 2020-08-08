@@ -53,11 +53,13 @@ class TopicPage extends React.Component<IProps, IState> {
     const target = event.target
     const value = target.value
     const name = target.name
-    const topic_key = name.replace("topic_", "")
-    const { users, currentBlogUsername } = this.props
-    const topics = users[currentBlogUsername].topics
+    const data = name.split("_")
+    const topicKey = data[1]
+    const username = data[2]
+    const { users } = this.props
+    const topics = users[username].topics
 
-    let topic = topics[topic_key]
+    let topic = topics[topicKey]
     topic.content = value
     this.setState((prevState) => ({
       ...prevState,
@@ -66,13 +68,14 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    const { users, currentBlogUsername, currentUsername } = this.props
-    const topics = users[currentBlogUsername].topics
+    const { users, currentUsername } = this.props
 
-    let { selectedTopicPath } = this.props
-    const last = selectedTopicPath.length - 1
     const selectedTopic = this.selectedTopic()
-    if (selectedTopic && selectedTopic.parentKey) {
+    if (currentUsername && selectedTopic && selectedTopic.parentKey) {
+      const topics = users[currentUsername].topics
+      let { selectedTopicPath } = this.props
+      const last = selectedTopicPath.length - 1
+
       const parent = topics[selectedTopic.parentKey]
       const siblingsKeys = parent.subTopics
       const i = siblingsKeys.indexOf(selectedTopic.key)
@@ -200,7 +203,7 @@ class TopicPage extends React.Component<IProps, IState> {
           <Form.Control
             type="text"
             value={topic.content}
-            name={`topic_${topic.key}`}
+            name={`topic_${topic.key}_${topic.username}`}
             onKeyDown={this.onKeyDown}
             onChange={this.handleChange as any} autoFocus />
         </Form.Group>
@@ -304,8 +307,10 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   selectedTopic = (): Topic | undefined => {
-    const { users, currentBlogUsername, selectedTopicPath } = this.props
-    const topics = users[currentBlogUsername].topics
+    const { users, currentUsername, selectedTopicPath } = this.props
+    if (!currentUsername) { return (undefined) }
+
+    const topics = users[currentUsername].topics
 
     const last = selectedTopicPath[selectedTopicPath.length - 1]
     if (last) {
@@ -387,7 +392,7 @@ class TopicPage extends React.Component<IProps, IState> {
         { !isLastIndex &&
           <ul>
             <li>
-            {this.renderReferenceTopics(path, blogger, index + 1)}
+              {this.renderReferenceTopics(path, blogger, index + 1)}
             </li>
           </ul>
         }
@@ -405,7 +410,7 @@ class TopicPage extends React.Component<IProps, IState> {
           <div className="container">
             <h1>{currentTopic.content}</h1>
             <ul>
-            {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic, true))}
+              {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic, true))}
             </ul>
             References:
             <ul>
