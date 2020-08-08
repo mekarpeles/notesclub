@@ -13,10 +13,10 @@ interface IProps {
   updateAlert: Function
   currentUsername: string | null
   currentBlogUsername: string
+  currentTopicKey: string
 }
 
 interface IState {
-  currentTopicKey: string
 }
 
 // TO DO: We should make sure it's unique
@@ -44,7 +44,6 @@ class TopicPage extends React.Component<IProps, IState> {
     super(props)
 
     this.state = {
-      currentTopicKey: window.location.pathname.replace(/\/\w*\//, ""),
     }
 
     this.onKeyDown = this.onKeyDown.bind(this)
@@ -146,6 +145,10 @@ class TopicPage extends React.Component<IProps, IState> {
             this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
           }
           event.preventDefault()
+          break;
+        case "Escape":
+          this.props.updateState({ selectedTopicPath: [] })
+          break;
       }
     }
   }
@@ -258,7 +261,7 @@ class TopicPage extends React.Component<IProps, IState> {
               </>
             )
           } else {
-            const { currentTopicKey } = this.state
+            const { currentTopicKey } = this.props
             const parent = topic.parentKey ? topics[topic.parentKey] : undefined
             const siblingsKeys = parent ? parent.subTopics : undefined
 
@@ -282,18 +285,16 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   changeCurrentTopic = (key: string, event?: React.MouseEvent) => {
-    this.props.updateState({ selectedTopicPath: [key] })
-    this.setState({ currentTopicKey: key })
+    this.props.updateState({ selectedTopicPath: [key], currentTopicKey: key })
     if (event) {
       event.stopPropagation()
     }
   }
 
-  currentTopic = (): Topic => {
+  topic = (key: string): Topic => {
     const { users, currentBlogUsername, selectedTopicPath } = this.props
     const topics = users[currentBlogUsername].topics
-    const currentTopicKey = selectedTopicPath[0]
-    return (topics[currentTopicKey])
+    return(topics[key])
   }
 
   selectedTopic = (): Topic | undefined => {
@@ -320,7 +321,7 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   path = (topic: Topic): Topic[] => {
-    const { currentTopicKey } = this.state
+    const { currentTopicKey } = this.props
     console.log(`path topic key: ${topic.key}`)
 
     if (topic.key === currentTopicKey) {
@@ -387,7 +388,8 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   public render () {
-    const currentTopic = this.currentTopic()
+    const currentTopic = this.topic(this.props.currentTopicKey)
+
     return (
       <>
         { currentTopic &&

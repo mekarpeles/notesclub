@@ -26,6 +26,7 @@ interface AppState {
   users: Users<User>
   alert?: alert
   selectedTopicPath: string[]
+  currentTopicKey: string
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -77,10 +78,11 @@ class App extends React.Component<AppProps, AppState> {
 
     this.state = {
       currentBlogUsername: "curie", // page: /curie
+      currentTopicKey: "2020-07-30",
       currentUsername: "hec", // logged in user
       alert: undefined,
       users: users,
-      selectedTopicPath: ["2020-07-30"]
+      selectedTopicPath: []
     }
 
   }
@@ -114,11 +116,11 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
-    const { selectedTopicPath, users, currentUsername, currentBlogUsername } = this.state
+    const { selectedTopicPath, users, currentUsername, currentBlogUsername, currentTopicKey } = this.state
 
     return (
       <>
-        <Route path={`/${currentBlogUsername}/:topicKey`} exact component={() => <TopicPage updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentUsername={currentUsername} currentBlogUsername={currentBlogUsername} />} />
+        <Route path={`/${currentBlogUsername}/:topicKey`} exact component={() => <TopicPage currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentUsername={currentUsername} currentBlogUsername={currentBlogUsername} />} />
       </>
     )
   }
