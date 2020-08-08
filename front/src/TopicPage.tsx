@@ -247,13 +247,7 @@ class TopicPage extends React.Component<IProps, IState> {
               topics[newSubTopic.key] = newSubTopic
 
               newTopic.subTopics.push(newSubTopic.key)
-              topic = newTopic
             }
-
-            console.log("key:")
-            console.log(key)
-            console.log("selectedTopicPath:")
-            console.log(selectedTopicPath)
             return (
               <>
                 <Link onClick={(event) => this.changeCurrentTopic(key as string, event)} to={`/${currentBlogUsername}/${key}`}>#{tag}</Link>
