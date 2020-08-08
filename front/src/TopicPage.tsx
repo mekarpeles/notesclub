@@ -156,7 +156,7 @@ class TopicPage extends React.Component<IProps, IState> {
       this.props.updateState({ selectedTopicPath: path })
     }
   }
-  renderTopic = (topic: Topic) => {
+  renderTopic = (topic: Topic, includeSubtopics: boolean) => {
     const { selectedTopicPath } = this.props
     const lastSelectedKey = selectedTopicPath[selectedTopicPath.length - 1]
     const hasSubTopics = topic.subTopics.some(topic => typeof topic === 'string')
@@ -173,12 +173,12 @@ class TopicPage extends React.Component<IProps, IState> {
             {this.renderUnselectedTopic(topic)}
           </li>
         }
-        {hasSubTopics &&
+        {includeSubtopics && hasSubTopics &&
           <li className="hide-bullet">
             <ul>
               {this.subTopics(topic).map((topicChild) => {
                 return (
-                  this.renderTopic(topicChild)
+                  this.renderTopic(topicChild, true)
                 )
               })}
             </ul>
@@ -350,12 +350,31 @@ class TopicPage extends React.Component<IProps, IState> {
     const topic = topics[reference.topicKey]
 
     console.log("path ref:")
-    console.log(this.path(topic))
+    const path = this.path(topic)
 
     return (
       <li>
-        <Link to={`/${reference.username}/${topic.key}`} onClick={() => this.changeCurrentTopic(topic.key)}>{topic.content}</Link>
+        {this.renderReferenceTopics(path, reference, 0)}
       </li>
+    )
+  }
+
+  renderReferenceTopics = (path: Topic[], reference: Reference, index: number) => {
+    const topic = path[index]
+    const isLastIndex = (path.length - 1 === index)
+
+    return (
+      <>
+        {this.renderTopic(topic, false)}
+        {/* <Link to={`/${reference.username}/${topic.key}`} onClick={() => this.changeCurrentTopic(topic.key)}>{topic.content}</Link> */}
+        { !isLastIndex &&
+          <ul>
+            <li>
+              {this.renderReferenceTopics(path, reference, index + 1)}
+            </li>
+          </ul>
+        }
+      </>
     )
   }
 
@@ -367,7 +386,7 @@ class TopicPage extends React.Component<IProps, IState> {
           <div className="container">
             <h1>{currentTopic.content}</h1>
             <ul>
-              {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic))}
+              {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic, true))}
             </ul>
             References:
             <ul>
