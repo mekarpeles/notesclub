@@ -44,28 +44,35 @@ class App extends React.Component<AppProps, AppState> {
           content: "2020-07-30",
           subTopics: ["Xqw83jsQza"],
           parentKey: null, // top topic. You can access it from /curie/2020-07-30
-          references: []
+          references: [],
+          username: "curie"
         },
         "Xqw83jsQza": {
           key: "Xqw83jsQza",
           content: "What a #Site",
           subTopics: [],
           parentKey: "2020-07-30",
-          references: []
+          references: [],
+          username: "curie"
         },
         "Site": {
           key: "Site", // We could make the key from the content, replacing spaces with _
           content: "Site",
           subTopics: ["U8sa7qwqw"],
           parentKey: null, // top topic. You can access it from /curie/Site
-          references: [{ username: "curie", topicKey: "Xqw83jsQza" }]
+          references: [
+            {username: "curie", topicKey: "Xqw83jsQza"},
+            {username: "hec", topicKey: "jW382hs1"}
+          ],
+          username: "curie"
         },
         "U8sa7qwqw": {
           key: "U8sa7qwqw",
           content: "",
           subTopics: [],
           parentKey: "Site",
-          references: []
+          references: [],
+          username: "curie"
         }
       }
     }
@@ -73,13 +80,49 @@ class App extends React.Component<AppProps, AppState> {
       id: 2,
       username: "hec",
       name: "Hector Perez",
-      topics: {}
+      topics: {
+        "2020-07-30": {
+          key: "2020-07-30", // We could make the key from the content, replacing spaces with _
+          content: "2020-07-30",
+          subTopics: ["jW382hs1"],
+          parentKey: null, // top topic. You can access it from /curie/Whatever
+          references: [],
+          username: "hec"
+        },
+        "jW382hs1": {
+          key: "jW382hs1",
+          content: "hmm #Site",
+          subTopics: [],
+          parentKey: "2020-07-30",
+          references: [],
+          username: "hec"
+        },
+        "Site": {
+          key: "Site",
+          content: "Site",
+          subTopics: ["8DjqwnA"],
+          parentKey: null,
+          references: [
+            { username: "hec", topicKey: "jW382hs1" },
+            { username: "curie", topicKey: "Xqw83jsQza" },
+          ],
+          username: "hec"
+        },
+        "8DjqwnA": {
+          key: "8DjqwnA",
+          content: "",
+          subTopics: [],
+          parentKey: "Site",
+          references: [],
+          username: "hec"
+        },
+      }
     }
 
     this.state = {
-      currentBlogUsername: "curie", // page: /curie
+      currentBlogUsername: "curie", // /curie
       currentTopicKey: "2020-07-30",
-      currentUsername: "hec", // logged in user
+      currentUsername: "curie", // logged in as curie
       alert: undefined,
       users: users,
       selectedTopicPath: []
@@ -120,7 +163,7 @@ class App extends React.Component<AppProps, AppState> {
 
     return (
       <>
-        <Route path={`/${currentBlogUsername}/:topicKey`} exact component={() => <TopicPage currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentUsername={currentUsername} currentBlogUsername={currentBlogUsername} />} />
+        <Route path={`/:blogUsername/:topicKey`} exact component={() => <TopicPage currentUsername={currentUsername} currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentBlogUsername={currentBlogUsername} />} />
       </>
     )
   }

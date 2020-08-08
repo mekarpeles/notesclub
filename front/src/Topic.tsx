@@ -6,6 +6,7 @@ export interface Topic {
   parentKey: string | null
   subTopics: string[]
   references: Reference[]
+  username: string
 }
 
 export interface Topics<Topic> {

@@ -33,9 +33,9 @@ function makeKey(length: number) {
   return result;
 }
 
-function emptyTopic(parentKey: string | null): Topic {
+function emptyTopic(username: string | null, parentKey: string | null): Topic {
   return(
-    { key: makeKey(10), parentKey: parentKey, content: "", subTopics: [], references: [] }
+    { key: makeKey(10), parentKey: parentKey, content: "", subTopics: [], references: [], username: "" }
   )
 }
 
@@ -66,7 +66,7 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    const { users, currentBlogUsername } = this.props
+    const { users, currentBlogUsername, currentUsername } = this.props
     const topics = users[currentBlogUsername].topics
 
     let { selectedTopicPath } = this.props
@@ -80,7 +80,7 @@ class TopicPage extends React.Component<IProps, IState> {
       switch (event.key) {
         case "Enter":
           if (selectedTopicPath) {
-            const t = emptyTopic(parent.key)
+            const t = emptyTopic(currentUsername, parent.key)
             topics[t.key] = t
             // Insert new topic t after selected topic
             siblingsKeys.splice(i + 1, 0, t.key)
@@ -153,17 +153,19 @@ class TopicPage extends React.Component<IProps, IState> {
     }
   }
 
-  selectTopic = (topic: Topic, isSelected: boolean) => {
-    if (!isSelected) {
+  selectTopic = (topic: Topic) => {
+    if (topic.username === this.props.currentUsername) {
       const path = this.path(topic).map((topic) => topic.key)
       this.props.updateState({ selectedTopicPath: path })
     }
   }
+
   renderTopic = (topic: Topic, includeSubtopics: boolean) => {
     const { selectedTopicPath } = this.props
     const lastSelectedKey = selectedTopicPath[selectedTopicPath.length - 1]
     const hasSubTopics = topic.subTopics.some(topic => typeof topic === 'string')
     const isSelected = topic.key === lastSelectedKey
+    // const edit = isSelected && this.ownBlog()
     return (
       <>
         {isSelected &&
@@ -172,7 +174,7 @@ class TopicPage extends React.Component<IProps, IState> {
           </li>
         }
         {!isSelected &&
-          <li onClick={() => this.selectTopic(topic, isSelected)}>
+          <li onClick={() => this.selectTopic(topic)}>
             {this.renderUnselectedTopic(topic)}
           </li>
         }
@@ -211,12 +213,14 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   renderUnselectedTopic = (topic: Topic) => {
-    const { users, currentBlogUsername, currentUsername } = this.props
-    const topics = users[currentBlogUsername].topics
+    const { users, currentUsername, currentBlogUsername } = this.props
+    const blogUser = users[topic.username]
+    const topics = blogUser.topics
 
     let { selectedTopicPath } = this.props
     const t = topic.content.split("#")
-
+    console.log("topic:")
+    console.log(topic)
     return(
       <>
         {t.map((part, index) => {
@@ -236,21 +240,25 @@ class TopicPage extends React.Component<IProps, IState> {
             }
             let key = this.contentToKey(tag)
 
+            // Load topic:
+            let tagTopic = topics[key]
+
             // If it doesn't exists, we create it:
-            if (topics[key] === undefined){
+            if (tagTopic === undefined && currentUsername){
               // Create topic
               let newTopic: Topic
-              newTopic = { key: key, parentKey: null, content: tag, subTopics: [], references: [{username: currentBlogUsername, topicKey: topic.key}] }
+              newTopic = { username: currentUsername, key: key, parentKey: null, content: tag, subTopics: [], references: [{username: currentUsername, topicKey: topic.key}] }
               topics[newTopic.key] = newTopic
               // Create a subtopic
-              const newSubTopic = { key: makeKey(10), parentKey: newTopic.key, content: "", subTopics: [], references: [] }
+              const newSubTopic = { username: currentUsername, key: makeKey(10), parentKey: newTopic.key, content: "", subTopics: [], references: [] }
               topics[newSubTopic.key] = newSubTopic
 
               newTopic.subTopics.push(newSubTopic.key)
+              tagTopic = newTopic
             }
             return (
               <>
-                <Link onClick={(event) => this.changeCurrentTopic(key as string, event)} to={`/${currentBlogUsername}/${key}`}>#{tag}</Link>
+                <Link onClick={(event) => this.changeCurrentTopic(tagTopic, event)} to={`/${tagTopic.username}/${key}`}>#{tag}</Link>
                 {rest}
               </>
             )
@@ -262,7 +270,7 @@ class TopicPage extends React.Component<IProps, IState> {
             if (part === "" && topic.parentKey == currentTopicKey && siblingsKeys && siblingsKeys.length == 1) {
               return (
                 <span className="grey">
-                  Click here to start writing
+                  {currentUsername === currentBlogUsername ? "Click here to start writing" : `This is empty.`}
                 </span>
               )
             } else {
@@ -278,8 +286,12 @@ class TopicPage extends React.Component<IProps, IState> {
     )
   }
 
-  changeCurrentTopic = (key: string, event?: React.MouseEvent) => {
-    this.props.updateState({ selectedTopicPath: [key], currentTopicKey: key })
+  changeCurrentTopic = (topic: Topic, event?: React.MouseEvent) => {
+    this.props.updateState({
+      selectedTopicPath: [topic.key],
+      currentTopicKey: topic.key,
+      currentBlogUsername: topic.username
+    })
     if (event) {
       event.stopPropagation()
     }
@@ -304,8 +316,8 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   parent = (topic: Topic): Topic | undefined => {
-    const { users, currentBlogUsername } = this.props
-    const topics = users[currentBlogUsername].topics
+    const { users } = this.props
+    const topics = users[topic.username].topics
     const key = topic.parentKey
     if (key) {
       return (topics[key])
@@ -316,7 +328,6 @@ class TopicPage extends React.Component<IProps, IState> {
 
   path = (topic: Topic): Topic[] => {
     const { currentTopicKey } = this.props
-    console.log(`path topic key: ${topic.key}`)
 
     if (topic.key === currentTopicKey) {
       return ([topic])
@@ -345,7 +356,6 @@ class TopicPage extends React.Component<IProps, IState> {
     const topics = blogger.topics
     const topic = topics[reference.topicKey]
 
-    console.log("path ref:")
     const path = this.path(topic)
 
     return (
@@ -365,10 +375,14 @@ class TopicPage extends React.Component<IProps, IState> {
           <>
             <Link to={`/${blogger.username}`}>{blogger.name}</Link>
             ·
-            <Link to={`/${blogger.username}/${topic.key}`} onClick={() => this.changeCurrentTopic(topic.key)}>{topic.content}</Link>
+            <Link to={`/${blogger.username}/${topic.key}`} onClick={() => this.changeCurrentTopic(topic)}>{topic.content}</Link>
           </>
         }
-        {topic.parentKey != null && this.renderTopic(topic, false)}
+        {topic.parentKey != null &&
+          <>
+            {this.renderTopic(topic, false)}
+          </>
+        }
         {/* <Link to={`/${reference.username}/${topic.key}`} onClick={() => this.changeCurrentTopic(topic.key)}>{topic.content}</Link> */}
         { !isLastIndex &&
           <ul>
@@ -382,7 +396,8 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   public render () {
-    const currentTopic = this.topic(this.props.currentTopicKey)
+    const { currentTopicKey } = this.props
+    const currentTopic = this.topic(currentTopicKey)
 
     return (
       <>
@@ -390,7 +405,7 @@ class TopicPage extends React.Component<IProps, IState> {
           <div className="container">
             <h1>{currentTopic.content}</h1>
             <ul>
-              {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic, true))}
+            {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic, true))}
             </ul>
             References:
             <ul>
