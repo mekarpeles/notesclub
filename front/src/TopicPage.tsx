@@ -33,9 +33,9 @@ function makeKey(length: number) {
   return result;
 }
 
-function emptyTopic(username: string | null, parentKey: string | null): Topic {
+function emptyTopic(username: string, parentKey: string | null): Topic {
   return(
-    { key: makeKey(10), parentKey: parentKey, content: "", subTopics: [], references: [], username: "" }
+    { key: makeKey(10), parentKey: parentKey, content: "", subTopics: [], references: [], username: username }
   )
 }
 
@@ -53,18 +53,18 @@ class TopicPage extends React.Component<IProps, IState> {
     const target = event.target
     const value = target.value
     const name = target.name
-    const data = name.split("_")
-    const topicKey = data[1]
-    const username = data[2]
-    const { users } = this.props
-    const topics = users[username].topics
+    const topicKey = name.replace("topic_", "")
+    const { currentUsername, users } = this.props
+    if (currentUsername && users[currentUsername]) {
+      const topics = users[currentUsername].topics
 
-    let topic = topics[topicKey]
-    topic.content = value
-    this.setState((prevState) => ({
-      ...prevState,
-      topics: topics
-    }))
+      let topic = topics[topicKey]
+      topic.content = value
+      this.setState((prevState) => ({
+        ...prevState,
+        topics: topics
+      }))
+    }
   }
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -203,7 +203,7 @@ class TopicPage extends React.Component<IProps, IState> {
           <Form.Control
             type="text"
             value={topic.content}
-            name={`topic_${topic.key}_${topic.username}`}
+            name={`topic_${topic.key}`}
             onKeyDown={this.onKeyDown}
             onChange={this.handleChange as any} autoFocus />
         </Form.Group>
@@ -218,12 +218,11 @@ class TopicPage extends React.Component<IProps, IState> {
   renderUnselectedTopic = (topic: Topic) => {
     const { users, currentUsername, currentBlogUsername } = this.props
     const blogUser = users[topic.username]
+
     const topics = blogUser.topics
 
     let { selectedTopicPath } = this.props
     const t = topic.content.split("#")
-    console.log("topic:")
-    console.log(topic)
     return(
       <>
         {t.map((part, index) => {
