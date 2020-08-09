@@ -7,6 +7,7 @@ import { Redirect } from 'react-router-dom'
 interface HeaderProps {
   setParentState: Function
   currentUser?: User
+  blogger: User
 }
 
 interface HeaderState {
@@ -85,10 +86,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   public render() {
-    const { currentUser } = this.props
+    const { currentUser, blogger } = this.props
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/">Treeconf</Navbar.Brand>
+        <Navbar.Brand href={`/${blogger.username}`}>{`Asimov · ${blogger.name}'s blog`}</Navbar.Brand>
         {currentUser ? this.renderLoggedInHeader() : <></>}
       </Navbar>
     )

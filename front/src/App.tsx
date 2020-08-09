@@ -169,14 +169,15 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public render() {
-    const { currentUsername, users, alert } = this.state
+    const { currentUsername, users, alert, currentBlogUsername } = this.state
 
     const user = users[currentUsername]
+    const blogger = users[currentBlogUsername]
 
     return (
       <div className="App">
         <Router>
-          <Header setParentState={this.updateState} currentUser={user}/>
+          <Header setParentState={this.updateState} currentUser={user} blogger={blogger} />
           <div className="text-center">
             {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
           </div>
