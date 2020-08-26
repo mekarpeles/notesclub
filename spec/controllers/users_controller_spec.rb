@@ -9,8 +9,8 @@ RSpec.describe UsersController, type: :request do
       log_in(user)
       get "/v1/users/#{user.id}"
       expect(response).to have_http_status(:success)
-      json = JSON.parse(response.body)
-      expect(json).to eq({"user" => {"id" => user.id, "email" => user.email, "name" => user.name, "username" => user.username}})
+      args = JSON.parse(response.body)
+      expect(args.slice(*%w(id name username))).to eq({"id" => user.id, "name" => user.name, "username" => user.username})
     end
   end
 end

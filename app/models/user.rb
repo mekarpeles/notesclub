@@ -18,8 +18,6 @@ class User < ApplicationRecord
     self.update(jwt_token: generate_jwt)
   end
 
-  private
-
   def generate_jwt
     JWT.encode(
       {
@@ -29,6 +27,8 @@ class User < ApplicationRecord
       Rails.application.credentials.config[:secret_key_base]
     )
   end
+
+  private
 
   def set_provisional_username
     loop do

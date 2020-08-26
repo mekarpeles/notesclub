@@ -2,5 +2,5 @@ user1:
   id: 1
   email: hec@hec.com
   encrypted_password: $2a$11$Cbc1kMlWYwEqQ2J8rJe1ruLmL59TxSvXMJ4CL46h2fVr6CVA95soq
-  jwt_token: eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNTg5ODgyMzIyfQ.wf5eYY__EdyfGEJ0b4Q8xIplWOkZPfQ1OitbrK6aTNQ
+  jwt_token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxfQ.CT5dQ_lDiZhMWqjCKwbfxDABQiEh5KMJWwzUCKBm7Yg
   username: hec

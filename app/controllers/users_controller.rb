@@ -1,13 +1,16 @@
 class UsersController < ApplicationController
+  EXPOSED_ATTRIBUTES = %w(id name username created_at updated_at).freeze
   before_action :authenticate_param_user!, only: :update
 
   def index
-    users = User.select(%w(id name username created_at updated_at))
+    users = User.select(EXPOSED_ATTRIBUTES)
     users.where(id: params["ids"].split(",")) if params["ids"].present?
     render json: users.order(id: :desc).limit(100).to_json
   end
 
   def show
+    user = User.select(EXPOSED_ATTRIBUTES).find(params["id"])
+    render json: user.to_json, status: :ok
   end
 
   def update
