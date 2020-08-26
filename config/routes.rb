@@ -4,8 +4,6 @@ Rails.application.routes.draw do
                        path_names: { sign_in: :login, sign_out: :logout }
 
     resources :users, only: [:index, :show, :update]
-    resources :exercises, only: [:index, :create, :show]
-
     get 'ping', to: 'ping#ping'
   end
 end
