@@ -21,7 +21,7 @@ interface alert {
 }
 
 interface AppState {
-  currentUsername: string
+  currentUsername?: string
   currentBlogUsername: string
   users: Users<User>
   alert?: alert
@@ -119,15 +119,18 @@ class App extends React.Component<AppProps, AppState> {
       }
     }
 
+    const currentUserStr = localStorage.getItem('currentUser')
+
+    const currentUsername = currentUserStr ? JSON.parse(currentUserStr).username : undefined
+
     this.state = {
       currentBlogUsername: "curie", // /curie
       currentTopicKey: "2020-07-30",
-      currentUsername: "curie", // logged in as curie
+      currentUsername: currentUsername,
       alert: undefined,
       users: users,
       selectedTopicPath: []
     }
-
   }
 
   setCurrentUser = (user: User) => {
@@ -163,7 +166,9 @@ class App extends React.Component<AppProps, AppState> {
 
     return (
       <>
-        <Route path={`/:blogUsername/:topicKey`} exact component={() => <TopicPage currentUsername={currentUsername} currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentBlogUsername={currentBlogUsername} />} />
+        { currentUsername &&
+          <Route path={`/:blogUsername/:topicKey`} exact component={() => <TopicPage currentUsername={currentUsername} currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentBlogUsername={currentBlogUsername} />} />
+        }
       </>
     )
   }
@@ -171,7 +176,7 @@ class App extends React.Component<AppProps, AppState> {
   public render() {
     const { currentUsername, users, alert, currentBlogUsername } = this.state
 
-    const user = users[currentUsername]
+    const user = currentUsername ? users[currentUsername] : undefined
     const blogger = users[currentBlogUsername]
 
     return (

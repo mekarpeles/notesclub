@@ -400,14 +400,15 @@ class TopicPage extends React.Component<IProps, IState> {
   }
 
   public render () {
-    const { currentTopicKey } = this.props
+    const { currentTopicKey, currentBlogUsername, users } = this.props
     const currentTopic = this.topic(currentTopicKey)
+    const blogUser = users[currentBlogUsername]
 
     return (
       <>
         { currentTopic &&
           <div className="container">
-            <h1>{currentTopic.content}</h1>
+            <h1>{blogUser.name} · {currentTopic.content}</h1>
             <ul>
               {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic, true))}
             </ul>

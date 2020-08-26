@@ -49,7 +49,7 @@ class Login extends React.Component<LoginProps, LoginState> {
         console.log(res.data)
         const currentUser = res.data["user"]
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
-        this.props.setParentState({ user: currentUser, alert: undefined })
+        this.props.setParentState({ currentUsername: currentUser.username, alert: undefined })
       })
       .catch(res => {
         let msg = ""
