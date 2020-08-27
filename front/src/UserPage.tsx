@@ -17,7 +17,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
     const currentUser = users[currentUsername]
 
     return (
-      <div>
+      <div className="container">
         <h1>{currentUser.name}'s topics</h1>
         <Button variant="link" href={`/${currentUsername}/2020-07-30`}>2020-07-30</Button>
       </div>

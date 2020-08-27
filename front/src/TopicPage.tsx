@@ -408,7 +408,7 @@ class TopicPage extends React.Component<IProps, IState> {
       <>
         { currentTopic &&
           <div className="container">
-            <h1>{blogUser.name} · {currentTopic.content}</h1>
+            <h1><a href={`/${blogUser.username}`}>{blogUser.name}</a> · {currentTopic.content}</h1>
             <ul>
               {this.subTopics(currentTopic).map((subTopic) => this.renderTopic(subTopic, true))}
             </ul>

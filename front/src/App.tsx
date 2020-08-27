@@ -9,6 +9,7 @@ import { apiDomain } from './appConfig'
 import { User, Users } from './User'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import TopicPage from './TopicPage'
+import UserPage from './UserPage'
 import { Topic, Topics } from './Topic'
 
 interface AppProps {
@@ -167,7 +168,10 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <>
         { currentUsername &&
-          <Route path={`/:blogUsername/:topicKey`} exact component={() => <TopicPage currentUsername={currentUsername} currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentBlogUsername={currentBlogUsername} />} />
+          <>
+            <Route path={`/:blogUsername`} exact component={() => <UserPage currentUsername={currentUsername} users={users} /> } />
+            <Route path={`/:blogUsername/:topicKey`} exact component={() => <TopicPage currentUsername={currentUsername} currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentBlogUsername={currentBlogUsername} />} />
+          </>
         }
       </>
     )
