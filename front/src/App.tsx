@@ -1,7 +1,6 @@
 import * as React from 'react';
 import './App.css';
 import '@ionic/react/css/core.css';
-import OpenClozeCreator from './OpenClozeCreator';
 import Login from './Login';
 import Header from './Header';
 import { Alert } from 'react-bootstrap';
@@ -15,6 +14,7 @@ import { Topic, Topics } from './Topic'
 interface AppProps {
 
 }
+
 interface alert {
   variant: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "dark" | "light"
   message: string
