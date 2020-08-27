@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './App.css';
+import './App.scss';
 import '@ionic/react/css/core.css';
 import Login from './Login';
 import Header from './Header';
