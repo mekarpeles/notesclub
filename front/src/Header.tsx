@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap'
 import axios from 'axios'
-import { User } from './User'
+import { BackendUser } from './User'
 import { Redirect } from 'react-router-dom'
 
 interface HeaderProps {
   setParentState: Function
-  currentUser?: User
-  blogger: User
+  currentUser?: BackendUser
 }
 
 interface HeaderState {
@@ -62,10 +61,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   public render() {
-    const { currentUser, blogger } = this.props
+    const { currentUser } = this.props
+    console.log("header")
+
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href={`/${blogger.username}`}>Wikir</Navbar.Brand>
+        <Navbar.Brand href="/">Wikir</Navbar.Brand>
         {currentUser ? this.renderLoggedInHeader() : <></>}
       </Navbar>
     )
