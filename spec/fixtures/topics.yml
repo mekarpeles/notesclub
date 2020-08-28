@@ -1,0 +1,15 @@
+topic1:
+  id: 1
+  content: "Climate Change"
+  user_id: 1
+  ancestry: ""
+topic2:
+  id: 2
+  content: "2020-08-28"
+  user_id: 1
+  ancestry: ""
+topic3:
+  id: 3
+  content: "I started to read [[How to take smart notes]]"
+  user_id: 1
+  ancestry: "2"

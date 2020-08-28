@@ -169,8 +169,8 @@ class App extends React.Component<AppProps, AppState> {
       <>
         { currentUsername &&
           <>
-            <Route path={`/:blogUsername`} exact component={() => <UserPage currentUsername={currentUsername} users={users} /> } />
-            <Route path={`/:blogUsername/:topicKey`} exact component={() => <TopicPage currentUsername={currentUsername} currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentBlogUsername={currentBlogUsername} />} />
+            <Route path="/:blogUsername" exact render={({ match }) => <UserPage match={match} currentUsername={currentUsername} users={users} /> } />
+            <Route path="/:blogUsername/:topicKey" exact component={() => <TopicPage currentUsername={currentUsername} currentTopicKey={currentTopicKey} updateState={this.updateState} updateAlert={this.updateAlert} selectedTopicPath={selectedTopicPath} users={users} currentBlogUsername={currentBlogUsername} />} />
           </>
         }
       </>

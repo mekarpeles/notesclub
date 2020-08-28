@@ -8,6 +8,12 @@ export interface User {
   topics: Topics<Topic>
 }
 
+export interface BackendUser {
+  id: number
+  name: string
+  username: string
+}
+
 export interface Users<User> {
   [username: string]: User
 }
