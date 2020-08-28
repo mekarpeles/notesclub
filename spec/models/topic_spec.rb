@@ -1,5 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Topic, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "should create a record" do
+    t = Topic.new(content: "Climate Change")
+    t.save
+    expect(t.errors.full_messages).to eq([])
+  end
 end
