@@ -42,3 +42,9 @@ export const fetchTopics = async (params: fetchTopicsInterface): Promise<Backend
     })
   return (response)
 }
+
+export const updateBackendTopic = (topic: BackendTopic): AxiosPromise => {
+  return (
+    axios.put(apiDomain() + `/v1/topics/${topic.id}`, topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+  )
+}

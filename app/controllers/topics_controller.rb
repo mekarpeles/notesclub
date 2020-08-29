@@ -1,4 +1,5 @@
 class TopicsController < ApplicationController
+  before_action :set_topic, only: [:update]
   before_action :authenticate_param_user!, only: [:update, :create, :destroy]
 
   def index
@@ -26,7 +27,25 @@ class TopicsController < ApplicationController
     if params[:include_descendants]
       render json: topic.to_json(methods: :descendants)
     else
-      render json: topic.to_json
+      render json: topic
     end
+  end
+
+  def update
+    if @topic.update(params.permit(:content, :ancestry))
+      render json: @topic, status: :ok
+    else
+      render json: topic.errors.full_messages, status: :not_modified
+    end
+  end
+
+  private
+
+  def set_topic
+    @topic = Topic.find(params[:id])
+  end
+
+  def authenticate_param_user!
+    head :unauthorized if current_user.id != @topic.user_id
   end
 end

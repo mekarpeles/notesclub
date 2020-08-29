@@ -5,6 +5,7 @@ RSpec.describe UsersController, type: :request do
   let(:user) { users(:user1) }
   let(:topic1) { topics(:topic1) }
   let(:topic2) { topics(:topic2) }
+  let(:topic5) { topics(:topic5) }
 
   before do
     log_in(user)
@@ -54,6 +55,22 @@ RSpec.describe UsersController, type: :request do
         ]
       })
       expect(response.status).to eq(200)
+    end
+  end
+
+  context "#update" do
+    it "should update the content" do
+      topic1.update!(user_id: user.id)
+      put "/v1/topics/#{topic1.id}", params: { content: "The sky is blue" }
+      expect(response.status).to eq 200
+      expect(topic1.reload.content).to eq("The sky is blue")
+    end
+
+    it "should return unauthorized if user_id doesn't match the auhtenticated user" do
+      expect(topic5.user_id).not_to eq(user.id)
+      put "/v1/topics/#{topic5.id}", params: { content: "The sky is blue" }
+      expect(response.status).to eq 401
+      expect(topic1.reload.content).not_to eq("The sky is blue")
     end
   end
 end

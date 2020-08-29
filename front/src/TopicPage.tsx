@@ -7,10 +7,14 @@ import { User, Users, BackendUser } from './User'
 import { Reference } from './Reference'
 import axios from 'axios'
 import { apiDomain } from './appConfig'
-import { fetchUser, fetchUsers, fetchTopics } from './backendFetchers'
+import { fetchUser, fetchUsers, fetchTopics, updateBackendTopic } from './backendFetchers'
+
+const sleep = async (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 interface IProps {
-  updateState: Function
+  setAppState: Function
   updateAlert: Function
   currentUsername: string | null
   currentTopicKey: string
@@ -89,7 +93,7 @@ class TopicPage extends React.Component<IProps, IState> {
         //     // Insert new topic t after selected topic
         //     siblingsKeys.splice(i + 1, 0, t.key)
         //     selectedTopicPath[last] = t.key
-        //     this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
+        //     this.props.setAppState({ topics: topics, selectedTopicPath: selectedTopicPath })
         //   }
         //   break;
         // case "ArrowUp":
@@ -100,17 +104,17 @@ class TopicPage extends React.Component<IProps, IState> {
         //       const lastCousinKey = previousSibling.subTopics[previousSibling.subTopics.length - 1]
         //       const lastCousin = topics[lastCousinKey]
         //       selectedTopicPath = this.path(lastCousin).map((topic) => topic.key)
-        //       this.props.updateState({ selectedTopicPath: selectedTopicPath })
+        //       this.props.setAppState({ selectedTopicPath: selectedTopicPath })
         //     } else if (i > 0) {
         //       // Has siblings above
         //       const newSelectedKey = siblingsKeys[i - 1]
         //       selectedTopicPath[last] = newSelectedKey
-        //       this.props.updateState({ selectedTopicPath: selectedTopicPath })
+        //       this.props.setAppState({ selectedTopicPath: selectedTopicPath })
         //     }
         //   } else if (parent) {
         //     // If it doesn't have a previous sibling, go to the parent
         //     selectedTopicPath = this.path(parent).map((topic) => topic.key)
-        //     this.props.updateState({ selectedTopicPath: selectedTopicPath })
+        //     this.props.setAppState({ selectedTopicPath: selectedTopicPath })
         //   }
         //   break;
         // case "ArrowDown":
@@ -118,7 +122,7 @@ class TopicPage extends React.Component<IProps, IState> {
         //     // Move to the first child
         //     const newSelectedTopic = topics[selectedTopic.subTopics[0]]
         //     selectedTopicPath = this.path(newSelectedTopic).map((topic) => topic.key)
-        //     this.props.updateState({ selectedTopicPath: selectedTopicPath })
+        //     this.props.setAppState({ selectedTopicPath: selectedTopicPath })
         //   } else if (parent.parentKey) {
         //     // Move to the next aunt
         //     const grandma = topics[parent.parentKey]
@@ -127,12 +131,12 @@ class TopicPage extends React.Component<IProps, IState> {
         //     if (auntsAndParent && j < auntsAndParent.length - 1) {
         //       const newSelectedTopic = topics[auntsAndParent[j + 1]]
         //       selectedTopicPath = this.path(newSelectedTopic).map((topic) => topic.key)
-        //       this.props.updateState({ selectedTopicPath: selectedTopicPath })
+        //       this.props.setAppState({ selectedTopicPath: selectedTopicPath })
         //     }
         //   } else if (i < siblingsKeys.length - 1) {
         //     const newSelectedKey = siblingsKeys[i + 1]
         //     selectedTopicPath[last] = newSelectedKey
-        //     this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
+        //     this.props.setAppState({ topics: topics, selectedTopicPath: selectedTopicPath })
         //   }
         //   break;
         // case "Tab":
@@ -146,12 +150,22 @@ class TopicPage extends React.Component<IProps, IState> {
         //     selectedTopicPath.push(selectedTopic.key)
         //     topics[previousSiblingKey].subTopics.push(selectedTopic.key)
         //     selectedTopic.parentKey = previousSiblingKey
-        //     this.props.updateState({ topics: topics, selectedTopicPath: selectedTopicPath })
+        //     this.props.setAppState({ topics: topics, selectedTopicPath: selectedTopicPath })
         //   }
         //   event.preventDefault()
         //   break;
         case "Escape":
           this.setState({ selectedTopic: null })
+
+          updateBackendTopic(selectedTopic)
+            .catch(_ => {
+              console.log("Error updating Backend. Sleeping 200ms and trying again.")
+              sleep(200)
+                .then(_ => {
+                  updateBackendTopic(selectedTopic)
+                    .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+                })
+            })
           break;
       }
     }
@@ -180,12 +194,12 @@ class TopicPage extends React.Component<IProps, IState> {
     return (
       <>
         {isSelected &&
-          <li>
+          <li key={`selected_topic_${topic.id}`}>
             {this.renderSelectedTopic(topic)}
           </li>
         }
         {!isSelected &&
-          <li onClick={() => this.setState({selectedTopic: topic})}>
+          <li key={`topic_${topic.id}`} onClick={() => this.setState({selectedTopic: topic})}>
             {topic.content}
           </li>
         }

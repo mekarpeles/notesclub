@@ -4,3 +4,9 @@ user1:
   encrypted_password: $2a$11$Cbc1kMlWYwEqQ2J8rJe1ruLmL59TxSvXMJ4CL46h2fVr6CVA95soq
   jwt_token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxfQ.CT5dQ_lDiZhMWqjCKwbfxDABQiEh5KMJWwzUCKBm7Yg
   username: hec
+user2:
+  id: 2
+  email: someone@somewhere.com
+  encrypted_password: $2a$11$Cbc1kMlWYwEqQ2J8rJe1ruLmL59TxSvXMJ4CL46h2fVr6CVA95soq
+  jwt_token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxfQ.CT5dQ_lDiZhMWqjCKwbfxDABQiEh5KMJWwzUCKBm7Yg
+  username: someone
