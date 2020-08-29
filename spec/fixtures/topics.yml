@@ -4,15 +4,29 @@ topic1:
   user_id: 1
   ancestry:
   slug: climate_change
+  created_at: "2020-08-29T11:01:41.208Z"
+  updated_at: "2020-08-29T11:01:41.208Z"
 topic2:
   id: 2
   content: "2020-08-28"
   user_id: 1
   ancestry:
   slug:  "2020-08-28"
+  created_at: "2020-08-29T11:01:41.208Z"
+  updated_at: "2020-08-29T11:01:41.208Z"
 topic3:
   id: 3
   content: "I started to read [[How to take smart notes]]"
   user_id: 1
   ancestry: "2"
   slug: "jdjiwe23m"
+  created_at: "2020-08-29T11:01:41.208Z"
+  updated_at: "2020-08-29T11:01:41.208Z"
+topic4:
+  id: 4
+  content: "I #love it"
+  user_id: 1
+  ancestry: "2/3"
+  slug: "ds98wekjwe"
+  created_at: "2020-08-29T11:01:41.208Z"
+  updated_at: "2020-08-29T11:01:41.208Z"

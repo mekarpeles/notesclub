@@ -62,7 +62,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   public render() {
     const { currentUser } = this.props
-    console.log("header")
 
     return (
       <Navbar bg="light" expand="lg">

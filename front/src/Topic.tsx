@@ -11,9 +11,11 @@ export interface Topic {
 
 export interface BackendTopic {
   id: number
+  slug: string
   content: string
   ancestry: string
   user_id: number
+  descendants?: BackendTopic[]
 }
 
 export interface Topics<Topic> {

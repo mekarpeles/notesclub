@@ -33,10 +33,8 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
         this.setState({ blogger: blogger })
 
         if (blogger) {
-          fetchTopics([blogger.id], null)
-            .then(topics => {
-              this.setState({ topics: topics })
-            })
+          fetchTopics({user_ids: [blogger.id], ancestry: null})
+            .then(topics => topics && this.setState({ topics: topics }))
         }
       })
   }
@@ -51,7 +49,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
           <>
             <h1>{blogger.name}'s topics</h1>
             <ul>
-              {topics.map((topic) => <li><Button variant="link" href={`/${blogger.username}/${topic.id}`}>{topic.content}</Button></li>)}
+              {topics.map((topic) => <li><Button variant="link" href={`/${blogger.username}/${topic.slug}`}>{topic.content}</Button></li>)}
             </ul>
           </>
         }
