@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { Topic, Topics, BackendTopic } from './Topic'
-import { Form, Button } from 'react-bootstrap'
-import { fetchUser, fetchUsers, fetchTopics, updateBackendTopic } from './../backendFetchers'
+import { Topic } from './Topic'
+import { Form } from 'react-bootstrap'
+import { updateTopic } from './../backendFetchers'
 import { sleep } from './../utils/sleep'
 
 interface TopicRendererProps {
-  selectedTopic: BackendTopic | null
-  topic: BackendTopic
+  selectedTopic: Topic | null
+  topic: Topic
   renderSubtopics: boolean
   setTopicPageState: Function
   setAppState: Function
@@ -34,12 +34,12 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
         case "Escape":
           this.props.setTopicPageState({ selectedTopic: null })
 
-          updateBackendTopic(selectedTopic)
+          updateTopic(selectedTopic)
             .catch(_ => {
               console.log("Error updating Backend. Sleeping 200ms and trying again.")
               sleep(200)
                 .then(_ => {
-                  updateBackendTopic(selectedTopic)
+                  updateTopic(selectedTopic)
                     .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
                 })
             })
@@ -61,7 +61,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     }
   }
 
-  renderSelectedTopic = (topic: BackendTopic) => {
+  renderSelectedTopic = (topic: Topic) => {
     return (
       <>
         <Form.Group>

@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { BackendTopic } from './Topic'
+import { Topic } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
-import { fetchUser, fetchUsers, fetchTopics, updateBackendTopic } from './../backendFetchers'
+import { fetchUser, fetchUsers, fetchTopics, updateTopic } from './../backendFetchers'
 
 interface TopicPageProps {
   setAppState: Function
@@ -14,8 +14,8 @@ interface TopicPageProps {
 
 interface TopicPageState {
   currentBlogger?: User
-  currentTopic?: BackendTopic
-  selectedTopic: BackendTopic | null
+  currentTopic?: Topic
+  selectedTopic: Topic | null
 }
 
 class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
@@ -46,7 +46,7 @@ class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
       })
   }
 
-  children = (topic: BackendTopic | undefined): BackendTopic[] | undefined => {
+  children = (topic: Topic | undefined): Topic[] | undefined => {
     if (topic?.descendants) {
       return (
         topic.descendants.filter((descendant) => {

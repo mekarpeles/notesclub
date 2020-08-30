@@ -3,7 +3,7 @@ import axios from 'axios'
 import { AxiosPromise } from 'axios'
 import { User } from './User'
 import { apiDomain } from './appConfig'
-import { BackendTopic } from './topics/Topic'
+import { Topic } from './topics/Topic'
 
 export const fetchUsers = async (ids: number[]) : Promise<User[] | undefined> => {
   const response = await axios.get(apiDomain() + '/v1/users', { params: { ids: ids }, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
@@ -33,7 +33,7 @@ interface fetchTopicsInterface {
   ancestry?: string | null
 }
 
-export const fetchTopics = async (params: fetchTopicsInterface): Promise<BackendTopic[] | undefined> => {
+export const fetchTopics = async (params: fetchTopicsInterface): Promise<Topic[] | undefined> => {
   const response = await axios.get(apiDomain() + '/v1/topics', { params: params, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
     .then(res => res.data)
     .catch(res => {
@@ -43,7 +43,7 @@ export const fetchTopics = async (params: fetchTopicsInterface): Promise<Backend
   return (response)
 }
 
-export const updateBackendTopic = (topic: BackendTopic): AxiosPromise => {
+export const updateTopic = (topic: Topic): AxiosPromise => {
   return (
     axios.put(apiDomain() + `/v1/topics/${topic.id}`, topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
   )

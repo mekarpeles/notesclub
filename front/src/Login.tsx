@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Form, Button } from 'react-bootstrap'
 import axios from 'axios'
 import { apiDomain } from './appConfig'
-import { humanize } from './stringTools'
 
 interface LoginProps {
   setParentState: Function
