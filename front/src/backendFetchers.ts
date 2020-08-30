@@ -3,7 +3,7 @@ import axios from 'axios'
 import { AxiosPromise } from 'axios'
 import { BackendUser } from './User'
 import { apiDomain } from './appConfig'
-import { BackendTopic } from './Topic'
+import { BackendTopic } from './topics/Topic'
 
 export const fetchUsers = async (ids: number[]) : Promise<BackendUser[] | undefined> => {
   const response = await axios.get(apiDomain() + '/v1/users', { params: { ids: ids }, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })

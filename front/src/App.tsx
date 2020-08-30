@@ -4,13 +4,10 @@ import '@ionic/react/css/core.css';
 import Login from './Login';
 import Header from './Header';
 import { Alert } from 'react-bootstrap';
-import axios from 'axios';
-import { apiDomain } from './appConfig'
-import { User, Users, BackendUser } from './User'
 import { BrowserRouter as Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom'
-import TopicPage from './TopicPage'
+import TopicPage from './topics/TopicPage'
 import UserPage from './UserPage'
-import { Topic, Topics } from './Topic'
+import { User, Users, BackendUser } from './User'
 import { fetchUser } from './backendFetchers'
 
 interface AppProps {

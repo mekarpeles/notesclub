@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { BackendUser } from './User'
 import { Button } from 'react-bootstrap'
-import { BackendTopic } from './Topic'
+import { BackendTopic } from './topics/Topic'
 import { fetchUser, fetchTopics } from './backendFetchers'
 
 interface UserPageProps {

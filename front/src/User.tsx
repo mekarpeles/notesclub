@@ -1,4 +1,4 @@
-import { Topic, Topics } from './Topic'
+import { Topic, Topics } from './topics/Topic'
 
 export interface User {
   id: number
