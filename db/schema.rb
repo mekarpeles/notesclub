@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_28_131902) do
+ActiveRecord::Schema.define(version: 2020_08_30_102209) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2020_08_28_131902) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "slug", null: false
+    t.integer "position"
     t.index ["ancestry"], name: "index_topics_on_ancestry"
     t.index ["content"], name: "index_topics_on_content", using: :gin
     t.index ["slug", "user_id"], name: "index_topics_on_slug_and_user_id", unique: true

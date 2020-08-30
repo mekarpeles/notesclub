@@ -199,24 +199,38 @@ class TopicPage extends React.Component<IProps, IState> {
     )
   }
 
+  children = (topic: BackendTopic | undefined): BackendTopic[] | undefined => {
+    if (topic?.descendants) {
+      return (
+        topic.descendants.filter((descendant) => {
+          if (topic.ancestry === null) {
+            return (descendant.ancestry === String(topic.id))
+          } else {
+            return (descendant.ancestry === `${topic.ancestry}/${topic.id}`)
+          }
+        }).sort((a, b) => a.position > b.position ? 1 : -1)
+      )
+    }
+  }
+
   public render () {
     const { currentBlogger, currentTopic } = this.state
 
-    const descendants = currentTopic?.descendants
+    const children = this.children(currentTopic)
     return (
       <>
         <div className="container">
           { currentBlogger && !currentTopic &&
           <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a></h1>
           }
-          {(!currentBlogger || !currentTopic || !descendants) &&
+          {(!currentBlogger || !currentTopic || !children) &&
             <p>Loading</p>
           }
-          {currentBlogger && currentTopic && descendants &&
+          {currentBlogger && currentTopic && children &&
             <>
               <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a> · {currentTopic.content}</h1>
               <ul>
-                {descendants.map((subTopic) => this.renderTopic(subTopic, true))}
+                {children.map((subTopic) => this.renderTopic(subTopic, true))}
               </ul>
               {/* References:
               <ul>

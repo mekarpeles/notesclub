@@ -3,6 +3,7 @@ topic1:
   content: "Climate Change"
   user_id: 1
   ancestry:
+  position: 1
   slug: climate_change
   created_at: "2020-08-29T11:01:41.208Z"
   updated_at: "2020-08-29T11:01:41.208Z"
@@ -11,6 +12,7 @@ topic2:
   content: "2020-08-28"
   user_id: 1
   ancestry:
+  position: 2
   slug:  "2020-08-28"
   created_at: "2020-08-29T11:01:41.208Z"
   updated_at: "2020-08-29T11:01:41.208Z"
@@ -19,6 +21,7 @@ topic3:
   content: "I started to read [[How to take smart notes]]"
   user_id: 1
   ancestry: "2"
+  position: 1
   slug: "jdjiwe23m"
   created_at: "2020-08-29T11:01:41.208Z"
   updated_at: "2020-08-29T11:01:41.208Z"
@@ -27,6 +30,7 @@ topic4:
   content: "I #love it"
   user_id: 1
   ancestry: "2/3"
+  position: 1
   slug: "ds98wekjwe"
   created_at: "2020-08-29T11:01:41.208Z"
   updated_at: "2020-08-29T11:01:41.208Z"
@@ -35,6 +39,7 @@ topic5:
   content: "Something"
   user_id: 2
   ancestry:
+  position: 1
   slug:  "something"
   created_at: "2020-08-29T11:01:41.208Z"
   updated_at: "2020-08-29T11:01:41.208Z"

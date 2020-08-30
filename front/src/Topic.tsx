@@ -13,7 +13,8 @@ export interface BackendTopic {
   id?: number
   slug?: string
   content: string
-  ancestry: string
+  ancestry: string | null
+  position: number
   user_id: number
   descendants?: BackendTopic[]
 }

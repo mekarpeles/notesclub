@@ -1,5 +1,6 @@
 class Topic < ApplicationRecord
   has_ancestry
+  acts_as_list scope: [:ancestry, :user_id]
 
   validates :slug, uniqueness: { scope: :user_id }, presence: true
 
