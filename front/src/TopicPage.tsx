@@ -87,7 +87,7 @@ class TopicPage extends React.Component<IProps, IState> {
 
       switch (event.key) {
         // case "Enter":
-        //   if (selectedTopicPath) {
+        //   if (selectedTopic) {
         //     const t = emptyTopic(currentUsername, parent.key)
         //     topics[t.key] = t
         //     // Insert new topic t after selected topic
@@ -95,7 +95,7 @@ class TopicPage extends React.Component<IProps, IState> {
         //     selectedTopicPath[last] = t.key
         //     this.props.setAppState({ topics: topics, selectedTopicPath: selectedTopicPath })
         //   }
-        //   break;
+        //   break
         // case "ArrowUp":
         //   const previousSibling = topics[siblingsKeys[i - 1]]
         //   if (previousSibling) {
@@ -166,7 +166,7 @@ class TopicPage extends React.Component<IProps, IState> {
                     .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
                 })
             })
-          break;
+          break
       }
     }
   }
@@ -192,18 +192,10 @@ class TopicPage extends React.Component<IProps, IState> {
     const isSelected = (selectedTopic === topic)
 
     return (
-      <>
-        {isSelected &&
-          <li key={`selected_topic_${topic.id}`}>
-            {this.renderSelectedTopic(topic)}
-          </li>
-        }
-        {!isSelected &&
-          <li key={`topic_${topic.id}`} onClick={() => this.setState({selectedTopic: topic})}>
-            {topic.content}
-          </li>
-        }
-      </>
+      <li key={`topic_${topic.id}`} onClick={() => !isSelected && this.setState({ selectedTopic: topic })}>
+        {isSelected && this.renderSelectedTopic(topic)}
+        {!isSelected && topic.content}
+      </li>
     )
   }
 
