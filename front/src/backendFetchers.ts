@@ -1,11 +1,11 @@
 
 import axios from 'axios'
 import { AxiosPromise } from 'axios'
-import { BackendUser } from './User'
+import { User } from './User'
 import { apiDomain } from './appConfig'
 import { BackendTopic } from './topics/Topic'
 
-export const fetchUsers = async (ids: number[]) : Promise<BackendUser[] | undefined> => {
+export const fetchUsers = async (ids: number[]) : Promise<User[] | undefined> => {
   const response = await axios.get(apiDomain() + '/v1/users', { params: { ids: ids }, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
     .then(res => res.data)
     .catch(res => {
@@ -15,7 +15,7 @@ export const fetchUsers = async (ids: number[]) : Promise<BackendUser[] | undefi
   return (response)
 }
 
-export const fetchUser = async (username: string): Promise<BackendUser | undefined> => {
+export const fetchUser = async (username: string): Promise<User | undefined> => {
   const response = await axios.get(apiDomain() + '/v1/users', { params: { username: username }, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
     .then(res => res.data[0])
     .catch(res => {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { BackendUser } from './User'
+import { User } from './User'
 import { Button } from 'react-bootstrap'
 import { BackendTopic } from './topics/Topic'
 import { fetchUser, fetchTopics } from './backendFetchers'
@@ -10,7 +10,7 @@ interface UserPageProps {
 
 interface UserPageState {
   topics?: BackendTopic[]
-  blogger?: BackendUser
+  blogger?: User
 }
 
 class UserPage extends React.Component<UserPageProps, UserPageState> {

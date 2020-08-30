@@ -7,7 +7,7 @@ import { Alert } from 'react-bootstrap';
 import { BrowserRouter as Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom'
 import TopicPage from './topics/TopicPage'
 import UserPage from './UserPage'
-import { User, Users, BackendUser } from './User'
+import { User } from './User'
 import { fetchUser } from './backendFetchers'
 
 interface AppProps {
@@ -20,7 +20,7 @@ interface alert {
 }
 
 interface AppState {
-  currentUser?: BackendUser
+  currentUser?: User
   currentUsername?: string
   alert?: alert
 }

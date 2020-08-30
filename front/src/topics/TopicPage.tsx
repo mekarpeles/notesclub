@@ -1,10 +1,7 @@
 import * as React from 'react'
-import { Topic, Topics, BackendTopic } from './Topic'
+import { BackendTopic } from './Topic'
 import TopicRenderer from './TopicRenderer'
-import { isUndefined } from 'util'
-import { Link } from 'react-router-dom'
-import { User, Users, BackendUser } from './../User'
-import { Reference } from './../Reference'
+import { User } from './../User'
 import { fetchUser, fetchUsers, fetchTopics, updateBackendTopic } from './../backendFetchers'
 
 interface TopicPageProps {
@@ -16,7 +13,7 @@ interface TopicPageProps {
 }
 
 interface TopicPageState {
-  currentBlogger?: BackendUser
+  currentBlogger?: User
   currentTopic?: BackendTopic
   selectedTopic: BackendTopic | null
 }

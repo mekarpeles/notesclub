@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap'
 import axios from 'axios'
-import { BackendUser } from './User'
+import { User } from './User'
 import { Redirect } from 'react-router-dom'
 
 interface HeaderProps {
   setParentState: Function
-  currentUser?: BackendUser
+  currentUser?: User
 }
 
 interface HeaderState {
