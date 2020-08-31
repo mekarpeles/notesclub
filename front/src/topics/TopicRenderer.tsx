@@ -71,20 +71,29 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
         case "ArrowDown":
           const { siblings } = this.props
 
-          if (siblings.length > 1) {
-            let found = false
-            descendants = descendants.map((descendant) => {
-              if (!found && areSibling(descendant, selectedTopic)) {
-                if ((selectedTopic.position + 1) === descendant.position) {
-                  descendant.position -= 1
-                  selectedTopic.position += 1
-                  found = true
+          if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
+            // Move selectedTopic down (increase position by 1)
+            if (siblings.length > selectedTopic.position) {
+              let found = false
+              descendants = descendants.map((descendant) => {
+                if (!found && areSibling(descendant, selectedTopic)) {
+                  if ((selectedTopic.position + 1) === descendant.position) {
+                    descendant.position -= 1
+                    selectedTopic.position += 1
+                    found = true
+                  }
                 }
-              }
-              return (descendant)
-            })
-            this.props.setTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
-            updateBackendTopic(selectedTopic, this.props.setAppState)
+                return (descendant)
+              })
+              this.props.setTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
+              updateBackendTopic(selectedTopic, this.props.setAppState)
+            }
+          } else {
+            // Select topic below
+            if (siblings.length > selectedTopic.position) {
+              const newSelected = siblings.filter((sibling) => sibling.position === selectedTopic.position + 1)[0]
+              this.props.setTopicPageState({ selectedTopic: newSelected })
+            }
           }
           break
       }
