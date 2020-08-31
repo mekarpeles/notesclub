@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Topic, topicKey } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
-import { fetchBackendUser, fetchBackendUsers, fetchBackendTopics, updateBackendTopic } from './../backendFetchers'
+import { fetchBackendUser, fetchBackendUsers, fetchBackendTopics, updateBackendTopic } from './../backendSync'
 import { getChildren } from './ancestry'
 
 interface TopicPageProps {

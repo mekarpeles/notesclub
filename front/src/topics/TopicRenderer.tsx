@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Form } from 'react-bootstrap'
 import { Topic, topicKey, sameTopic } from './Topic'
-import { createBackendTopic, updateBackendTopic } from './../backendFetchers'
+import { createBackendTopic, updateBackendTopic } from './../backendSync'
 import { getChildren, areSibling } from './ancestry'
 
 interface TopicRendererProps {

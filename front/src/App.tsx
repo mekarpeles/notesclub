@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect, RouteComponentProps }
 import TopicPage from './topics/TopicPage'
 import UserPage from './UserPage'
 import { User } from './User'
-import { fetchBackendUser } from './backendFetchers'
+import { fetchBackendUser } from './backendSync'
 
 interface AppProps {
 

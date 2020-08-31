@@ -2,7 +2,7 @@ import * as React from 'react'
 import { User } from './User'
 import { Button } from 'react-bootstrap'
 import { Topic } from './topics/Topic'
-import { fetchBackendUser, fetchBackendTopics } from './backendFetchers'
+import { fetchBackendUser, fetchBackendTopics } from './backendSync'
 
 interface UserPageProps {
   blogUsername: string
