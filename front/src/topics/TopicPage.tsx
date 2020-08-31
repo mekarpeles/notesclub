@@ -40,8 +40,6 @@ class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
       .then(blogger => {
         this.setState({ currentBlogger: blogger})
         if (blogger) {
-          console.log("fetching topic")
-
           fetchBackendTopics({ slug: currentTopicKey, include_descendants: true })
             .then(fetchBackendTopicsAndDescendants => {
               if (fetchBackendTopicsAndDescendants) {

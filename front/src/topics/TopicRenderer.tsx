@@ -70,7 +70,26 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           this.props.setTopicPageState({ selectedTopic: null })
           updateBackendTopic(selectedTopic)
             .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+          break
+        case "ArrowDown":
+          const { siblings } = this.props
 
+          if (siblings.length > 1) {
+            let found = false
+            descendants = descendants.map((descendant) => {
+              if (!found && areSibling(descendant, selectedTopic)) {
+                if ((selectedTopic.position + 1) === descendant.position) {
+                  descendant.position -= 1
+                  selectedTopic.position += 1
+                  found = true
+                }
+              }
+              return (descendant)
+            })
+            this.props.setTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
+            updateBackendTopic(selectedTopic)
+              .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+          }
           break
       }
     }

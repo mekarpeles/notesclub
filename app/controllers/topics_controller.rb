@@ -42,7 +42,7 @@ class TopicsController < ApplicationController
   end
 
   def update
-    if @topic.update(params.permit(:content, :ancestry))
+    if @topic.update(params.permit(:content, :ancestry, :position))
       render json: @topic, status: :ok
     else
       render json: topic.errors.full_messages, status: :not_modified

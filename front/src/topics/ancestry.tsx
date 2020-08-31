@@ -1,4 +1,4 @@
-import { Topic } from './Topic'
+import { Topic, sameTopic } from './Topic'
 
 export const getChildren = (topic: Topic, descendants: Topic[]): Topic[] => {
   return (
@@ -12,8 +12,8 @@ export const getChildren = (topic: Topic, descendants: Topic[]): Topic[] => {
   )
 }
 
-export const areSibling = (topic1: Topic, topic2: Topic): boolean => {
-  return (topic1.id != topic2.id && topic1.ancestry === topic2.ancestry)
+export const areSibling = (t1: Topic, t2: Topic): boolean => {
+  return (!sameTopic(t1, t2) && t1.ancestry === t2.ancestry)
 }
 
 // export const getSiblings = (topic: Topic): Topic[] => {
