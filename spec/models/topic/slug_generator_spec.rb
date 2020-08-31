@@ -10,6 +10,12 @@ RSpec.describe Topic::SlugGenerator, type: :model do
         expect(generator.generate_unique_slug).to eq('climate_change')
       end
 
+      it 'should parametrize url' do
+        topic = Topic.new(content: "https://thisurl.com/whatever")
+        generator = Topic::SlugGenerator.new(topic)
+        expect(generator.generate_unique_slug).to eq('https_thisurl_com_whatever')
+      end
+
       it 'should shorten to 100 characters' do
         long_string = 'Paleoclimatology is the study of ancient climates. Since very few direct observations of climate are available before the 19th century, paleoclimates are inferred from proxy variables that include non-biotic evidence such as sediments found in lake beds and ice cores, and biotic evidence such as tree rings and coral. Climate models are mathematical models of past, present and future climates.'
         topic = Topic.new(content: long_string)

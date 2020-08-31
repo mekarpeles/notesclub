@@ -1,14 +1,16 @@
-import { Topic, sameTopic } from './Topic'
+import { Topic, sameTopic, sortTopics } from './Topic'
 
 export const getChildren = (topic: Topic, descendants: Topic[]): Topic[] => {
   return (
-    descendants.filter((descendant) => {
-      if (topic.ancestry === null) {
-        return (descendant.ancestry === String(topic.id))
-      } else {
-        return (descendant.ancestry === `${topic.ancestry}/${topic.id}`)
-      }
-    }).sort((a, b) => a.position > b.position ? 1 : -1)
+    sortTopics(
+      descendants.filter((descendant) => {
+        if (topic.ancestry === null) {
+          return (descendant.ancestry === String(topic.id))
+        } else {
+          return (descendant.ancestry === `${topic.ancestry}/${topic.id}`)
+        }
+      })
+    )
   )
 }
 
