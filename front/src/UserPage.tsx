@@ -28,7 +28,6 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
 
   fetchBackendUserTopics = () => {
     const { blogUsername } = this.props
-    console.log("starting fetchBackendUserTopics")
     fetchBackendUser(blogUsername)
       .then(blogger => {
         this.setState({ blogger: blogger })
@@ -42,15 +41,13 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
 
   public render () {
     const { blogger, topics } = this.state
-    console.log("UserPage")
-
     return (
       <div className="container">
         { blogger && topics &&
           <>
             <h1>{blogger.name}'s topics</h1>
             <ul>
-              {topics.map((topic) => <li><Button variant="link" href={`/${blogger.username}/${topic.slug}`}>{topic.content}</Button></li>)}
+              {topics.map((topic) => <li key={topic.id}><Button variant="link" href={`/${blogger.username}/${topic.slug}`}>{topic.content}</Button></li>)}
             </ul>
           </>
         }

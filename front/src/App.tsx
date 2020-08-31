@@ -86,9 +86,9 @@ class App extends React.Component<AppProps, AppState> {
             {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
           </div>
           <Switch>
-            {/* <Route path="/" exact>
+            <Route path="/" exact>
               {currentUsername ? <Redirect to={`/${currentUsername}`} /> : <Login setParentState={this.updateState} />}
-            </Route> */}
+            </Route>
             {currentUsername ? this.renderRoutes() : <Login setParentState={this.updateState} />}
           </Switch>
         </Router>
