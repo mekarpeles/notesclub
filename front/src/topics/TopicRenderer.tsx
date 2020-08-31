@@ -11,7 +11,7 @@ interface TopicRendererProps {
   siblings: Topic[]
   currentTopic: Topic
   renderSubtopics: boolean
-  setTopicPageState: Function
+  setUserTopicPageState: Function
   setAppState: Function
 }
 
@@ -54,18 +54,18 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
 
           updateBackendTopic(selectedTopic, this.props.setAppState)
 
-          this.props.setTopicPageState({ selectedTopic: newTopic, descendants: descendants })
+          this.props.setUserTopicPageState({ selectedTopic: newTopic, descendants: descendants })
           createBackendTopic(newTopic, this.props.setAppState)
             .then(topicWithId => {
               const selected = this.props.selectedTopic
-              this.props.setTopicPageState({
+              this.props.setUserTopicPageState({
                 descendants: descendants.map((d) => d.tmp_key === topicWithId.tmp_key ? topicWithId : d),
                 selectedTopic: selected && selected.tmp_key === topicWithId.tmp_key ? topicWithId : selected
               })
             })
           break
         case "Escape":
-          this.props.setTopicPageState({ selectedTopic: null })
+          this.props.setUserTopicPageState({ selectedTopic: null })
           updateBackendTopic(selectedTopic, this.props.setAppState)
           break
         case "ArrowDown":
@@ -83,7 +83,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
                 }
                 return (descendant)
               })
-              this.props.setTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
+              this.props.setUserTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
               updateBackendTopic(selectedTopic, this.props.setAppState)
             }
           } else {
@@ -91,7 +91,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             if (siblings.length > selectedTopic.position) {
               updateBackendTopic(selectedTopic, this.props.setAppState)
               const newSelected = siblings.filter((sibling) => sibling.position === selectedTopic.position + 1)[0]
-              this.props.setTopicPageState({ selectedTopic: newSelected })
+              this.props.setUserTopicPageState({ selectedTopic: newSelected })
             }
           }
           break
@@ -111,14 +111,14 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
                 }
                 return (descendant)
               })
-              this.props.setTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
+              this.props.setUserTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
               updateBackendTopic(selectedTopic, this.props.setAppState)
             }
           } else {
             // Select topic above
             updateBackendTopic(selectedTopic, this.props.setAppState)
             const newSelected = siblings.filter((sibling) => sibling.position === selectedTopic.position - 1)[0]
-            this.props.setTopicPageState({ selectedTopic: newSelected })
+            this.props.setUserTopicPageState({ selectedTopic: newSelected })
           }
           break
       }
@@ -132,7 +132,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     let { selectedTopic } = this.props
     if (selectedTopic) {
       selectedTopic.content = value
-      this.props.setTopicPageState({ selectedTopic: selectedTopic })
+      this.props.setUserTopicPageState({ selectedTopic: selectedTopic })
     }
   }
 
@@ -164,7 +164,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     }
 
     // Select new topic:
-    this.props.setTopicPageState({ selectedTopic: topic })
+    this.props.setUserTopicPageState({ selectedTopic: topic })
   }
 
   public render () {

@@ -5,7 +5,7 @@ import Login from './Login';
 import Header from './Header';
 import { Alert } from 'react-bootstrap';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
-import TopicPage from './topics/TopicPage'
+import UserTopicPage from './topics/UserTopicPage'
 import UserPage from './UserPage'
 import { User } from './User'
 import { fetchBackendUser } from './backendSync'
@@ -68,7 +68,7 @@ class App extends React.Component<AppProps, AppState> {
         { currentUsername &&
           <>
           <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} /> } />
-            <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <TopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUsername={currentUsername} setAppState={this.updateState} />} />
+            <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUsername={currentUsername} setAppState={this.updateState} />} />
           </>
         }
       </>

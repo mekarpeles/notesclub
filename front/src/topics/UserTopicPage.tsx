@@ -5,22 +5,22 @@ import { User } from './../User'
 import { fetchBackendUser, fetchBackendTopics } from './../backendSync'
 import { getChildren } from './ancestry'
 
-interface TopicPageProps {
+interface UserTopicPageProps {
   setAppState: Function
   currentUsername: string | null
   currentTopicKey: string
   currentBlogUsername: string
 }
 
-interface TopicPageState {
+interface UserTopicPageState {
   currentBlogger?: User
   currentTopic?: Topic
   selectedTopic: Topic | null
   descendants?: Topic[]
 }
 
-class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
-  constructor(props: TopicPageProps) {
+class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageState> {
+  constructor(props: UserTopicPageProps) {
     super(props)
 
     this.state = {
@@ -50,8 +50,8 @@ class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
       })
   }
 
-  updateState = (partialState: Partial<TopicPageState>) => {
-    const newState: TopicPageState = { ...this.state, ...partialState };
+  updateState = (partialState: Partial<UserTopicPageState>) => {
+    const newState: UserTopicPageState = { ...this.state, ...partialState };
     this.setState(newState);
   }
 
@@ -81,7 +81,7 @@ class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
                     currentTopic={currentTopic}
                     renderSubtopics={true}
                     selectedTopic={selectedTopic}
-                    setTopicPageState={this.updateState}
+                    setUserTopicPageState={this.updateState}
                     setAppState={this.props.setAppState} />
                 ))}
               </ul>
@@ -97,4 +97,4 @@ class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
   }
 }
 
-export default TopicPage
+export default UserTopicPage
