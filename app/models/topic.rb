@@ -6,10 +6,15 @@ class Topic < ApplicationRecord
   validates :id, uniqueness: true
 
   before_validation :set_slug
+  before_save :nulify_empty_ancestry
 
   private
 
   def set_slug
     self.slug = SlugGenerator.new(self).generate_unique_slug
+  end
+
+  def nulify_empty_ancestry
+    self.ancestry = nil if ancestry.empty?
   end
 end

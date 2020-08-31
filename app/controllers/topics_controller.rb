@@ -7,7 +7,7 @@ class TopicsController < ApplicationController
     topics = Topic
     topics = topics.where(id: params["ids"]) if params["ids"].present? && params["ids"].is_a?(Array)
     topics = topics.where(user_id: params["user_ids"]) if params["user_ids"].present? && params["user_ids"].is_a?(Array)
-    topics = topics.where(ancestry: params["ancestry"]) if params.include?("ancestry")
+    topics = topics.where(ancestry: params["ancestry"].empty? ? nil : params["ancestry"]) if params.include?("ancestry")
     topics = topics.where(slug: params["slug"]) if params["slug"]
     limit = params["slug"] || (params["ids"] && params["ids"].size == 1) ? 1 : 100
     topics = topics.order(updated_at: :desc).limit(limit)
