@@ -35,39 +35,52 @@ interface fetchBackendTopicsInterface {
   tmp_key?: string
 }
 
-export const fetchBackendTopics = async (params: fetchBackendTopicsInterface): Promise<TopicWithDescendants[] | undefined> => {
+export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, setAppState: Function): Promise<TopicWithDescendants[]> => {
   const response = await axios.get(apiDomain() + '/v1/topics', { params: params, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
     .then(res => {return(res.data)})
-    .catch(res => {
-      console.log('Error fetching topics')
-      return (Promise.reject("Error"))
-    })
+    .catch(_ => syncError(setAppState))
   return (response)
 }
 
-export const updateBackendTopic = async (topic: Topic): Promise<Topic> => {
+export const updateBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
   return (
     axios.put(apiDomain() + `/v1/topics/${topic.id}`, topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => res.data)
-      .catch(_ => Promise.reject("Error"))
+      .catch(_ => syncError(setAppState))
   )
 }
 
-// export const updateBackendTopic = async (topic: Topic): Promise<Topic> => {
+export const createBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
+  return (
+    axios.post(apiDomain() + '/v1/topics', topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+      .then(res => {
+        let t = res.data
+        t["tmp_key"] = topic.tmp_key
+        return (t)
+      })
+      .catch(_ => syncError(setAppState))
+  )
+}
+
+const syncError = (setAppState: Function) => {
+  setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } })
+}
+
+// export const updateBackendTopicWithRetries = async (topic: Topic): Promise<Topic> => {
 //   return (
-//     updateBackendTopicOnce(topic)
+//     updateBackendTopic(topic)
 //       .then(t => t)
 //       .catch(_ => {
 //         console.log("Error updating topic. Will retry in 200ms.")
 //         return (
 //           sleep(200)
-//             .then(_ => updateBackendTopicOnce(topic)
+//             .then(_ => updateBackendTopic(topic)
 //                 .then(t => t)
 //                 .catch(_ => {
 //                   console.log("Error updating topic. Will retry in 2 seconds.")
 //                   return (
 //                     sleep(2000)
-//                       .then(_ => updateBackendTopicOnce(topic)
+//                       .then(_ => updateBackendTopic(topic)
 //                         .then(t => t)
 //                         .catch(_ => Promise.reject("Error"))
 //                       )
@@ -79,15 +92,3 @@ export const updateBackendTopic = async (topic: Topic): Promise<Topic> => {
 //       })
 //   )
 // }
-
-export const createBackendTopic = async (topic: Topic): Promise<Topic> => {
-  return (
-    axios.post(apiDomain() + '/v1/topics', topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
-      .then(res => {
-        let t = res.data
-        t["tmp_key"] = topic.tmp_key
-        return (t)
-      })
-      .catch(_ => undefined)
-  )
-}

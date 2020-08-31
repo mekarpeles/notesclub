@@ -6,6 +6,7 @@ import { fetchBackendUser, fetchBackendTopics } from './backendFetchers'
 
 interface UserPageProps {
   blogUsername: string
+  setAppState: Function
 }
 
 interface UserPageState {
@@ -33,7 +34,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
         this.setState({ blogger: blogger })
 
         if (blogger) {
-          fetchBackendTopics({user_ids: [blogger.id], ancestry: null})
+          fetchBackendTopics({ user_ids: [blogger.id], ancestry: null }, this.props.setAppState)
             .then(topics => topics && this.setState({ topics: topics }))
         }
       })

@@ -67,8 +67,8 @@ class App extends React.Component<AppProps, AppState> {
       <>
         { currentUsername &&
           <>
-            <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} /> } />
-            <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <TopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUsername={currentUsername} setAppState={this.updateState} updateAlert={this.updateAlert} />} />
+          <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} /> } />
+            <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <TopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUsername={currentUsername} setAppState={this.updateState} />} />
           </>
         }
       </>

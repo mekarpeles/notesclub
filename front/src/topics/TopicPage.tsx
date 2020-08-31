@@ -7,7 +7,6 @@ import { getChildren } from './ancestry'
 
 interface TopicPageProps {
   setAppState: Function
-  updateAlert: Function
   currentUsername: string | null
   currentTopicKey: string
   currentBlogUsername: string
@@ -40,7 +39,7 @@ class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
       .then(blogger => {
         this.setState({ currentBlogger: blogger})
         if (blogger) {
-          fetchBackendTopics({ slug: currentTopicKey, include_descendants: true })
+          fetchBackendTopics({ slug: currentTopicKey, include_descendants: true }, this.props.setAppState)
             .then(fetchBackendTopicsAndDescendants => {
               if (fetchBackendTopicsAndDescendants) {
                 const topicAndDescendants = fetchBackendTopicsAndDescendants[0]

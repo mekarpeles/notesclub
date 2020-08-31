@@ -52,11 +52,10 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           })
           descendants.push(newTopic)
 
-          updateBackendTopic(selectedTopic)
-            .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+          updateBackendTopic(selectedTopic, this.props.setAppState)
 
           this.props.setTopicPageState({ selectedTopic: newTopic, descendants: descendants })
-          createBackendTopic(newTopic)
+          createBackendTopic(newTopic, this.props.setAppState)
             .then(topicWithId => {
               const selected = this.props.selectedTopic
               this.props.setTopicPageState({
@@ -64,12 +63,10 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
                 selectedTopic: selected && selected.tmp_key === topicWithId.tmp_key ? topicWithId : selected
               })
             })
-            .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
           break
         case "Escape":
           this.props.setTopicPageState({ selectedTopic: null })
-          updateBackendTopic(selectedTopic)
-            .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+          updateBackendTopic(selectedTopic, this.props.setAppState)
           break
         case "ArrowDown":
           const { siblings } = this.props
@@ -87,8 +84,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
               return (descendant)
             })
             this.props.setTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
-            updateBackendTopic(selectedTopic)
-              .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+            updateBackendTopic(selectedTopic, this.props.setAppState)
           }
           break
       }
@@ -130,8 +126,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
 
     // Update previously selected topic:
     if (selectedTopic) {
-      updateBackendTopic(selectedTopic)
-        .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+      updateBackendTopic(selectedTopic, this.props.setAppState)
     }
 
     // Select new topic:
