@@ -1,6 +1,7 @@
 class TopicsController < ApplicationController
   before_action :set_topic, only: [:update]
-  before_action :authenticate_param_user!, only: [:update, :create, :destroy]
+  before_action :authenticate_param_id!, only: [:update, :destroy]
+  before_action :authenticate_param_user_id!, only: [:create]
 
   def index
     topics = Topic
@@ -31,6 +32,15 @@ class TopicsController < ApplicationController
     end
   end
 
+  def create
+    topic = Topic.new(params.permit(:content, :ancestry, :user_id, :position))
+    if topic.save
+      render json: topic, status: :created
+    else
+      render json: topic.errors.full_messages, status: :bad_request
+    end
+  end
+
   def update
     if @topic.update(params.permit(:content, :ancestry))
       render json: @topic, status: :ok
@@ -45,7 +55,11 @@ class TopicsController < ApplicationController
     @topic = Topic.find(params[:id])
   end
 
-  def authenticate_param_user!
+  def authenticate_param_id!
     head :unauthorized if current_user.id != @topic.user_id
+  end
+
+  def authenticate_param_user_id!
+    head :unauthorized if current_user.id.to_s != params[:user_id].to_s
   end
 end

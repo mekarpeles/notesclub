@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect, RouteComponentProps }
 import TopicPage from './topics/TopicPage'
 import UserPage from './UserPage'
 import { User } from './User'
-import { fetchUser } from './backendFetchers'
+import { fetchBackendUser } from './backendFetchers'
 
 interface AppProps {
 
@@ -41,7 +41,7 @@ class App extends React.Component<AppProps, AppState> {
   componentDidMount() {
     const { currentUsername, currentUser } = this.state
     if (currentUsername && !currentUser) {
-      fetchUser(currentUsername)
+      fetchBackendUser(currentUsername)
         .then(currentUser => this.setState({ currentUser: currentUser }))
     }
   }

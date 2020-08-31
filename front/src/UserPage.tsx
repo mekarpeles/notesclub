@@ -2,7 +2,7 @@ import * as React from 'react'
 import { User } from './User'
 import { Button } from 'react-bootstrap'
 import { Topic } from './topics/Topic'
-import { fetchUser, fetchTopics } from './backendFetchers'
+import { fetchBackendUser, fetchBackendTopics } from './backendFetchers'
 
 interface UserPageProps {
   blogUsername: string
@@ -22,18 +22,18 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
   }
 
   componentDidMount() {
-    this.fetchUserTopics()
+    this.fetchBackendUserTopics()
   }
 
-  fetchUserTopics = () => {
+  fetchBackendUserTopics = () => {
     const { blogUsername } = this.props
-    console.log("starting fetchUserTopics")
-    fetchUser(blogUsername)
+    console.log("starting fetchBackendUserTopics")
+    fetchBackendUser(blogUsername)
       .then(blogger => {
         this.setState({ blogger: blogger })
 
         if (blogger) {
-          fetchTopics({user_ids: [blogger.id], ancestry: null})
+          fetchBackendTopics({user_ids: [blogger.id], ancestry: null})
             .then(topics => topics && this.setState({ topics: topics }))
         }
       })

@@ -63,6 +63,22 @@ RSpec.describe UsersController, type: :request do
     end
   end
 
+  context "#create" do
+    it "should create the topic" do
+      t0 = Topic.create!(content: "whatever whatever")
+      expect { post "/v1/topics", params: { content: "The sky is blue", ancestry: t0.id.to_s, user_id: user.id } }.to change{ Topic.count }.by(1)
+      expect(response.status).to eq 201
+      expect(Topic.last.attributes.slice("content", "ancestry", "user_id", "position")).to eq("content" => "The sky is blue", "ancestry" => t0.id.to_s, "user_id" => user.id, "position" => 1)
+    end
+
+    it "should return unauthorized if user_id doesn't match the auhtenticated user" do
+      expect(user.id).not_to eq(2)
+      t0 = Topic.create!(content: "whatever whatever")
+      expect { post "/v1/topics", params: { content: "The sky is blue", ancestry: t0.id.to_s, user_id: 2 } }.not_to change{ Topic.count }
+      expect(response.status).to eq 401
+    end
+  end
+
   context "#update" do
     it "should update the content" do
       topic1.update!(user_id: user.id)

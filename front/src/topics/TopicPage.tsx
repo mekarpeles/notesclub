@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { Topic } from './Topic'
+import { Topic, topicKey } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
-import { fetchUser, fetchUsers, fetchTopics, updateTopic } from './../backendFetchers'
+import { fetchBackendUser, fetchBackendUsers, fetchBackendTopics, updateBackendTopic } from './../backendFetchers'
+import { getChildren } from './ancestry'
 
 interface TopicPageProps {
   setAppState: Function
@@ -16,6 +17,7 @@ interface TopicPageState {
   currentBlogger?: User
   currentTopic?: Topic
   selectedTopic: Topic | null
+  descendants?: Topic[]
 }
 
 class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
@@ -34,30 +36,21 @@ class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
   fetchBloggerAndCurrentTopic = () => {
     const { currentBlogUsername, currentTopicKey } = this.props
 
-    fetchUser(currentBlogUsername)
+    fetchBackendUser(currentBlogUsername)
       .then(blogger => {
         this.setState({ currentBlogger: blogger})
         if (blogger) {
           console.log("fetching topic")
 
-          fetchTopics({slug: currentTopicKey, include_descendants: true})
-            .then(topics => topics && this.setState({currentTopic: topics[0]}))
+          fetchBackendTopics({ slug: currentTopicKey, include_descendants: true })
+            .then(fetchBackendTopicsAndDescendants => {
+              if (fetchBackendTopicsAndDescendants) {
+                const topicAndDescendants = fetchBackendTopicsAndDescendants[0]
+                this.setState({ currentTopic: topicAndDescendants, descendants: topicAndDescendants.descendants })
+              }
+            })
         }
       })
-  }
-
-  children = (topic: Topic | undefined): Topic[] | undefined => {
-    if (topic?.descendants) {
-      return (
-        topic.descendants.filter((descendant) => {
-          if (topic.ancestry === null) {
-            return (descendant.ancestry === String(topic.id))
-          } else {
-            return (descendant.ancestry === `${topic.ancestry}/${topic.id}`)
-          }
-        }).sort((a, b) => a.position > b.position ? 1 : -1)
-      )
-    }
   }
 
   updateState = (partialState: Partial<TopicPageState>) => {
@@ -66,23 +59,34 @@ class TopicPage extends React.Component<TopicPageProps, TopicPageState> {
   }
 
   public render () {
-    const { currentBlogger, currentTopic, selectedTopic } = this.state
+    const { currentBlogger, currentTopic, selectedTopic, descendants } = this.state
+    const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
 
-    const children = this.children(currentTopic)
     return (
       <>
         <div className="container">
           { currentBlogger && !currentTopic &&
           <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a></h1>
           }
-          {(!currentBlogger || !currentTopic || !children) &&
+          {!currentBlogger || !currentTopic || !children || !descendants &&
             <p>Loading</p>
           }
-          {currentBlogger && currentTopic && children &&
+          {currentBlogger && currentTopic && children && descendants &&
             <>
               <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a> · {currentTopic.content}</h1>
               <ul>
-              {children.map((subTopic) => <TopicRenderer key={subTopic.id} topic={subTopic} renderSubtopics={true} selectedTopic={selectedTopic} setTopicPageState={this.updateState} setAppState={this.props.setAppState} />)}
+                {children.map((subTopic) => (
+                  <TopicRenderer
+                    key={"sub" + topicKey(subTopic)}
+                    topic={subTopic}
+                    descendants={descendants}
+                    siblings={children}
+                    currentTopic={currentTopic}
+                    renderSubtopics={true}
+                    selectedTopic={selectedTopic}
+                    setTopicPageState={this.updateState}
+                    setAppState={this.props.setAppState} />
+                ))}
               </ul>
               {/* References:
               <ul>
