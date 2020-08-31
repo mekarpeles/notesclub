@@ -4,7 +4,7 @@ import '@ionic/react/css/core.css';
 import Login from './Login';
 import Header from './Header';
 import { Alert } from 'react-bootstrap';
-import { BrowserRouter as Router, Switch, Route, Redirect, RouteComponentProps } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import TopicPage from './topics/TopicPage'
 import UserPage from './UserPage'
 import { User } from './User'
