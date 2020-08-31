@@ -43,6 +43,7 @@ class App extends React.Component<AppProps, AppState> {
     if (currentUsername && !currentUser) {
       fetchBackendUser(currentUsername)
         .then(currentUser => this.setState({ currentUser: currentUser }))
+        .catch(_ => this.setState({ alert: { message: "Sync error. Please try again later. Sorry, we're in alpha!", variant: "danger" } }))
     }
   }
 

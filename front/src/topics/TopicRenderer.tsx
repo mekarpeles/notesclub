@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Form } from 'react-bootstrap'
 import { Topic, topicKey, sameTopic } from './Topic'
 import { createBackendTopic, updateBackendTopic } from './../backendFetchers'
-import { sleep } from './../utils/sleep'
 import { getChildren, areSibling } from './ancestry'
 
 interface TopicRendererProps {
@@ -55,6 +54,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
 
           updateBackendTopic(selectedTopic)
             .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+
           this.props.setTopicPageState({ selectedTopic: newTopic, descendants: descendants })
           createBackendTopic(newTopic)
             .then(topicWithId => {
@@ -64,22 +64,12 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
                 selectedTopic: selected && selected.tmp_key === topicWithId.tmp_key ? topicWithId : selected
               })
             })
-            .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error A3X. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+            .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
           break
         case "Escape":
           this.props.setTopicPageState({ selectedTopic: null })
-
           updateBackendTopic(selectedTopic)
-            .catch(_ => {
-              console.log("Error updating Backend. Sleeping 200ms and trying again.")
-              sleep(200)
-                .then(_ => {
-                  selectedTopic && updateBackendTopic(selectedTopic)
-                    .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
-                })
-            })
-          break
-        case "ArrowDown":
+            .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
 
           break
       }
@@ -116,12 +106,25 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   renderUnselectedTopic = (topic: Topic) => {
   }
 
+  selectTopic = (topic: Topic) => {
+    const { selectedTopic } = this.props
+
+    // Update previously selected topic:
+    if (selectedTopic) {
+      updateBackendTopic(selectedTopic)
+        .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
+    }
+
+    // Select new topic:
+    this.props.setTopicPageState({ selectedTopic: topic })
+  }
+
   public render () {
     const { selectedTopic, topic } = this.props
     const isSelected = selectedTopic && (selectedTopic.id === topic.id && selectedTopic.tmp_key === topic.tmp_key)
 
     return (
-      <li key={topicKey(topic)} onClick={() => !isSelected && this.props.setTopicPageState({ selectedTopic: topic })}>
+      <li key={topicKey(topic)} onClick={() => !isSelected && this.selectTopic(topic)}>
         {isSelected && this.renderSelectedTopic(topic)}
         {!isSelected && topic.content}
       </li>
