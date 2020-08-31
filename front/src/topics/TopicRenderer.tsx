@@ -45,16 +45,13 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             descendants: new Array<Topic>(),
             tmp_key: Math.random().toString(36).substring(2)
           }
-          let i: number = descendants.length - 1
           descendants = descendants.map((descendant, index) => {
-            if (descendant.id === selectedTopic.id && descendant.tmp_key === selectedTopic.tmp_key) {
-              i = index
-            } else if (areSibling(descendant, topic) && descendant.position >= newPosition) {
+            if (areSibling(descendant, topic) && descendant.position >= newPosition) {
               descendant.position += 1
             }
             return (descendant)
           })
-          descendants.splice(i, 0, newTopic)
+          descendants.push(newTopic)
 
           updateBackendTopic(selectedTopic)
             .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
@@ -81,6 +78,9 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
                     .catch(_ => this.props.setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } }))
                 })
             })
+          break
+        case "ArrowDown":
+
           break
       }
     }
