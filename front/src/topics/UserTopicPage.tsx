@@ -44,7 +44,9 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
               if (fetchBackendTopicsAndDescendants) {
                 const topicAndDescendants = fetchBackendTopicsAndDescendants[0]
                 this.setState({ currentTopic: topicAndDescendants, descendants: topicAndDescendants.descendants })
-
+                if (topicAndDescendants.descendants.length === 1) {
+                  this.setState({ selectedTopic: topicAndDescendants.descendants[0] })
+                }
                 this.createEmptyTopicIfNoDescendants()
               }
             })
@@ -65,7 +67,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
       const newNonSavedTopic = newTopic({
         position: 1,
         user_id: currentUser.id,
-        ancestry: `${currentTopic.ancestry}/${currentTopic.id}`
+        ancestry: currentTopic.ancestry ? `${currentTopic.ancestry}/${currentTopic.id}` : String(currentTopic.id)
       })
       descendants.push(newNonSavedTopic)
       this.setState({ selectedTopic: newNonSavedTopic, descendants: descendants })

@@ -35,14 +35,15 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     let siblingAbove: Topic | null = null
 
     if (selectedTopic) {
+      const selected = selectedTopic as Topic // Don't know why it complains if I skip this
       descendants = descendants.map((descendant, index) => {
-        if (sameTopic(selectedTopic as Topic, descendant)) {
+        if (sameTopic(selected, descendant)) {
           selectedTopicIndex = index
-        } else if (areSibling(descendant, selectedTopic as Topic)) {
-          if (descendant.position === (selectedTopic as Topic).position - 1) {
+        } else if (areSibling(descendant, selected)) {
+          if (descendant.position === (selected).position - 1) {
             siblingAbove = descendant
           }
-          if (descendant.position > (selectedTopic as Topic).position) {
+          if (descendant.position > (selected).position) {
             descendant.position -= 1
           }
         }
@@ -57,6 +58,52 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
         descendants.splice(selectedTopicIndex, 1, selectedTopic)
         this.props.setUserTopicPageState({descendants: descendants, selectedTopic: selectedTopic})
         updateBackendTopic(selectedTopic, this.props.setAppState)
+      }
+    }
+  }
+
+  unindentTopic = () => {
+    const { currentTopic } = this.props
+    let { descendants, selectedTopic } = this.props
+    let selectedTopicIndex: number | undefined = undefined
+    let siblingAbove: Topic | null = null
+
+    if (selectedTopic) {
+      let selected = selectedTopic as Topic // Don't know why it complains if I skip this
+      const parent = getParent(selectedTopic, descendants)
+      if (parent && !sameTopic(parent, currentTopic)) {
+        descendants = descendants.map((descendant, index) => {
+          if (sameTopic(selected, descendant)) {
+            selectedTopicIndex = index
+          } else if (areSibling(descendant, selected)) {
+            if (descendant.position > (selected).position) {
+              descendant.position -= 1
+            }
+          } else if (areSibling(descendant, parent)) {
+            if (descendant.position > parent.position) {
+              descendant.position += 1
+            }
+          }
+          return (descendant)
+        })
+
+        if (selectedTopicIndex) {
+          const old_ancestry = new RegExp(`^${selected.ancestry}/${selected.id}`)
+          descendants = descendants.map((descendant) => {
+            // Replace ancestry of selected's descendants
+            if (descendant.ancestry && old_ancestry.test(descendant.ancestry)) {
+              console.log(`replacing ancestry ${old_ancestry} with ${parent.ancestry}/${selected.id}`)
+              descendant.ancestry = descendant.ancestry.replace(old_ancestry, `${parent.ancestry}/${selected.id}`)
+            }
+            return (descendant)
+          })
+          selectedTopic.ancestry = parent.ancestry
+          selectedTopic.position = parent.position + 1
+
+          descendants.splice(selectedTopicIndex, 1, selectedTopic)
+          this.props.setUserTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
+          updateBackendTopic(selectedTopic, this.props.setAppState)
+        }
       }
     }
   }
@@ -100,7 +147,8 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           updateBackendTopic(selectedTopic, this.props.setAppState)
           break
         case "Tab":
-          this.indentTopic()
+          event.shiftKey ? this.unindentTopic() : this.indentTopic()
+          event.preventDefault()
           break
         case "ArrowDown":
           if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
