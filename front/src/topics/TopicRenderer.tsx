@@ -29,6 +29,38 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     this.onKeyDown = this.onKeyDown.bind(this)
   }
 
+  indentTopic = () => {
+    let { descendants, selectedTopic } = this.props
+    let selectedTopicIndex: number | undefined = undefined
+    let siblingAbove: Topic | null = null
+
+    if (selectedTopic) {
+      descendants = descendants.map((descendant, index) => {
+        if (sameTopic(selectedTopic as Topic, descendant)) {
+          selectedTopicIndex = index
+        } else if (areSibling(descendant, selectedTopic as Topic)) {
+          if (descendant.position === (selectedTopic as Topic).position - 1) {
+            siblingAbove = descendant
+          }
+          if (descendant.position > (selectedTopic as Topic).position) {
+            descendant.position -= 1
+          }
+        }
+        return (descendant)
+      })
+
+      if (siblingAbove && selectedTopicIndex) {
+        const newParent = siblingAbove as Topic
+        const children = getChildren(newParent, descendants)
+        selectedTopic.ancestry = `${selectedTopic.ancestry}/${(siblingAbove as Topic).id}`
+        selectedTopic.position = children.length // add at the end
+        descendants.splice(selectedTopicIndex, 1, selectedTopic)
+        this.props.setUserTopicPageState({descendants: descendants, selectedTopic: selectedTopic})
+        updateBackendTopic(selectedTopic, this.props.setAppState)
+      }
+    }
+  }
+
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const { topic, selectedTopic, siblings } = this.props
     let { descendants } = this.props
@@ -67,6 +99,9 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           this.props.setUserTopicPageState({ selectedTopic: null })
           updateBackendTopic(selectedTopic, this.props.setAppState)
           break
+        case "Tab":
+          this.indentTopic()
+          break
         case "ArrowDown":
           if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
             if (siblings.length > selectedTopic.position) {
@@ -98,7 +133,6 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
             if (selectedTopic.position > 1) {
               // Move selectedTopic up (decrease position by 1)
-
               let found = false
               descendants = descendants.map((descendant) => {
                 if (!found && areSibling(descendant, selectedTopic)) {
@@ -127,7 +161,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             let newSelected: Topic | null = null
 
             if (getChildren(selectedTopic, descendants).length > 0) {
-              // Do not delete topics with descendants
+              // Do nothing when topics have descendants
               return
             }
 
@@ -161,7 +195,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
               if (parent && !sameTopic(parent, currentTopic)) {
                 newSelected = parent
               } else {
-                return // selectedTopic is the only descendant of currentTopic
+                return // Do nothing when selectedTopic is the only descendant of currentTopic
               }
             }
 

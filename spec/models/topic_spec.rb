@@ -36,6 +36,24 @@ RSpec.describe Topic, type: :model do
     end
   end
 
+  context "#update" do
+    it "indenting should reorder both old siblings' positions" do
+      t0 = Topic.create!(content: "topic 0")
+      t1 = t0.children.create!(content: "topic 1")
+      t2 = t0.children.create!(content: "topic 2")
+      t3 = t0.children.create!(content: "topic 3")
+      t4 = t3.children.create!(content: "topic 4")
+      t5 = t3.children.create!(content: "topic 4")
+
+      t2.update!(ancestry: "#{t0.id}/#{t3.id}", position: 3)
+      expect(t1.reload.position).to eq(1)
+      expect(t3.reload.position).to eq(2)
+      expect(t4.reload.position).to eq(1)
+      expect(t5.reload.position).to eq(2)
+      expect(t2.reload.position).to eq(3)
+    end
+  end
+
   context "#destroy" do
     it "should delete descendants" do
       t0 = Topic.create!(content: "topic 0")
