@@ -1,3 +1,5 @@
+import { areSibling, getParent } from './ancestry'
+
 export interface Topic {
   id?: number
   slug?: string
@@ -22,6 +24,24 @@ export const sameTopic = (t1: Topic, t2: Topic): boolean => {
 
 export const sortTopics = (topics: Topic[]): Topic[] => {
   return (topics.sort((a, b) => a.position > b.position ? 1 : -1))
+}
+
+export const topicBelow = (topic: Topic, descendants: Topic[]): Topic | null => {
+  return (descendants.find((descendant) => areSibling(descendant, topic) && descendant.position === topic.position + 1) || null)
+}
+
+export const topicOrAncestorBelow = (topic: Topic, descendants: Topic[]): Topic | null => {
+  const siblingBelow = topicBelow(topic, descendants)
+  if (siblingBelow) {
+    return (siblingBelow)
+  } else {
+    const parent = getParent(topic, descendants)
+    if (parent === null || parent.ancestry === null) {
+      return (null)
+    } else {
+      return (topicOrAncestorBelow(parent, descendants))
+    }
+  }
 }
 
 interface newTopicInterface {

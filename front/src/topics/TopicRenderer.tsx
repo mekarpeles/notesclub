@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Form } from 'react-bootstrap'
-import { Topic, topicKey, newTopic, sameTopic } from './Topic'
+import { Topic, topicKey, newTopic, sameTopic, topicOrAncestorBelow } from './Topic'
 import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './../backendSync'
 import { getChildren, areSibling, getParent } from './ancestry'
 
@@ -119,6 +119,26 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     }
   }
 
+  selectTopicBelow = () => {
+    const { selectedTopic, siblings, descendants } = this.props
+    if (selectedTopic) {
+      const children = getChildren(selectedTopic, descendants)
+      let newSelected: Topic | null = null
+      if (children.length > 0) {
+        newSelected = children[0]
+      } else if (siblings.length > selectedTopic.position) {
+        updateBackendTopic(selectedTopic, this.props.setAppState)
+        newSelected = siblings.filter((sibling) => sibling.position === selectedTopic.position + 1)[0]
+      } else {
+        newSelected = topicOrAncestorBelow(selectedTopic, descendants)
+      }
+
+      if (newSelected) {
+        this.props.setUserTopicPageState({ selectedTopic: newSelected })
+      }
+    }
+  }
+
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const { topic, selectedTopic, siblings } = this.props
     let { descendants } = this.props
@@ -180,12 +200,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
               updateBackendTopic(selectedTopic, this.props.setAppState)
             }
           } else {
-            // Select topic below
-            if (siblings.length > selectedTopic.position) {
-              updateBackendTopic(selectedTopic, this.props.setAppState)
-              const newSelected = siblings.filter((sibling) => sibling.position === selectedTopic.position + 1)[0]
-              this.props.setUserTopicPageState({ selectedTopic: newSelected })
-            }
+            this.selectTopicBelow()
           }
           break
         case "ArrowUp":
