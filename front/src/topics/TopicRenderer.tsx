@@ -345,6 +345,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   renderUnselectedTopic = (topic: Topic) => {
+    return (<>{topic.content}</>)
   }
 
   selectTopic = (topic: Topic, event: React.MouseEvent<HTMLElement>) => {
@@ -372,24 +373,24 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
       <>
         <li key={topicKey(topic)} onClick={(event) => !isSelected && this.selectTopic(topic, event)}>
           {isSelected && this.renderSelectedTopic(topic)}
-          {!isSelected && topic.content}
+          {!isSelected && this.renderUnselectedTopic(topic)}
         </li>
         {renderSubtopics && children &&
           <li className="hide-bullet">
             <ul>
-            {children.map((subTopic) => (
-              <TopicRenderer
-                currentBlogUsername={currentBlogUsername}
-                key={"sub" + topicKey(subTopic)}
-                topic={subTopic}
-                descendants={descendants}
-                siblings={children}
-                currentTopic={currentTopic}
-                renderSubtopics={true}
-                selectedTopic={selectedTopic}
-                setUserTopicPageState={this.props.setUserTopicPageState}
-                setAppState={this.props.setAppState} />
-            ))}
+              {children.map((subTopic) => (
+                <TopicRenderer
+                  currentBlogUsername={currentBlogUsername}
+                  key={"sub" + topicKey(subTopic)}
+                  topic={subTopic}
+                  descendants={descendants}
+                  siblings={children}
+                  currentTopic={currentTopic}
+                  renderSubtopics={true}
+                  selectedTopic={selectedTopic}
+                  setUserTopicPageState={this.props.setUserTopicPageState}
+                  setAppState={this.props.setAppState} />
+              ))}
             </ul>
           </li>
         }
