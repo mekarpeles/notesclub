@@ -57,6 +57,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
   public render () {
     const { currentBlogger, currentTopic, selectedTopic, descendants } = this.state
+    const { currentBlogUsername } = this.props
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
 
     return (
@@ -74,6 +75,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
               <ul>
                 {children.map((subTopic) => (
                   <TopicRenderer
+                    currentBlogUsername={currentBlogUsername}
                     key={"sub" + topicKey(subTopic)}
                     topic={subTopic}
                     descendants={descendants}

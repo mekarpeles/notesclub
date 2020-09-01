@@ -1,10 +1,12 @@
 import * as React from 'react'
+import { generatePath } from 'react-router'
 import { Form } from 'react-bootstrap'
 import { Topic, topicKey } from './Topic'
 import { createBackendTopic, updateBackendTopic } from './../backendSync'
 import { areSibling } from './ancestry'
+import { withRouter, RouteComponentProps } from "react-router-dom"
 
-interface TopicRendererProps {
+interface TopicRendererProps extends RouteComponentProps<any> {
   selectedTopic: Topic | null
   topic: Topic
   descendants: Topic[]
@@ -13,6 +15,7 @@ interface TopicRendererProps {
   renderSubtopics: boolean
   setUserTopicPageState: Function
   setAppState: Function
+  currentBlogUsername: string
 }
 
 interface TopicRendererState {
@@ -155,16 +158,22 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   renderUnselectedTopic = (topic: Topic) => {
   }
 
-  selectTopic = (topic: Topic) => {
-    const { selectedTopic } = this.props
+  selectTopic = (topic: Topic, event: React.MouseEvent<HTMLElement>) => {
+    const { selectedTopic, currentBlogUsername } = this.props
 
-    // Update previously selected topic:
-    if (selectedTopic) {
-      updateBackendTopic(selectedTopic, this.props.setAppState)
+    if (event.altKey) {
+      const path = generatePath(this.props.match.path, { blogUsername: currentBlogUsername, topicKey: topic.slug})
+      window.location.href = path
+      // this.props.history.replace(path)
+    } else {
+      // Update previously selected topic:
+      if (selectedTopic) {
+        updateBackendTopic(selectedTopic, this.props.setAppState)
+      }
+
+      // Select new topic:
+      this.props.setUserTopicPageState({ selectedTopic: topic })
     }
-
-    // Select new topic:
-    this.props.setUserTopicPageState({ selectedTopic: topic })
   }
 
   public render () {
@@ -172,7 +181,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     const isSelected = selectedTopic && (selectedTopic.id === topic.id && selectedTopic.tmp_key === topic.tmp_key)
 
     return (
-      <li key={topicKey(topic)} onClick={() => !isSelected && this.selectTopic(topic)}>
+      <li key={topicKey(topic)} onClick={(event) => !isSelected && this.selectTopic(topic, event)}>
         {isSelected && this.renderSelectedTopic(topic)}
         {!isSelected && topic.content}
       </li>
@@ -180,4 +189,5 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 }
 
-export default TopicRenderer
+// export default TopicRenderer
+export default withRouter(TopicRenderer)
