@@ -1,4 +1,4 @@
-import { areSibling, getParent } from './ancestry'
+import { areSibling, getParent, getChildren } from './ancestry'
 
 export interface Topic {
   id?: number
@@ -28,6 +28,19 @@ export const sortTopics = (topics: Topic[]): Topic[] => {
 
 export const topicBelow = (topic: Topic, descendants: Topic[]): Topic | null => {
   return (descendants.find((descendant) => areSibling(descendant, topic) && descendant.position === topic.position + 1) || null)
+}
+
+export const topicAbove = (topic: Topic, descendants: Topic[]): Topic | null => {
+  return (descendants.find((descendant) => areSibling(descendant, topic) && descendant.position === topic.position - 1) || null)
+}
+
+export const lastDescendantOrSelf = (topic: Topic, descendants: Topic[]): Topic | null => {
+  const children = getChildren(topic, descendants)
+  if (children.length === 0) {
+    return (topic)
+  } else {
+    return (lastDescendantOrSelf(children[children.length - 1], descendants))
+  }
 }
 
 export const topicOrAncestorBelow = (topic: Topic, descendants: Topic[]): Topic | null => {

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Form } from 'react-bootstrap'
-import { Topic, topicKey, newTopic, sameTopic, topicOrAncestorBelow } from './Topic'
+import { Topic, topicKey, newTopic, sameTopic, topicOrAncestorBelow, topicAbove, lastDescendantOrSelf } from './Topic'
 import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './../backendSync'
 import { getChildren, areSibling, getParent } from './ancestry'
 
@@ -119,6 +119,28 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     }
   }
 
+  moveTopicBelow = () => {
+    const { selectedTopic, siblings } = this.props
+    let { descendants } = this.props
+
+    if (selectedTopic && siblings.length > selectedTopic.position) {
+      // Move selectedTopic down (increase position by 1)
+      let found = false
+      descendants = descendants.map((descendant) => {
+        if (!found && areSibling(descendant, selectedTopic)) {
+          if ((selectedTopic.position + 1) === descendant.position) {
+            descendant.position -= 1
+            selectedTopic.position += 1
+            found = true
+          }
+        }
+        return (descendant)
+      })
+      this.props.setUserTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
+      updateBackendTopic(selectedTopic, this.props.setAppState)
+    }
+  }
+
   selectTopicBelow = () => {
     const { selectedTopic, siblings, descendants } = this.props
     if (selectedTopic) {
@@ -127,7 +149,6 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
       if (children.length > 0) {
         newSelected = children[0]
       } else if (siblings.length > selectedTopic.position) {
-        updateBackendTopic(selectedTopic, this.props.setAppState)
         newSelected = siblings.filter((sibling) => sibling.position === selectedTopic.position + 1)[0]
       } else {
         newSelected = topicOrAncestorBelow(selectedTopic, descendants)
@@ -136,6 +157,49 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
       if (newSelected) {
         this.props.setUserTopicPageState({ selectedTopic: newSelected })
       }
+    }
+  }
+
+  selectTopicAbove = () => {
+    const { selectedTopic, descendants, currentTopic } = this.props
+
+    if (selectedTopic) {
+      const tAbove = topicAbove(selectedTopic, descendants)
+      let newSelected: Topic | null = null
+      if (tAbove) {
+        const lastDesc = lastDescendantOrSelf(tAbove, descendants)
+        newSelected = lastDesc ? lastDesc : tAbove
+      } else {
+        const parent = getParent(selectedTopic, descendants)
+        if (parent != currentTopic) {
+          newSelected = parent
+        }
+      }
+      if (newSelected) {
+        this.props.setUserTopicPageState({ selectedTopic: newSelected })
+      }
+    }
+  }
+
+  moveTopicAbove = () => {
+    const { selectedTopic } = this.props
+    let { descendants } = this.props
+
+    if (selectedTopic && selectedTopic.position > 1) {
+      // Move selectedTopic up (decrease position by 1)
+      let found = false
+      descendants = descendants.map((descendant) => {
+        if (!found && areSibling(descendant, selectedTopic)) {
+          if ((selectedTopic.position - 1) === descendant.position) {
+            descendant.position += 1
+            selectedTopic.position -= 1
+            found = true
+          }
+        }
+        return (descendant)
+      })
+      this.props.setUserTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
+      updateBackendTopic(selectedTopic, this.props.setAppState)
     }
   }
 
@@ -183,49 +247,16 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           break
         case "ArrowDown":
           if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
-            if (siblings.length > selectedTopic.position) {
-              // Move selectedTopic down (increase position by 1)
-              let found = false
-              descendants = descendants.map((descendant) => {
-                if (!found && areSibling(descendant, selectedTopic)) {
-                  if ((selectedTopic.position + 1) === descendant.position) {
-                    descendant.position -= 1
-                    selectedTopic.position += 1
-                    found = true
-                  }
-                }
-                return (descendant)
-              })
-              this.props.setUserTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
-              updateBackendTopic(selectedTopic, this.props.setAppState)
-            }
+            this.moveTopicBelow()
           } else {
             this.selectTopicBelow()
           }
           break
         case "ArrowUp":
           if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
-            if (selectedTopic.position > 1) {
-              // Move selectedTopic up (decrease position by 1)
-              let found = false
-              descendants = descendants.map((descendant) => {
-                if (!found && areSibling(descendant, selectedTopic)) {
-                  if ((selectedTopic.position - 1) === descendant.position) {
-                    descendant.position += 1
-                    selectedTopic.position -= 1
-                    found = true
-                  }
-                }
-                return (descendant)
-              })
-              this.props.setUserTopicPageState({ descendants: descendants, selectedTopic: selectedTopic })
-              updateBackendTopic(selectedTopic, this.props.setAppState)
-            }
+            this.moveTopicAbove()
           } else {
-            // Select topic above
-            updateBackendTopic(selectedTopic, this.props.setAppState)
-            const newSelected = siblings.filter((sibling) => sibling.position === selectedTopic.position - 1)[0]
-            this.props.setUserTopicPageState({ selectedTopic: newSelected })
+            this.selectTopicAbove()
           }
           break
         case "Backspace":
