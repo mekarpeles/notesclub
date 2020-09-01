@@ -52,9 +52,20 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
 
       if (siblingAbove && selectedTopicIndex) {
         const newParent = siblingAbove as Topic
+
+        // Indent subtree too:
+        const old_ancestry = new RegExp(`^${selected.ancestry}/${selected.id}`)
+        descendants = descendants.map((descendant) => {
+          // Replace ancestry of selected's descendants
+          if (descendant.ancestry && old_ancestry.test(descendant.ancestry)) {
+            descendant.ancestry = descendant.ancestry.replace(old_ancestry, `${selected.ancestry}/${newParent.id}/${selected.id}`)
+          }
+          return (descendant)
+        })
+
         const children = getChildren(newParent, descendants)
         selectedTopic.ancestry = `${selectedTopic.ancestry}/${(siblingAbove as Topic).id}`
-        selectedTopic.position = children.length // add at the end
+        selectedTopic.position = children.length + 1 // add at the end
         descendants.splice(selectedTopicIndex, 1, selectedTopic)
         this.props.setUserTopicPageState({descendants: descendants, selectedTopic: selectedTopic})
         updateBackendTopic(selectedTopic, this.props.setAppState)
@@ -90,7 +101,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
         if (selectedTopicIndex) {
           const old_ancestry = new RegExp(`^${selected.ancestry}/${selected.id}`)
           descendants = descendants.map((descendant) => {
-            // Replace ancestry of selected's descendants
+            // Unindent subtree too:
             if (descendant.ancestry && old_ancestry.test(descendant.ancestry)) {
               console.log(`replacing ancestry ${old_ancestry} with ${parent.ancestry}/${selected.id}`)
               descendant.ancestry = descendant.ancestry.replace(old_ancestry, `${parent.ancestry}/${selected.id}`)
