@@ -23,3 +23,22 @@ export const sameTopic = (t1: Topic, t2: Topic): boolean => {
 export const sortTopics = (topics: Topic[]): Topic[] => {
   return (topics.sort((a, b) => a.position > b.position ? 1 : -1))
 }
+
+interface newTopicInterface {
+  position: number
+  user_id: number
+  ancestry: string | null
+}
+
+export const newTopic = (args: newTopicInterface) => {
+  return (
+    {
+      content: "",
+      position: args.position,
+      user_id: args.user_id,
+      ancestry: args.ancestry,
+      descendants: new Array<Topic>(),
+      tmp_key: Math.random().toString(36).substring(2)
+    }
+  )
+}

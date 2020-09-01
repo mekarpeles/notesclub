@@ -1,13 +1,13 @@
 import * as React from 'react'
-import { Topic, topicKey } from './Topic'
+import { Topic, topicKey, newTopic } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
-import { fetchBackendUser, fetchBackendTopics } from './../backendSync'
+import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
 import { getChildren } from './ancestry'
 
 interface UserTopicPageProps {
   setAppState: Function
-  currentUsername: string | null
+  currentUser?: User
   currentTopicKey: string
   currentBlogUsername: string
 }
@@ -44,6 +44,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
               if (fetchBackendTopicsAndDescendants) {
                 const topicAndDescendants = fetchBackendTopicsAndDescendants[0]
                 this.setState({ currentTopic: topicAndDescendants, descendants: topicAndDescendants.descendants })
+
+                this.createEmptyTopicIfNoDescendants()
               }
             })
         }
@@ -55,9 +57,32 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     this.setState(newState);
   }
 
+  createEmptyTopicIfNoDescendants = (): void => {
+    const { currentTopic, descendants } = this.state
+    const { currentUser } = this.props
+
+    if (currentUser && currentTopic && descendants && descendants.length === 0) {
+      const newNonSavedTopic = newTopic({
+        position: 1,
+        user_id: currentUser.id,
+        ancestry: `${currentTopic.ancestry}/${currentTopic.id}`
+      })
+      descendants.push(newNonSavedTopic)
+      this.setState({ selectedTopic: newNonSavedTopic, descendants: descendants })
+      createBackendTopic(newNonSavedTopic, this.props.setAppState)
+        .then(topicWithId => {
+          const selected = this.state.selectedTopic
+          this.setState({
+            descendants: descendants.map((d) => d.tmp_key === topicWithId.tmp_key ? topicWithId : d),
+            selectedTopic: selected && selected.tmp_key === topicWithId.tmp_key ? topicWithId : selected
+          })
+        })
+    }
+  }
+
   public render () {
     const { currentBlogger, currentTopic, selectedTopic, descendants } = this.state
-    const { currentBlogUsername } = this.props
+    const { currentBlogUsername, currentUser } = this.props
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
 
     return (

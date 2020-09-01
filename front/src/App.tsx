@@ -61,14 +61,14 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
-    const { currentUsername } = this.state
+    const { currentUser } = this.state
 
     return (
       <>
-        { currentUsername &&
+        { currentUser &&
           <>
             <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} /> } />
-            <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUsername={currentUsername} setAppState={this.updateState} />} />
+            <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
           </>
         }
       </>

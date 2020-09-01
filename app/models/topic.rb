@@ -5,7 +5,7 @@ class Topic < ApplicationRecord
   validates :slug, uniqueness: { scope: :user_id }, presence: true
   validates :id, uniqueness: true
 
-  before_validation :set_slug
+  before_validation :set_slug, on: [:create]
   before_save :nulify_empty_ancestry
 
   private
@@ -15,6 +15,6 @@ class Topic < ApplicationRecord
   end
 
   def nulify_empty_ancestry
-    self.ancestry = nil if ancestry.empty?
+    self.ancestry = nil if ancestry.blank?
   end
 end

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { generatePath } from 'react-router'
 import { Form } from 'react-bootstrap'
-import { Topic, topicKey } from './Topic'
+import { Topic, topicKey, newTopic } from './Topic'
 import { createBackendTopic, updateBackendTopic } from './../backendSync'
 import { areSibling } from './ancestry'
 import { withRouter, RouteComponentProps } from "react-router-dom"
@@ -39,26 +39,24 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
       switch (event.key) {
         case "Enter":
           const newPosition = selectedTopic.position + 1
-          const newTopic = {
-            content: "",
-            position: newPosition,
-            user_id: selectedTopic.user_id,
-            ancestry: selectedTopic.ancestry,
-            descendants: new Array<Topic>(),
-            tmp_key: Math.random().toString(36).substring(2)
-          }
+
           descendants = descendants.map((descendant, index) => {
             if (areSibling(descendant, topic) && descendant.position >= newPosition) {
               descendant.position += 1
             }
             return (descendant)
           })
-          descendants.push(newTopic)
+          const newNonSavedTopic = newTopic({
+            position: newPosition,
+            user_id: selectedTopic.user_id,
+            ancestry: selectedTopic.ancestry
+          })
+          descendants.push(newNonSavedTopic)
 
           updateBackendTopic(selectedTopic, this.props.setAppState)
 
-          this.props.setUserTopicPageState({ selectedTopic: newTopic, descendants: descendants })
-          createBackendTopic(newTopic, this.props.setAppState)
+          this.props.setUserTopicPageState({ selectedTopic: newNonSavedTopic, descendants: descendants })
+          createBackendTopic(newNonSavedTopic, this.props.setAppState)
             .then(topicWithId => {
               const selected = this.props.selectedTopic
               this.props.setUserTopicPageState({
