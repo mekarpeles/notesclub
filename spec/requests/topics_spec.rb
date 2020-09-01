@@ -94,4 +94,17 @@ RSpec.describe UsersController, type: :request do
       expect(topic1.reload.content).not_to eq("The sky is blue")
     end
   end
+
+  context "#destroy" do
+    it "should delete a topic" do
+      expect { delete "/v1/topics/#{topic1.id}" }.to change{ Topic.count }.by(-1)
+      expect(response.status).to eq 200
+    end
+
+    it "should return unauthorized if id doesn't match the auhtenticated user" do
+      expect(topic5.user_id).not_to eq(user.id)
+      expect { delete "/v1/topics/#{topic5.id}" }.not_to change{ Topic.count }
+      expect(response.status).to eq 401
+    end
+  end
 end

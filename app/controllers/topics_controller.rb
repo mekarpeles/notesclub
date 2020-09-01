@@ -1,5 +1,5 @@
 class TopicsController < ApplicationController
-  before_action :set_topic, only: [:update]
+  before_action :set_topic, only: [:update, :destroy]
   before_action :authenticate_param_id!, only: [:update, :destroy]
   before_action :authenticate_param_user_id!, only: [:create]
 
@@ -43,6 +43,14 @@ class TopicsController < ApplicationController
 
   def update
     if @topic.update(params.permit(:content, :ancestry, :position))
+      render json: @topic, status: :ok
+    else
+      render json: topic.errors.full_messages, status: :not_modified
+    end
+  end
+
+  def destroy
+    if @topic.destroy
       render json: @topic, status: :ok
     else
       render json: topic.errors.full_messages, status: :not_modified

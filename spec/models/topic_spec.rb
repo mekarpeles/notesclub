@@ -35,4 +35,14 @@ RSpec.describe Topic, type: :model do
       expect(t3.reload.position).to eq(4)
     end
   end
+
+  context "#destroy" do
+    it "should delete descendants" do
+      t0 = Topic.create!(content: "topic 0")
+      t1 = Topic.create!(content: "topic 1")
+      t2 = t1.children.create!(content: "topic 1")
+
+      expect { t1.destroy }.to change { Topic.count }.by(-2)
+    end
+  end
 end

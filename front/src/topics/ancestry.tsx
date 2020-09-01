@@ -22,6 +22,13 @@ export const areSibling = (t1: Topic, t2: Topic): boolean => {
 //   return ()
 // }
 
-// export const getParent = () => {
-
-// }
+export const getParent = (topic: Topic, descendants: Topic[]): Topic | null => {
+  if (topic.ancestry === null) {
+    return (null)
+  } else {
+    const ancestor_ids = topic.ancestry.split("/")
+    const parent_id = ancestor_ids[ancestor_ids.length - 1]
+    const parent_arr = descendants.filter((descendant) => descendant.id === Number(parent_id))
+    return (parent_arr.length === 1 ? parent_arr[0] : null)
+  }
+}

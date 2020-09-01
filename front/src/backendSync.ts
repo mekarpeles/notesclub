@@ -42,14 +42,6 @@ export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, se
   return (response)
 }
 
-export const updateBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
-  return (
-    axios.put(apiDomain() + `/v1/topics/${topic.id}`, topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
-      .then(res => res.data)
-      .catch(_ => syncError(setAppState))
-  )
-}
-
 export const createBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
   return (
     axios.post(apiDomain() + '/v1/topics', topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
@@ -58,6 +50,22 @@ export const createBackendTopic = async (topic: Topic, setAppState: Function): P
         t["tmp_key"] = topic.tmp_key
         return (t)
       })
+      .catch(_ => syncError(setAppState))
+  )
+}
+
+export const updateBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
+  return (
+    axios.put(apiDomain() + `/v1/topics/${topic.id}`, topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+      .then(res => res.data)
+      .catch(_ => syncError(setAppState))
+  )
+}
+
+export const deleteBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
+  return (
+    axios.delete(apiDomain() + `/v1/topics/${topic.id}`, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+      .then(res => res.data)
       .catch(_ => syncError(setAppState))
   )
 }

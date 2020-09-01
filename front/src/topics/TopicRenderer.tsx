@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Form } from 'react-bootstrap'
-import { Topic, topicKey, newTopic } from './Topic'
-import { createBackendTopic, updateBackendTopic } from './../backendSync'
-import { getChildren, areSibling } from './ancestry'
+import { Topic, topicKey, newTopic, sameTopic } from './Topic'
+import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './../backendSync'
+import { getChildren, areSibling, getParent } from './ancestry'
 
 interface TopicRendererProps {
   selectedTopic: Topic | null
@@ -38,7 +38,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
         case "Enter":
           const newPosition = selectedTopic.position + 1
 
-          descendants = descendants.map((descendant, index) => {
+          descendants = descendants.map((descendant) => {
             if (areSibling(descendant, topic) && descendant.position >= newPosition) {
               descendant.position += 1
             }
@@ -118,6 +118,60 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             updateBackendTopic(selectedTopic, this.props.setAppState)
             const newSelected = siblings.filter((sibling) => sibling.position === selectedTopic.position - 1)[0]
             this.props.setUserTopicPageState({ selectedTopic: newSelected })
+          }
+          break
+        case "Backspace":
+          if (selectedTopic.content === "") {
+            let selectedTopicIndex: number | undefined = undefined
+            let siblingAbove: Topic | null = null
+            let newSelected: Topic | null = null
+
+            if (getChildren(selectedTopic, descendants).length > 0) {
+              // Do not delete topics with descendants
+              return
+            }
+
+            descendants = descendants.map((descendant, index) => {
+              if (sameTopic(selectedTopic, descendant)) {
+                selectedTopicIndex = index
+              } else if (areSibling(descendant, selectedTopic)) {
+                if (descendant.position === selectedTopic.position - 1) {
+                  siblingAbove = descendant
+                }
+                if (descendant.position > selectedTopic.position) {
+                  descendant.position -= 1
+                }
+              }
+              return (descendant)
+            })
+
+            if (siblingAbove) {
+              const ch = getChildren(siblingAbove, descendants)
+              if (ch.length > 0) {
+                // Select the last child of the siblingAbove
+                newSelected = ch[ch.length - 1]
+              } else {
+                // Otherwise, select the siblingAbove
+                newSelected = siblingAbove
+              }
+            } else if (selectedTopic.position === 1) {
+              // Select parent if this parent is not currentTopic
+              const parent = getParent(selectedTopic, descendants)
+              const { currentTopic } = this.props
+              if (parent && !sameTopic(parent, currentTopic)) {
+                newSelected = parent
+              } else {
+                return // selectedTopic is the only descendant of currentTopic
+              }
+            }
+
+            if (newSelected && selectedTopicIndex != undefined) {
+              // delete selectedTopic from descendants:
+              descendants.splice(selectedTopicIndex, 1)
+              deleteBackendTopic(selectedTopic, this.props.setAppState)
+              this.props.setUserTopicPageState({ descendants: descendants, selectedTopic: newSelected })
+            }
+            event.preventDefault()
           }
           break
       }
