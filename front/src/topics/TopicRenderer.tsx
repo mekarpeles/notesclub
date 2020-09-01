@@ -1,12 +1,10 @@
 import * as React from 'react'
-import { generatePath } from 'react-router'
 import { Form } from 'react-bootstrap'
 import { Topic, topicKey, newTopic } from './Topic'
 import { createBackendTopic, updateBackendTopic } from './../backendSync'
-import { areSibling } from './ancestry'
-import { withRouter, RouteComponentProps } from "react-router-dom"
+import { getChildren, areSibling } from './ancestry'
 
-interface TopicRendererProps extends RouteComponentProps<any> {
+interface TopicRendererProps {
   selectedTopic: Topic | null
   topic: Topic
   descendants: Topic[]
@@ -160,9 +158,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     const { selectedTopic, currentBlogUsername } = this.props
 
     if (event.altKey) {
-      const path = generatePath(this.props.match.path, { blogUsername: currentBlogUsername, topicKey: topic.slug})
-      window.location.href = path
-      // this.props.history.replace(path)
+      window.location.href = `/${currentBlogUsername}/${topic.slug}`
     } else {
       // Update previously selected topic:
       if (selectedTopic) {
@@ -175,17 +171,38 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   public render () {
-    const { selectedTopic, topic } = this.props
+    const { selectedTopic, topic, renderSubtopics, descendants, currentBlogUsername, currentTopic } = this.props
     const isSelected = selectedTopic && (selectedTopic.id === topic.id && selectedTopic.tmp_key === topic.tmp_key)
+    const children = getChildren(topic, descendants)
 
     return (
-      <li key={topicKey(topic)} onClick={(event) => !isSelected && this.selectTopic(topic, event)}>
-        {isSelected && this.renderSelectedTopic(topic)}
-        {!isSelected && topic.content}
-      </li>
+      <>
+        <li key={topicKey(topic)} onClick={(event) => !isSelected && this.selectTopic(topic, event)}>
+          {isSelected && this.renderSelectedTopic(topic)}
+          {!isSelected && topic.content}
+        </li>
+        {renderSubtopics && children &&
+          <li className="hide-bullet">
+            <ul>
+            {children.map((subTopic) => (
+              <TopicRenderer
+                currentBlogUsername={currentBlogUsername}
+                key={"sub" + topicKey(subTopic)}
+                topic={subTopic}
+                descendants={descendants}
+                siblings={children}
+                currentTopic={currentTopic}
+                renderSubtopics={true}
+                selectedTopic={selectedTopic}
+                setUserTopicPageState={this.props.setUserTopicPageState}
+                setAppState={this.props.setAppState} />
+            ))}
+            </ul>
+          </li>
+        }
+      </>
     )
   }
 }
 
-// export default TopicRenderer
-export default withRouter(TopicRenderer)
+export default TopicRenderer
