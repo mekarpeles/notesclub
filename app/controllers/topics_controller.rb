@@ -33,7 +33,7 @@ class TopicsController < ApplicationController
   end
 
   def create
-    topic = Topic.new(params.permit(:content, :ancestry, :user_id, :position))
+    topic = Topic.new(params.permit(:content, :ancestry, :user_id, :position, :slug))
     if topic.save
       render json: topic, status: :created
     else

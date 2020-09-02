@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Topic, topicKey, newTopic } from './Topic'
+import { Topic, newTopicWithDescendants, topicKey, newTopic } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
 import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
@@ -33,7 +33,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   fetchBloggerAndCurrentTopic = () => {
-    const { currentBlogUsername, currentTopicKey } = this.props
+    const { currentBlogUsername, currentUser, currentTopicKey } = this.props
 
     fetchBackendUser(currentBlogUsername)
       .then(blogger => {
@@ -41,7 +41,21 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
         if (blogger) {
           fetchBackendTopics({ slug: currentTopicKey, include_descendants: true }, this.props.setAppState)
             .then(fetchBackendTopicsAndDescendants => {
-              if (fetchBackendTopicsAndDescendants) {
+              if (fetchBackendTopicsAndDescendants.length === 0) {
+                if (currentUser) {
+                  const newNonSavedTopic = newTopic({
+                    slug: currentTopicKey,
+                    user_id: currentUser.id,
+                    ancestry: null,
+                    position: -1 // We'll replace this with null before sending it to the backend so it adds it to the end
+                  })
+                  createBackendTopic(newNonSavedTopic, this.props.setAppState)
+                    .then(topic => {
+                      this.setState({currentTopic: topic, descendants: []})
+                      this.createEmptyTopicIfNoDescendants()
+                    })
+                }
+              } else {
                 const topicAndDescendants = fetchBackendTopicsAndDescendants[0]
                 this.setState({ currentTopic: topicAndDescendants, descendants: topicAndDescendants.descendants })
                 if (topicAndDescendants.descendants.length === 1) {
@@ -64,7 +78,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     const { currentUser } = this.props
 
     if (currentUser && currentTopic && descendants && descendants.length === 0) {
-      const newNonSavedTopic = newTopic({
+      const newNonSavedTopic = newTopicWithDescendants({
         position: 1,
         user_id: currentUser.id,
         ancestry: currentTopic.ancestry ? `${currentTopic.ancestry}/${currentTopic.id}` : String(currentTopic.id)

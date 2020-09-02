@@ -34,6 +34,13 @@ RSpec.describe Topic, type: :model do
       expect(t2.reload.position).to eq(3)
       expect(t3.reload.position).to eq(4)
     end
+
+    it "position nil should add at the end" do
+      t1 = Topic.create!(content: "topic 1")
+      t2 = Topic.create!(content: "topic 2", position: nil)
+      expect(t1.reload.position).to eq(1)
+      expect(t2.reload.position).to eq(2)
+    end
   end
 
   context "#update" do

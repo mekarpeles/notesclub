@@ -91,7 +91,7 @@ Downcoder.Initialize = function()
     Downcoder.regex = new RegExp('[' + Downcoder.chars + ']|[^' + Downcoder.chars + ']+','g') ;
 }
 
-export const downcode = ( slug ) => {
+const downcode = ( slug ) => {
     Downcoder.Initialize() ;
     var downcoded =""
     var pieces = slug.match(Downcoder.regex);

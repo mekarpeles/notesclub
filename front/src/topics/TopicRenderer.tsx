@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Form } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { Topic, topicKey, newTopic, sameTopic, topicOrAncestorBelow, topicAbove, lastDescendantOrSelf } from './Topic'
+import { Topic, topicKey, newTopicWithDescendants, sameTopic, topicOrAncestorBelow, topicAbove, lastDescendantOrSelf } from './Topic'
 import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './../backendSync'
 import { getChildren, areSibling, getParent } from './ancestry'
 import { parameterize } from './../utils/parameterize'
@@ -220,13 +220,12 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             }
             return (descendant)
           })
-          const newNonSavedTopic = newTopic({
+          const newNonSavedTopic = newTopicWithDescendants({
             position: newPosition,
             user_id: selectedTopic.user_id,
             ancestry: selectedTopic.ancestry
           })
           descendants.push(newNonSavedTopic)
-
           updateBackendTopic(selectedTopic, this.props.setAppState)
 
           this.props.setUserTopicPageState({ selectedTopic: newNonSavedTopic, descendants: descendants })

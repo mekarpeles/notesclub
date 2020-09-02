@@ -8,7 +8,7 @@ import { Topic, TopicWithDescendants } from './topics/Topic'
 export const fetchBackendUsers = async (ids: number[]) : Promise<User[]> => {
   const response = await axios.get(apiDomain() + '/v1/users', { params: { ids: ids }, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
     .then(res => res.data)
-    .catch(res => {
+    .catch(_ => {
       console.log('Error fetching users')
       return (Promise.reject("Error"))
     })
@@ -18,7 +18,7 @@ export const fetchBackendUsers = async (ids: number[]) : Promise<User[]> => {
 export const fetchBackendUser = async (username: string): Promise<User> => {
   const response = await axios.get(apiDomain() + '/v1/users', { params: { username: username }, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
     .then(res => res.data[0])
-    .catch(res => {
+    .catch(_ => {
       console.log('Error fetching user')
       return (Promise.reject("Error"))
     })
@@ -42,13 +42,16 @@ export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, se
   return (response)
 }
 
-export const createBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
+export const createBackendTopic = async (newTopic: Topic, setAppState: Function): Promise<Topic> => {
+  const position = newTopic.position === -1 ? null : newTopic.position
+  const args = { ...newTopic, ...{ position: position } }
+
   return (
-    axios.post(apiDomain() + '/v1/topics', topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+    axios.post(apiDomain() + '/v1/topics', args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
-        let t = res.data
-        t["tmp_key"] = topic.tmp_key
-        return (t)
+        let topic = res.data
+        topic["tmp_key"] = newTopic.tmp_key
+        return (topic)
       })
       .catch(_ => syncError(setAppState))
   )

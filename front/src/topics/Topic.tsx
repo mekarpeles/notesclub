@@ -58,20 +58,27 @@ export const topicOrAncestorBelow = (topic: Topic, descendants: Topic[]): Topic 
 }
 
 interface newTopicInterface {
+  content?: string
+  slug?: string
   position: number
   user_id: number
   ancestry: string | null
+  descendants?: Topic[]
 }
 
-export const newTopic = (args: newTopicInterface) => {
+export const newTopic = (args: newTopicInterface): Topic => {
   return (
     {
-      content: "",
+      content: args.content || "",
+      slug: args.slug,
       position: args.position,
       user_id: args.user_id,
       ancestry: args.ancestry,
-      descendants: new Array<Topic>(),
       tmp_key: Math.random().toString(36).substring(2)
     }
   )
+}
+
+export const newTopicWithDescendants = (args: newTopicInterface): TopicWithDescendants => {
+  return ({ ...newTopic(args), ...{ descendants: Array<Topic>() } })
 }
