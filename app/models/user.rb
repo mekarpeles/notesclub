@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   self.skip_session_storage = [:http_auth, :params_auth]
 
+  has_many :topics
+
   before_validation :set_provisional_username, on: :create
   after_create :reset_jwt_token
 

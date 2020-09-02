@@ -33,6 +33,7 @@ interface fetchBackendTopicsInterface {
   ids?: number[]
   ancestry?: string | null
   include_descendants?: boolean
+  include_user?: boolean
   include_ancestors?: boolean
   tmp_key?: string
 }

@@ -5,6 +5,7 @@ import { User } from './../User'
 import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
 import { getChildren } from './ancestry'
 import { Link } from 'react-router-dom'
+import ReferenceRenderer from './ReferenceRenderer'
 
 interface UserTopicPageProps {
   setAppState: Function
@@ -42,7 +43,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
       .then(blogger => {
         this.setState({ currentBlogger: blogger})
         if (blogger) {
-          fetchBackendTopics({ slug: currentTopicKey, include_descendants: true, include_ancestors: true }, this.props.setAppState)
+          fetchBackendTopics({ slug: currentTopicKey, user_ids: [blogger.id], include_descendants: true, include_ancestors: true }, this.props.setAppState)
             .then(fetchBackendTopicsAndDescendants => {
               if (fetchBackendTopicsAndDescendants.length === 0) {
                 // Create topic
@@ -85,8 +86,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     const { currentTopic } = this.state
 
     if (currentTopic) {
-      fetchBackendTopics({reference: currentTopic.content}, this.props.setAppState)
-        .then(topics => this.setState({references: topics.filter((t) => t.id != currentTopic.id)}))
+      fetchBackendTopics({reference: currentTopic.content, include_user: true}, this.props.setAppState)
+        .then(topics => this.setState({ references: topics.filter((t) => t.id != currentTopic.id)}))
     }
   }
 
@@ -116,14 +117,6 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
           })
         })
     }
-  }
-
-  renderReference = (topic: Topic) => {
-    return (
-      <li key={`ref_${topic.id}`}>
-        {topic.content}
-      </li>
-    )
   }
 
   public render () {
@@ -182,7 +175,9 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                 <>
                   References:
                   <ul>
-                    {references.map((ref) => this.renderReference(ref))}
+                    {references.map((topic) => (
+                      <ReferenceRenderer key={topic.id} topic={topic} />
+                    ))}
                   </ul>
                 </>
               }

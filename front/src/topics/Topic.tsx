@@ -1,4 +1,5 @@
 import { areSibling, getParent, getChildren } from './ancestry'
+import { User } from './../User'
 
 export interface Topic {
   id?: number
@@ -7,6 +8,7 @@ export interface Topic {
   ancestry: string | null
   position: number
   user_id: number
+  user?: User
   tmp_key?: string // Used for react keys when there is no id
 }
 

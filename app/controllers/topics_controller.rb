@@ -21,6 +21,7 @@ class TopicsController < ApplicationController
     methods = []
     methods << :descendants if params[:include_descendants]
     methods << :ancestors if params[:include_ancestors]
+    methods << :user if params[:include_user]
 
     render json: topics.to_json(methods: methods)
   end

@@ -14,6 +14,8 @@ RSpec.describe UsersController, type: :request do
   def rm_timestamps!(obj)
     obj.except!("created_at", "updated_at")
     obj["descendants"].map{|o| o.except!("created_at", "updated_at")} if obj["descendants"]
+    obj["ancestors"].map{|o| o.except!("created_at", "updated_at")} if obj["ancestors"]
+    obj["user"].except!("created_at", "updated_at") if obj["user"]
     obj
   end
 
@@ -42,6 +44,15 @@ RSpec.describe UsersController, type: :request do
         prep({"ancestry"=>nil, "content"=>"2020-08-28",     "id"=>2, "position"=>2, "user_id"=>1, "slug"=>"2020-08-28"})
       ])
       expect(response.status).to eq(200)
+    end
+
+    describe "when include_user is true" do
+      it "should ONLY include exposed USER attributes" do
+        get "/v1/topics", params: { ids: [topic1.id], ancestry: nil, include_user: true }
+        expect(response).to have_http_status(:success)
+        topic = JSON.parse(response.body)[0]
+        expect(topic["user"].except("created_at", "updated_at")).to eq({"id" => topic1.user.id, "name" => topic1.user.name, "username" => topic1.user.username})
+      end
     end
 
     it "should search by reference" do
