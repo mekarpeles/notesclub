@@ -354,7 +354,11 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           if (index % 2 === 0) {
             return (<span>{element}</span>)
           } else {
-            return (<Link to={`/hec/${parameterize(element, 100)}`}>{element}</Link>)
+            const path = `/hec/${parameterize(element, 100)}`
+            return (<Link to={path} onClick={(event) => {
+              window.location.href = path
+              event.stopPropagation()
+            }}>{element}</Link>)
           }
         })}
       </>
@@ -365,7 +369,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     const { selectedTopic, currentBlogUsername } = this.props
 
     if (event.altKey) {
-      window.location.href = `/hec/${currentBlogUsername}/${topic.slug}`
+      window.location.href = `/${currentBlogUsername}/${topic.slug}`
     } else {
       // Update previously selected topic:
       if (selectedTopic) {

@@ -125,7 +125,9 @@ export const parameterize = (s, num_chars) => {
     s = downcode(s);
     //
     // if downcode doesn't hit, the char will be stripped here
-    s = s.replace(/[^-\w\s]/g, '');  // remove unneeded chars
+    s = s.replace(/https:\/\//g, 'https_')
+    s = s.replace(/http:\/\//g, 'http_')
+    s = s.replace(/[^-\w\s]/g, '_');  // remove unneeded chars
     s = s.replace(/^\s+|\s+$/g, ''); // trim leading/trailing spaces
     s = s.replace(/[-\s]+/g, '_');   // convert spaces to hyphens
     s = s.toLowerCase();             // convert to lowercase
