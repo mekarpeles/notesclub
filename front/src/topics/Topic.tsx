@@ -10,6 +10,11 @@ export interface Topic {
   tmp_key?: string // Used for react keys when there is no id
 }
 
+export interface TopicWithFamily extends Topic {
+  descendants?: Topic[]
+  ancestors?: Topic[]
+}
+
 export interface TopicWithDescendants extends Topic {
   descendants: Topic[]
 }

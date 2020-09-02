@@ -2,7 +2,7 @@
 import axios from 'axios'
 import { User } from './User'
 import { apiDomain } from './appConfig'
-import { Topic, TopicWithDescendants } from './topics/Topic'
+import { Topic, TopicWithFamily } from './topics/Topic'
 // import { sleep } from './utils/sleep'
 
 export const fetchBackendUsers = async (ids: number[]) : Promise<User[]> => {
@@ -31,10 +31,11 @@ interface fetchBackendTopicsInterface {
   ids?: number[]
   ancestry?: string | null
   include_descendants?: boolean
+  include_ancestors?: boolean
   tmp_key?: string
 }
 
-export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, setAppState: Function): Promise<TopicWithDescendants[]> => {
+export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, setAppState: Function): Promise<TopicWithFamily[]> => {
   if (params.ancestry === null) { params.ancestry = "" } // Axios skips null and undefined parameters
   const response = await axios.get(apiDomain() + '/v1/topics', { params: params, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
     .then(res => {return(res.data)})

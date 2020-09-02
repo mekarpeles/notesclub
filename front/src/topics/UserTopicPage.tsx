@@ -4,6 +4,7 @@ import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
 import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
 import { getChildren } from './ancestry'
+import { Link } from 'react-router-dom'
 
 interface UserTopicPageProps {
   setAppState: Function
@@ -17,6 +18,7 @@ interface UserTopicPageState {
   currentTopic?: Topic
   selectedTopic: Topic | null
   descendants?: Topic[]
+  ancestors?: Topic[]
 }
 
 class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageState> {
@@ -39,9 +41,10 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
       .then(blogger => {
         this.setState({ currentBlogger: blogger})
         if (blogger) {
-          fetchBackendTopics({ slug: currentTopicKey, include_descendants: true }, this.props.setAppState)
+          fetchBackendTopics({ slug: currentTopicKey, include_descendants: true, include_ancestors: true }, this.props.setAppState)
             .then(fetchBackendTopicsAndDescendants => {
               if (fetchBackendTopicsAndDescendants.length === 0) {
+                // Create topic
                 if (currentUser) {
                   const newNonSavedTopic = newTopic({
                     slug: currentTopicKey,
@@ -56,10 +59,17 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     })
                 }
               } else {
-                const topicAndDescendants = fetchBackendTopicsAndDescendants[0]
-                this.setState({ currentTopic: topicAndDescendants, descendants: topicAndDescendants.descendants })
-                if (topicAndDescendants.descendants.length === 1) {
-                  this.setState({ selectedTopic: topicAndDescendants.descendants[0] })
+                // Topic already exists
+                const topicAndFamily = fetchBackendTopicsAndDescendants[0]
+                this.setState({currentTopic: topicAndFamily})
+                if (topicAndFamily.descendants) {
+                  this.setState({ descendants: topicAndFamily.descendants})
+                  if (topicAndFamily.descendants.length === 1) {
+                    this.setState({ selectedTopic: topicAndFamily.descendants[0] })
+                  }
+                }
+                if (topicAndFamily.ancestors) {
+                  this.setState({ ancestors: topicAndFamily.ancestors })
                 }
                 this.createEmptyTopicIfNoDescendants()
               }
@@ -97,10 +107,11 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   public render () {
-    const { currentBlogger, currentTopic, selectedTopic, descendants } = this.state
-    const { currentBlogUsername, currentUser } = this.props
+    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors } = this.state
+    const { currentBlogUsername } = this.props
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
 
+    const ancestor_count = ancestors ? ancestors.length : 0
     return (
       <>
         <div className="container">
@@ -110,8 +121,27 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
           {!currentBlogger || !currentTopic || !children || !descendants &&
             <p>Loading</p>
           }
-          {currentBlogger && currentTopic && children && descendants &&
+          {currentBlogger && currentTopic && children && descendants && ancestors &&
             <>
+              {ancestor_count > 0 &&
+                <p>
+                  <span>{"Ancestors: "}</span>
+                  {ancestors.map((ancestor, index) => {
+                    const path = `/${currentBlogger.username}/${ancestor.slug}`
+                    return (
+                      <span>
+                        <Link
+                          to={path}
+                          onClick={(event) => {
+                            window.location.href = path
+                          }}
+                        >{ancestor.content}</Link>
+                        {(index < ancestor_count - 1) && " -> "}
+                      </span>
+                    )
+                  })}
+                </p>
+              }
               <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a> · {currentTopic.content}</h1>
               <ul>
                 {children.map((subTopic) => (

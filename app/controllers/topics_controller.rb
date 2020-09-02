@@ -12,11 +12,11 @@ class TopicsController < ApplicationController
     limit = params["slug"] || (params["ids"] && params["ids"].size == 1) ? 1 : 100
     topics = topics.order(updated_at: :desc).limit(limit)
 
-    if params[:include_descendants]
-      render json: topics.to_json(methods: :descendants)
-    else
-      render json: topics.to_json
-    end
+    methods = []
+    methods << :descendants if params[:include_descendants]
+    methods << :ancestors if params[:include_ancestors]
+
+    render json: topics.to_json(methods: methods)
   end
 
   def show
