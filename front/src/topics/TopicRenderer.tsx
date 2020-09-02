@@ -1,8 +1,10 @@
 import * as React from 'react'
 import { Form } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { Topic, topicKey, newTopic, sameTopic, topicOrAncestorBelow, topicAbove, lastDescendantOrSelf } from './Topic'
 import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './../backendSync'
 import { getChildren, areSibling, getParent } from './ancestry'
+import { parameterize } from './../utils/parameterize'
 
 interface TopicRendererProps {
   selectedTopic: Topic | null
@@ -345,14 +347,25 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   renderUnselectedTopic = (topic: Topic) => {
-    return (<>{topic.content}</>)
+    const arr = topic.content.split(/\[\[([^\[]*)\]\]/)
+    return (
+      <>
+        {arr.map((element, index) => {
+          if (index % 2 === 0) {
+            return (<span>{element}</span>)
+          } else {
+            return (<Link to={`/hec/${parameterize(element, 100)}`}>{element}</Link>)
+          }
+        })}
+      </>
+    )
   }
 
   selectTopic = (topic: Topic, event: React.MouseEvent<HTMLElement>) => {
     const { selectedTopic, currentBlogUsername } = this.props
 
     if (event.altKey) {
-      window.location.href = `/${currentBlogUsername}/${topic.slug}`
+      window.location.href = `/hec/${currentBlogUsername}/${topic.slug}`
     } else {
       // Update previously selected topic:
       if (selectedTopic) {
