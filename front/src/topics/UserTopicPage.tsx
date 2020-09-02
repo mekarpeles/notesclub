@@ -84,10 +84,16 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
   setReferences = () => {
     const { currentTopic } = this.state
+    const { currentUser } = this.props
 
-    if (currentTopic) {
+    if (currentTopic && currentUser) {
       fetchBackendTopics({reference: currentTopic.content, include_user: true}, this.props.setAppState)
-        .then(topics => this.setState({ references: topics.filter((t) => t.id != currentTopic.id)}))
+        .then(topics =>
+          this.setState({
+            references: topics.
+              filter((t) => t.id != currentTopic.id).
+              sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
+              sort((a, b) => a.user_id === currentUser.id ? -1 : 1)}))
     }
   }
 
