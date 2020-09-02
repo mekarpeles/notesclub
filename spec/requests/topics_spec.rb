@@ -21,23 +21,36 @@ RSpec.describe UsersController, type: :request do
     arr.map{|obj| rm_timestamps!(obj)}
   end
 
+  def prep(t)
+    rm_timestamps!(t)&.sort_by {|k,v| k}
+  end
+
   context "#index" do
     it "should find topics by ids" do
       get "/v1/topics", params: { ids: [topic1.id, topic2.id], ancestry: nil }
       expect(response).to have_http_status(:success)
-      topics = JSON.parse(response.body)
-      expect(topics.map{|t| rm_timestamps!(t)}).to eq([rm_timestamps!(topic1.attributes), rm_timestamps!(topic2.attributes)])
+      topics = JSON.parse(response.body).sort_by{|t| t["id"]}.map{|t| prep(t)}
+      expect(topics).to eq([prep(topic1.attributes), prep(topic2.attributes)])
     end
 
     it "should filter per user_ids and ancestry" do
       get "/v1/topics", params: { user_ids: [user.id], ancestry: nil }
       expect(response).to have_http_status(:success)
-      topics = JSON.parse(response.body)
-      expect(rm_timestamps_from_array!(topics)).to eq([
-        {"ancestry"=>nil, "content"=>"Climate Change", "id"=>1, "position"=>1, "user_id"=>1, "slug"=>"climate_change"},
-        {"ancestry"=>nil, "content"=>"2020-08-28",     "id"=>2, "position"=>2, "user_id"=>1, "slug"=>"2020-08-28"}
+      topics = JSON.parse(response.body).sort_by{|t| t["id"]}.map{|t| prep(t)}
+      expect(topics).to eq([
+        prep({"ancestry"=>nil, "content"=>"Climate Change", "id"=>1, "position"=>1, "user_id"=>1, "slug"=>"climate_change"}),
+        prep({"ancestry"=>nil, "content"=>"2020-08-28",     "id"=>2, "position"=>2, "user_id"=>1, "slug"=>"2020-08-28"})
       ])
       expect(response.status).to eq(200)
+    end
+
+    it "should search by reference" do
+      topic1.update!(content: "This is great: [[https://thisurl.com/whatever]]")
+      topic2.update!(content: "https://thisurl.com/whatever")
+      get "/v1/topics", params: { reference: "https://thisurl.com/whatever" }
+      expect(response).to have_http_status(:success)
+      topics = JSON.parse(response.body).sort_by{|t| t["id"]}.map{|t| prep(t)}
+      expect(topics).to eq([prep(topic1.attributes), prep(topic2.attributes)])
     end
   end
 

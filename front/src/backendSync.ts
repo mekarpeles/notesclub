@@ -26,6 +26,8 @@ export const fetchBackendUser = async (username: string): Promise<User> => {
 }
 
 interface fetchBackendTopicsInterface {
+  content?: string
+  reference?: string // This is used to fetch topics with content which contains reference or [[reference]]
   slug?: string
   user_ids?: number[],
   ids?: number[]

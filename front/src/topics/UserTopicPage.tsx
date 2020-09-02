@@ -19,6 +19,7 @@ interface UserTopicPageState {
   selectedTopic: Topic | null
   descendants?: Topic[]
   ancestors?: Topic[]
+  references?: Topic[]
 }
 
 class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageState> {
@@ -56,6 +57,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     .then(topic => {
                       this.setState({currentTopic: topic, descendants: []})
                       this.createEmptyTopicIfNoDescendants()
+                      this.setReferences()
                     })
                 }
               } else {
@@ -72,10 +74,20 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                   this.setState({ ancestors: topicAndFamily.ancestors })
                 }
                 this.createEmptyTopicIfNoDescendants()
+                this.setReferences()
               }
             })
         }
       })
+  }
+
+  setReferences = () => {
+    const { currentTopic } = this.state
+
+    if (currentTopic) {
+      fetchBackendTopics({reference: currentTopic.content}, this.props.setAppState)
+        .then(topics => this.setState({references: topics.filter((t) => t.id != currentTopic.id)}))
+    }
   }
 
   updateState = (partialState: Partial<UserTopicPageState>) => {
@@ -106,8 +118,16 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     }
   }
 
+  renderReference = (topic: Topic) => {
+    return (
+      <li key={`ref_${topic.id}`}>
+        {topic.content}
+      </li>
+    )
+  }
+
   public render () {
-    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors } = this.state
+    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references } = this.state
     const { currentBlogUsername } = this.props
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
 
@@ -158,10 +178,14 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     setAppState={this.props.setAppState} />
                 ))}
               </ul>
-              {/* References:
-              <ul>
-                {currentTopic.references.map((ref) => this.renderReference(ref))}
-              </ul> */}
+              {references && references.length > 0 &&
+                <>
+                  References:
+                  <ul>
+                    {references.map((ref) => this.renderReference(ref))}
+                  </ul>
+                </>
+              }
             </>
           }
         </div>

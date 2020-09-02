@@ -7,10 +7,16 @@ class TopicsController < ApplicationController
     topics = Topic
     topics = topics.where(id: params["ids"]) if params["ids"].present? && params["ids"].is_a?(Array)
     topics = topics.where(user_id: params["user_ids"]) if params["user_ids"].present? && params["user_ids"].is_a?(Array)
-    topics = topics.where(ancestry: params["ancestry"].empty? ? nil : params["ancestry"]) if params.include?("ancestry")
+    topics = topics.where(ancestry: params["ancestry"]&.empty? ? nil : params["ancestry"]) if params.include?("ancestry")
     topics = topics.where(slug: params["slug"]) if params["slug"]
+    topics = topics.where(content: params["content"]) if params["content"]
+    if params["reference"]
+      topics = topics
+        .where("lower(content) like ?", "%#{params['reference'].downcase}%")
+        .or(topics.where("lower(content) like ?", "%[[#{params['reference'].downcase}]]%"))
+    end
     limit = params["slug"] || (params["ids"] && params["ids"].size == 1) ? 1 : 100
-    topics = topics.order(updated_at: :desc).limit(limit)
+    topics = topics.order(id: :desc).limit(limit)
 
     methods = []
     methods << :descendants if params[:include_descendants]
