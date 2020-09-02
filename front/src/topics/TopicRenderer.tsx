@@ -352,13 +352,19 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
       <>
         {arr.map((element, index) => {
           if (index % 2 === 0) {
-            return (<span>{element}</span>)
+            return (<span key={index}>{element}</span>)
           } else {
             const path = `/hec/${parameterize(element, 100)}`
-            return (<Link to={path} onClick={(event) => {
-              window.location.href = path
-              event.stopPropagation()
-            }}>{element}</Link>)
+            return (
+              <Link
+                to={path}
+                key={index}
+                onClick={(event) => {
+                  window.location.href = path
+                  event.stopPropagation()
+                }}
+                >{element}</Link>
+            )
           }
         })}
       </>
