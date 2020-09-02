@@ -26,6 +26,10 @@ export const sortTopics = (topics: Topic[]): Topic[] => {
   return (topics.sort((a, b) => a.position > b.position ? 1 : -1))
 }
 
+export const sortTopicsAndReverse = (topics: Topic[]): Topic[] => {
+  return (topics.sort((a, b) => a.position < b.position ? 1 : -1))
+}
+
 export const topicBelow = (topic: Topic, descendants: Topic[]): Topic | null => {
   return (descendants.find((descendant) => areSibling(descendant, topic) && descendant.position === topic.position + 1) || null)
 }

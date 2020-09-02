@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { User } from './User'
 import { Button } from 'react-bootstrap'
-import { Topic, sortTopics } from './topics/Topic'
+import { Topic, sortTopicsAndReverse } from './topics/Topic'
 import { fetchBackendUser, fetchBackendTopics } from './backendSync'
 
 interface UserPageProps {
@@ -47,7 +47,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
           <>
             <h1>{blogger.name}'s topics</h1>
             <ul>
-              {sortTopics(topics).map((topic) => <li key={topic.id}><Button variant="link" href={`/${blogger.username}/${topic.slug}`}>{topic.content}</Button></li>)}
+              {sortTopicsAndReverse(topics).map((topic) => <li key={topic.id}><Button variant="link" href={`/${blogger.username}/${topic.slug}`}>{topic.content}</Button></li>)}
             </ul>
           </>
         }
