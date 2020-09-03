@@ -29,12 +29,14 @@ interface fetchBackendTopicsInterface {
   content?: string
   reference?: string // This is used to fetch topics with content which contains reference or [[reference]]
   slug?: string
-  user_ids?: number[],
+  user_ids?: number[]
   ids?: number[]
   ancestry?: string | null
   include_descendants?: boolean
   include_user?: boolean
   include_ancestors?: boolean
+  content_like?: string
+  except_ids?: number[]
   tmp_key?: string
 }
 
@@ -46,14 +48,14 @@ export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, se
   return (response)
 }
 
-export const fetchBackendReferences = async (params: fetchBackendTopicsInterface, setAppState: Function): Promise<Reference[]> => {
-  params = { ...params, ...{ include_user: true, include_descendants: true, include_ancestors: true } }
-  if (params.ancestry === null) { params.ancestry = "" } // Axios skips null and undefined parameters
-  const response = await axios.get(apiDomain() + '/v1/topics', { params: params, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
-    .then(res => { return (res.data) })
-    .catch(_ => syncError(setAppState))
-  return (response)
-}
+// export const fetchBackendReferences = async (params: fetchBackendTopicsInterface, setAppState: Function): Promise<Reference[]> => {
+//   params = { ...params, ...{ include_user: true, include_descendants: true, include_ancestors: true } }
+//   if (params.ancestry === null) { params.ancestry = "" } // Axios skips null and undefined parameters
+//   const response = await axios.get(apiDomain() + '/v1/topics', { params: params, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+//     .then(res => { return (res.data) })
+//     .catch(_ => syncError(setAppState))
+//   return (response)
+// }
 
 export const createBackendTopic = async (newTopic: Topic, setAppState: Function): Promise<Topic> => {
   const position = newTopic.position === -1 ? null : newTopic.position

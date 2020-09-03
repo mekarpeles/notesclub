@@ -14,6 +14,7 @@ export interface Topic {
 export interface TopicWithFamily extends Topic {
   descendants?: Topic[]
   ancestors?: Topic[]
+  user?: User
 }
 
 export interface Reference extends Topic {

@@ -10,10 +10,11 @@ class TopicsController < ApplicationController
     topics = topics.where(ancestry: params["ancestry"]&.empty? ? nil : params["ancestry"]) if params.include?("ancestry")
     topics = topics.where(slug: params["slug"]) if params["slug"]
     topics = topics.where(content: params["content"]) if params["content"]
-    if params["reference"]
-      topics = topics
-        .where("lower(content) like ?", "%#{params['reference'].downcase}%")
-        .or(topics.where("lower(content) like ?", "%[[#{params['reference'].downcase}]]%"))
+    if params["content_like"]
+      topics = topics.where("lower(content) like ?", params['content_like'].downcase)
+    end
+    if params["except_ids"].present?
+      topics = topics.where.not(id: params["except_ids"])
     end
     limit = params["slug"] || (params["ids"] && params["ids"].size == 1) ? 1 : 100
     topics = topics.order(id: :desc).limit(limit)

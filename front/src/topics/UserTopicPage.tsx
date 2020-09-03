@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic } from './Topic'
+import { Topic, TopicWithFamily, Reference, newTopicWithDescendants, topicKey, newTopic } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
-import { fetchBackendUser, fetchBackendTopics, fetchBackendReferences, createBackendTopic } from './../backendSync'
+import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
 import { getChildren } from './ancestry'
 import { Link } from 'react-router-dom'
 import ReferenceRenderer from './ReferenceRenderer'
@@ -21,6 +21,7 @@ interface UserTopicPageState {
   descendants?: Topic[]
   ancestors?: Topic[]
   references?: Reference[]
+  unlinkedReferences?: Reference[]
 }
 
 class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageState> {
@@ -91,16 +92,52 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     const { currentUser } = this.props
 
     if (currentTopic && currentUser) {
-      fetchBackendReferences({ reference: currentTopic.content }, this.props.setAppState)
+      fetchBackendTopics(
+        {
+          include_descendants: true,
+          include_ancestors: true,
+          include_user: true,
+          content_like: `%[[${currentTopic.content}]]%`
+        },
+        this.props.setAppState)
         .then(references => {
           this.setState(
             {
-              references: references.
+              references: (references as Reference[]).
                 filter((t) => t.id != currentTopic.id).
                 sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
-                sort((a, b) => a.user_id === currentUser.id ? -1 : 1)})
-            }
-          )
+                sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
+            })
+          this.setUnlinkedReferences()
+        }
+        )
+    }
+  }
+
+  setUnlinkedReferences = () => {
+    const { currentTopic, references } = this.state
+    const { currentUser } = this.props
+
+    if (currentTopic && currentUser && references) {
+      const except_ids = (references.filter(ref => ref.id).map((ref) => ref.id as number))
+      console.log(`except_ids: ${except_ids.join(', ')}`)
+      fetchBackendTopics(
+        {
+          include_descendants: true,
+          include_ancestors: true,
+          include_user: true,
+          content_like: `%${currentTopic.content}%`,
+          except_ids: except_ids
+        },
+        this.props.setAppState)
+        .then(references => {
+          const unlinkedReferences = (references as Reference[]).
+            filter((t) => t.id != currentTopic.id).
+            sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
+            sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
+          this.setState({ unlinkedReferences: unlinkedReferences })
+        }
+        )
     }
   }
 
@@ -133,7 +170,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   public render () {
-    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references } = this.state
+    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references, unlinkedReferences } = this.state
     const { currentBlogUsername } = this.props
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
 
@@ -186,8 +223,23 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
               {references && references.length > 0 &&
                 <>
                   References:
-                  <ul>
+                    <ul>
                     {references.map((ref) => (
+                      <ReferenceRenderer
+                        key={ref.id}
+                        topic={ref}
+                        selectedTopic={selectedTopic}
+                        setUserTopicPageState={this.updateState}
+                        setAppState={this.props.setAppState} />
+                    ))}
+                  </ul>
+                </>
+              }
+              {unlinkedReferences && unlinkedReferences.length > 0 &&
+                <>
+                  Unlinked References:
+                    <ul>
+                    {unlinkedReferences.map((ref) => (
                       <ReferenceRenderer
                         key={ref.id}
                         topic={ref}
