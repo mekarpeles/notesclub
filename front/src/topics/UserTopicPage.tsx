@@ -33,7 +33,11 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   componentDidMount() {
-    this.fetchBloggerAndCurrentTopic()
+    const { currentBlogger } = this.state
+
+    if(!currentBlogger) {
+      this.fetchBloggerAndCurrentTopic()
+    }
   }
 
   fetchBloggerAndCurrentTopic = () => {
@@ -181,7 +185,12 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                   References:
                   <ul>
                     {references.map((ref) => (
-                      <ReferenceRenderer key={ref.id} topic={ref} />
+                      <ReferenceRenderer
+                        key={ref.id}
+                        topic={ref}
+                        selectedTopic={selectedTopic}
+                        setUserTopicPageState={this.updateState}
+                        setAppState={this.props.setAppState} />
                     ))}
                   </ul>
                 </>

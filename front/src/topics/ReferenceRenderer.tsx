@@ -1,10 +1,15 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Topic, Reference } from './Topic'
+import { Topic, Reference, topicKey } from './Topic'
 import { User } from './../User'
+import { getChildren } from './ancestry'
+import TopicRenderer from './TopicRenderer'
 
 interface ReferenceRendererProps {
   topic: Reference
+  selectedTopic: Topic | null
+  setUserTopicPageState: Function
+  setAppState: Function
 }
 
 interface ReferenceRendererState {
@@ -29,15 +34,24 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
 
   public render () {
     const { topic } = this.props
+    const ancestors = topic.ancestors
 
-    const second_line = topic.ancestors || []
-    const first_element = second_line.shift() || topic
-    const first_element_path = `/${topic.user.username}/${first_element.slug}`
+    let second_line: Topic[]
+    let first_element: Topic
+
+    if (ancestors.length > 0) {
+      first_element = ancestors[0]
+      second_line = ancestors.slice(1, ancestors.length)
+    } else {
+      first_element = topic
+      second_line = []
+    }
     const second_line_count = second_line.length
+    const children = getChildren(topic as Topic, topic.descendants)
 
     return (
       <>
-        {topic.ancestors && second_line_count > 0 &&
+        {second_line_count > 0 &&
           <li key={`ref_${first_element.id}`}>
             {this.renderElement(first_element, topic.user)}
             <p>
@@ -54,20 +68,34 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
             <ul>
               <li>
                 {topic.content}
-                descendants:...
+                <ul>
+                  {children.map((subTopic) => (
+                    <TopicRenderer
+                      currentBlogUsername={topic.user.username}
+                      key={"sub" + topicKey(subTopic)}
+                      topic={subTopic}
+                      descendants={topic.descendants}
+                      siblings={children}
+                      currentTopic={topic}
+                      renderSubtopics={true}
+                      selectedTopic={this.props.selectedTopic}
+                      setUserTopicPageState={this.props.setUserTopicPageState}
+                      setAppState={this.props.setAppState} />
+                  ))}
+                </ul>
               </li>
             </ul>
           </li>
         }
 
-        {topic.ancestors && second_line_count === 0 && first_element.id === topic.id &&
+        {second_line_count === 0 && first_element.id === topic.id &&
           <li key={`ref_${first_element.id}`}>
             {topic.content}
             descendants:...
           </li>
         }
 
-        {topic.ancestors && second_line_count === 0 && first_element.id != topic.id &&
+        {second_line_count === 0 && first_element.id != topic.id &&
           <li key={`ref_${first_element.id}`}>
             {first_element.content}
             <ul>
