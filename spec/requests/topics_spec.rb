@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UsersController, type: :request do
+RSpec.describe TopicsController, type: :request do
   fixtures(:users, :topics)
   let(:user) { users(:user1) }
   let(:topic1) { topics(:topic1) }
@@ -57,7 +57,7 @@ RSpec.describe UsersController, type: :request do
 
     it "should search by reference" do
       topic1.update!(content: "This is great: [[https://thisurl.com/whatever]]")
-      topic2.update!(content: "https://thisurl.com/whatever")
+      topic2.update!(content: "[[https://thisurl.com/whatever]]")
       get "/v1/topics", params: { reference: "https://thisurl.com/whatever" }
       expect(response).to have_http_status(:success)
       topics = JSON.parse(response.body).sort_by{|t| t["id"]}.map{|t| prep(t)}
@@ -89,7 +89,7 @@ RSpec.describe UsersController, type: :request do
 
   context "#create" do
     it "should create the topic" do
-      t0 = Topic.create!(content: "whatever whatever")
+      t0 = Topic.create!(content: "whatever whatever", user: user)
       expect { post "/v1/topics", params: { content: "The sky is blue", ancestry: t0.id.to_s, user_id: user.id } }.to change{ Topic.count }.by(1)
       expect(response.status).to eq 201
       expect(Topic.last.attributes.slice("content", "ancestry", "user_id", "position")).to eq("content" => "The sky is blue", "ancestry" => t0.id.to_s, "user_id" => user.id, "position" => 1)
@@ -97,7 +97,7 @@ RSpec.describe UsersController, type: :request do
 
     it "should return unauthorized if user_id doesn't match the auhtenticated user" do
       expect(user.id).not_to eq(2)
-      t0 = Topic.create!(content: "whatever whatever")
+      t0 = Topic.create!(content: "whatever whatever", user: user)
       expect { post "/v1/topics", params: { content: "The sky is blue", ancestry: t0.id.to_s, user_id: 2 } }.not_to change{ Topic.count }
       expect(response.status).to eq 401
     end

@@ -41,6 +41,6 @@ class Topic::SlugGenerator
   end
 
   def generate_slug_from_content
-    topic.content[0..99].parameterize(separator: "_")
+    topic.content.parameterize(separator: "_")[0..99]
   end
 end

@@ -8,12 +8,16 @@ class Topic < ApplicationRecord
   validates :id, uniqueness: true
 
   before_validation :set_content, on: [:create]
-  before_validation :set_slug, on: [:create], unless: :slug
+  before_validation :set_slug, on: [:create]
   before_save :nulify_empty_ancestry
 
   def as_json(options = {})
     json = super(options)
-    json['user'] = self.user.slice(UsersController::EXPOSED_ATTRIBUTES)
+    methods = options[:methods] || []
+    methods = [methods] if methods.is_a?(Symbol)
+    if methods.include?(:user)
+      json['user'] = self.user.slice(UsersController::EXPOSED_ATTRIBUTES)
+    end
     json
   end
 
@@ -24,7 +28,7 @@ class Topic < ApplicationRecord
   end
 
   def set_slug
-    self.slug = SlugGenerator.new(self).generate_unique_slug
+    self.slug = SlugGenerator.new(self).generate_unique_slug if slug.blank?
   end
 
   def nulify_empty_ancestry

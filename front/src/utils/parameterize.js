@@ -118,7 +118,6 @@ const downcode = ( slug ) => {
     return downcoded;
 }
 
-
 export const parameterize = (s, num_chars) => {
     // changes, e.g., "Petty theft" to "petty_theft"
     // remove all these words from the string before urlifying
@@ -128,8 +127,9 @@ export const parameterize = (s, num_chars) => {
     s = s.replace(/https:\/\//g, 'https_')
     s = s.replace(/http:\/\//g, 'http_')
     s = s.replace(/[^-\w\s]/g, '_');  // remove unneeded chars
-    s = s.replace(/^\s+|\s+$/g, ''); // trim leading/trailing spaces
-    s = s.replace(/[-\s]+/g, '_');   // convert spaces to hyphens
+    s = s.replace(/^\s+|\s+\_+$/g, ''); // trim leading/trailing spaces or underscores
+    s = s.replace(/[\s]+/g, '_');   // convert spaces to hyphens
+    s = s.replace(/__*/g, '_') // remove consecutive underscores
     s = s.toLowerCase();             // convert to lowercase
     return s.substring(0, num_chars);// trim to first num_chars chars
 }

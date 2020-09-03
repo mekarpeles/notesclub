@@ -22,7 +22,6 @@ class TopicsController < ApplicationController
     methods << :descendants if params[:include_descendants]
     methods << :ancestors if params[:include_ancestors]
     methods << :user if params[:include_user]
-
     render json: topics.to_json(methods: methods)
   end
 
@@ -40,7 +39,8 @@ class TopicsController < ApplicationController
   end
 
   def create
-    topic = Topic.new(params.permit(:content, :ancestry, :user_id, :position, :slug))
+    args = params.permit(:content, :ancestry, :position, :slug).merge(user_id: current_user.id)
+    topic = Topic.new(args)
     if topic.save
       render json: topic, status: :created
     else
@@ -49,10 +49,11 @@ class TopicsController < ApplicationController
   end
 
   def update
-    if @topic.update(params.permit(:content, :ancestry, :position))
+    updator = TopicUpdator.new(@topic)
+    if updator.update(params.permit(:content, :ancestry, :position, :slug))
       render json: @topic, status: :ok
     else
-      render json: topic.errors.full_messages, status: :not_modified
+      render json: @topic.errors.full_messages, status: :not_modified
     end
   end
 

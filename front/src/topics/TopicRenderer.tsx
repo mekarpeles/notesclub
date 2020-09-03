@@ -22,6 +22,8 @@ interface TopicRendererState {
 }
 
 class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererState> {
+  readonly LINK_REGEX = /\[\[([^\[]*)\]\]/
+
   constructor(props: TopicRendererProps) {
     super(props)
 
@@ -105,7 +107,6 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           descendants = descendants.map((descendant) => {
             // Unindent subtree too:
             if (descendant.ancestry && old_ancestry.test(descendant.ancestry)) {
-              console.log(`replacing ancestry ${old_ancestry} with ${parent.ancestry}/${selected.id}`)
               descendant.ancestry = descendant.ancestry.replace(old_ancestry, `${parent.ancestry}/${selected.id}`)
             }
             return (descendant)
@@ -346,7 +347,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   renderUnselectedTopic = (topic: Topic) => {
-    const arr = topic.content.split(/\[\[([^\[]*)\]\]/)
+    const arr = topic.content.split(this.LINK_REGEX)
     return (
       <>
         {arr.map((element, index) => {

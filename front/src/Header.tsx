@@ -19,8 +19,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       .then(res => {
         localStorage.removeItem('currentUser')
         this.props.setParentState({ currentUsername: undefined, alert: undefined })
-        console.log(res)
-        console.log(res.data)
         return (
           <Redirect to="/" push />
         )
@@ -28,8 +26,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       .catch(res => {
         localStorage.removeItem('currentUser')
         this.props.setParentState({ currentUsername: undefined, alert: undefined })
-        console.log("error ");
-        console.log(res);
         return (
           <Redirect to="/" push />
         )
