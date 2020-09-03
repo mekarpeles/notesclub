@@ -55,10 +55,10 @@ RSpec.describe TopicsController, type: :request do
       end
     end
 
-    it "should search by reference" do
+    it "should search by like" do
       topic1.update!(content: "This is great: [[https://thisurl.com/whatever]]")
       topic2.update!(content: "[[https://thisurl.com/whatever]]")
-      get "/v1/topics", params: { reference: "https://thisurl.com/whatever" }
+      get "/v1/topics", params: { content_like: "%[[https://thisurl.com/whatever]]%" }
       expect(response).to have_http_status(:success)
       topics = JSON.parse(response.body).sort_by{|t| t["id"]}.map{|t| prep(t)}
       expect(topics).to eq([prep(topic1.attributes), prep(topic2.attributes)])

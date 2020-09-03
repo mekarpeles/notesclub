@@ -23,7 +23,7 @@ RSpec.describe SessionsController, type: :request do
     it "returns user attributes" do
       post "/v1/users/login", { params: { user: @params } }
       json = JSON.parse(response.body)
-      expect(json).to eq({"user" => {"role" => @user.role, "id" => @user.id, "name" => @user.name, "username" => @user.username}})
+      expect(json).to eq({"user" => {"id" => @user.id, "name" => @user.name, "username" => @user.username}})
     end
   end
 end

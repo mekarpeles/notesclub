@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Topic::SlugGenerator, type: :model do
-  let(:topic) { Topic.new(content: 'Climate Change') }
+  let(:topic) { Topic.new(content: 'Climate Change', user_id: 2) }
 
   describe 'new record' do
     describe 'ancestry=nil' do
@@ -25,7 +25,7 @@ RSpec.describe Topic::SlugGenerator, type: :model do
 
       context 'when slug already exists' do
         before do
-          Topic.create!(content: 'Climate Change')
+          Topic.create!(content: 'Climate Change', user: topic.user)
         end
 
         it 'should add two random char after parametrization' do
@@ -49,7 +49,7 @@ RSpec.describe Topic::SlugGenerator, type: :model do
 
       context 'when random already exists' do
         before do
-          t = Topic.create!(content: 'whatever')
+          t = Topic.create!(content: 'whatever', user: topic.user)
           t.update_column(:slug, 'r9qxfhmt39mgabzn0a9o')
         end
 
