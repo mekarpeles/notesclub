@@ -8,13 +8,18 @@ export interface Topic {
   ancestry: string | null
   position: number
   user_id: number
-  user?: User
   tmp_key?: string // Used for react keys when there is no id
 }
 
 export interface TopicWithFamily extends Topic {
   descendants?: Topic[]
   ancestors?: Topic[]
+}
+
+export interface Reference extends Topic {
+  descendants: Topic[]
+  ancestors: Topic[]
+  user: User
 }
 
 export interface TopicWithDescendants extends Topic {

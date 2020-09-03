@@ -2,7 +2,7 @@
 import axios from 'axios'
 import { User } from './User'
 import { apiDomain } from './appConfig'
-import { Topic, TopicWithFamily } from './topics/Topic'
+import { Topic, Reference, TopicWithFamily } from './topics/Topic'
 // import { sleep } from './utils/sleep'
 
 export const fetchBackendUsers = async (ids: number[]) : Promise<User[]> => {
@@ -42,6 +42,15 @@ export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, se
   if (params.ancestry === null) { params.ancestry = "" } // Axios skips null and undefined parameters
   const response = await axios.get(apiDomain() + '/v1/topics', { params: params, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
     .then(res => {return(res.data)})
+    .catch(_ => syncError(setAppState))
+  return (response)
+}
+
+export const fetchBackendReferences = async (params: fetchBackendTopicsInterface, setAppState: Function): Promise<Reference[]> => {
+  params = { ...params, ...{ include_user: true, include_descendants: true, include_ancestors: true } }
+  if (params.ancestry === null) { params.ancestry = "" } // Axios skips null and undefined parameters
+  const response = await axios.get(apiDomain() + '/v1/topics', { params: params, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+    .then(res => { return (res.data) })
     .catch(_ => syncError(setAppState))
   return (response)
 }

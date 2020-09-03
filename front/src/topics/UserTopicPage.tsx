@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Topic, newTopicWithDescendants, topicKey, newTopic } from './Topic'
+import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
-import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
+import { fetchBackendUser, fetchBackendTopics, fetchBackendReferences, createBackendTopic } from './../backendSync'
 import { getChildren } from './ancestry'
 import { Link } from 'react-router-dom'
 import ReferenceRenderer from './ReferenceRenderer'
@@ -20,7 +20,7 @@ interface UserTopicPageState {
   selectedTopic: Topic | null
   descendants?: Topic[]
   ancestors?: Topic[]
-  references?: Topic[]
+  references?: Reference[]
 }
 
 class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageState> {
@@ -87,10 +87,10 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     const { currentUser } = this.props
 
     if (currentTopic && currentUser) {
-      fetchBackendTopics({reference: currentTopic.content, include_user: true}, this.props.setAppState)
-        .then(topics =>
+      fetchBackendReferences({ reference: currentTopic.content, }, this.props.setAppState)
+        .then(references =>
           this.setState({
-            references: topics.
+            references: references.
               filter((t) => t.id != currentTopic.id).
               sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
               sort((a, b) => a.user_id === currentUser.id ? -1 : 1)}))
@@ -144,7 +144,6 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
             <>
               {ancestor_count > 0 &&
                 <p>
-                  <span>{"Ancestors: "}</span>
                   {ancestors.map((ancestor, index) => {
                     const path = `/${currentBlogger.username}/${ancestor.slug}`
                     return (
@@ -155,7 +154,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                             window.location.href = path
                           }}
                         >{ancestor.content}</Link>
-                        {(index < ancestor_count - 1) && " -> "}
+                        {(index < ancestor_count - 1) && " > "}
                       </span>
                     )
                   })}
@@ -181,8 +180,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                 <>
                   References:
                   <ul>
-                    {references.map((topic) => (
-                      <ReferenceRenderer key={topic.id} topic={topic} />
+                    {references.map((ref) => (
+                      <ReferenceRenderer key={ref.id} topic={ref} />
                     ))}
                   </ul>
                 </>
