@@ -91,7 +91,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   setReferences = () => {
-    const { currentTopic } = this.state
+    const { currentTopic, ancestors } = this.state
     const { currentUser } = this.props
 
     if (currentTopic && currentUser) {
@@ -107,7 +107,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
           this.setState(
             {
               references: (references as Reference[]).
-                filter((t) => t.id != currentTopic.id).
+                filter((t) => ancestors && this.getReferenceRoot(t, t.ancestors).id != this.getReferenceRoot(currentTopic, ancestors).id).
                 sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
                 sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
             })
@@ -118,7 +118,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   setUnlinkedReferences = () => {
-    const { currentTopic, references } = this.state
+    const { currentTopic, references, ancestors } = this.state
     const { currentUser } = this.props
 
     if (currentTopic && currentUser && references) {
@@ -134,7 +134,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
         this.props.setAppState)
         .then(unlinkedReferences => {
           const unlinkedRef = this.uniqueUnlinkedReferences(references, unlinkedReferences as Reference[]).
-            filter((t) => t.id != currentTopic.id).
+            filter((t) => ancestors && this.getReferenceRoot(t, t.ancestors).id != this.getReferenceRoot(currentTopic, ancestors).id).
             sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
             sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
           this.setState({ unlinkedReferences: unlinkedRef })
@@ -172,11 +172,10 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   getReferenceRoots = (references: Reference[]): Topic[] => {
-    return (references.map((r, index) => this.getReferenceRoot(r, index)))
+    return (references.map(r => this.getReferenceRoot(r as Topic, r.ancestors)))
   }
 
-  getReferenceRoot = (reference: Reference, index: number): Topic => {
-    const ancestors = reference.ancestors
+  getReferenceRoot = (reference: Topic, ancestors: Topic[]): Topic => {
     const root = ancestors.length > 0 ? ancestors[ancestors.length - 1] : reference
     return (root)
   }
@@ -185,8 +184,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     const referenceRoots = references ? this.getReferenceRoots(references) || [] : []
     const referenceRootIds = referenceRoots.map(r => r?.id).filter(r => r)
     return (
-      (unlinkedReferences || []).filter((r, index) => {
-        const root_id = this.getReferenceRoot(r, index).id
+      (unlinkedReferences || []).filter(r => {
+        const root_id = this.getReferenceRoot(r, r.ancestors).id
         return (!referenceRootIds.includes(root_id))
       })
     )
