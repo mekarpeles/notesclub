@@ -7,6 +7,7 @@ import { Alert } from 'react-bootstrap';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import UserTopicPage from './topics/UserTopicPage'
 import UserPage from './UserPage'
+import WaitingList from './WaitingList'
 import { User } from './User'
 import { fetchBackendUser } from './backendSync'
 
@@ -69,6 +70,7 @@ class App extends React.Component<AppProps, AppState> {
           <>
             <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} /> } />
             <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
+            <Route path="/login" exact render={() => <Login setParentState={this.updateState} />} />
           </>
         }
       </>
@@ -87,7 +89,7 @@ class App extends React.Component<AppProps, AppState> {
           </div>
           <Switch>
             <Route path="/" exact>
-              {currentUsername ? <Redirect to={`/${currentUsername}`} /> : <Login setParentState={this.updateState} />}
+              {currentUsername ? <Redirect to={`/${currentUsername}`} /> : <WaitingList setAppState={this.updateState} />}
             </Route>
             {currentUsername ? this.renderRoutes() : <Login setParentState={this.updateState} />}
           </Switch>

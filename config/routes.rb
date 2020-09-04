@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
     resources :users, only: [:index, :show, :update]
     resources :topics, only: [:index, :show, :create, :update, :destroy]
+    resources :waiting_users, only: [:create]
     get 'ping', to: 'ping#ping'
   end
 end

@@ -58,13 +58,26 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     )
   }
 
+  renderAnonymousHeader = () => {
+    return (
+      <>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+          </Nav>
+          <Nav.Link href='/login' onClick={() => window.location.href='/login'}>Log in</Nav.Link>
+        </Navbar.Collapse>
+      </>
+    )
+  }
+
   public render() {
     const { currentUser } = this.props
 
     return (
       <Navbar bg="light" expand="lg">
         <Navbar.Brand href="/">Wikir</Navbar.Brand>
-        {currentUser ? this.renderLoggedInHeader() : <></>}
+        {currentUser ? this.renderLoggedInHeader() : this.renderAnonymousHeader()}
       </Navbar>
     )
   }
