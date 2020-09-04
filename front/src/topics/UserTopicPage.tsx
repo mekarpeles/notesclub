@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
+import queryString from 'query-string'
 import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic, TopicWithFamily } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
@@ -7,7 +9,7 @@ import { getChildren } from './ancestry'
 import { Link } from 'react-router-dom'
 import ReferenceRenderer from './ReferenceRenderer'
 
-interface UserTopicPageProps {
+interface UserTopicPageProps extends RouteComponentProps<any> {
   setAppState: Function
   currentUser?: User
   currentTopicKey: string
@@ -48,17 +50,20 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
       .then(blogger => {
         this.setState({ currentBlogger: blogger})
         if (blogger) {
+
           fetchBackendTopics({ slug: currentTopicKey, user_ids: [blogger.id], include_descendants: true, include_ancestors: true }, this.props.setAppState)
             .then(fetchBackendTopicsAndDescendants => {
               const isOwnBlog = currentUser ? currentUser.id === blogger.id : false
               if (fetchBackendTopicsAndDescendants.length === 0) {
                 // Create topic
                 if (isOwnBlog && currentUser) {
+                  const params = queryString.parse(this.props.location.search)
                   const newNonSavedTopic = newTopic({
                     slug: currentTopicKey,
                     user_id: currentUser.id,
                     ancestry: null,
-                    position: -1 // We'll replace this with null before sending it to the backend so it adds it to the end
+                    position: -1, // We'll replace this with null before sending it to the backend so it adds it to the end
+                    content: String(params["content"])
                   })
                   const args = {...newNonSavedTopic, ...{include_ancestors: true, include_descendants: true}}
                   createBackendTopic(args, this.props.setAppState)
@@ -211,7 +216,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     const ancestor_count = ancestors ? ancestors.length : 0
     const isOwnBlog = currentUser && currentBlogger && currentUser.id === currentBlogger.id
     const linkToOwnPage = !isOwnBlog && currentTopic && references && unlinkedReferences && currentUser && !references.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id) && !unlinkedReferences.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id)
-    const ownPagePath = currentUser && currentTopic ? `/${currentUser.username}/${currentTopic.slug}` : ""
+    const ownPagePath = currentUser && currentTopic ? `/${currentUser.username}/${currentTopic.slug}?content=${currentTopic.content}` : ""
 
     return (
       <>
@@ -305,4 +310,4 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 }
 
-export default UserTopicPage
+export default withRouter(UserTopicPage)
