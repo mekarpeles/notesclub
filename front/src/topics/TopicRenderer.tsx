@@ -5,6 +5,7 @@ import { Topic, topicKey, newTopicWithDescendants, sameTopic, topicOrAncestorBel
 import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './../backendSync'
 import { getChildren, areSibling, getParent } from './ancestry'
 import { parameterize } from './../utils/parameterize'
+import { User } from './../User'
 
 interface TopicRendererProps {
   selectedTopic: Topic | null
@@ -15,7 +16,8 @@ interface TopicRendererProps {
   renderSubtopics: boolean
   setUserTopicPageState: Function
   setAppState: Function
-  currentBlogUsername: string
+  currentBlogger: User
+  currentUser: User | undefined
 }
 
 interface TopicRendererState {
@@ -145,8 +147,10 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   selectTopicBelow = () => {
-    const { selectedTopic, siblings, descendants } = this.props
-    if (selectedTopic) {
+    const { selectedTopic, siblings, descendants, currentBlogger, currentUser } = this.props
+    const isOwnBlog = currentUser && currentUser.id === currentBlogger.id
+
+    if (selectedTopic && isOwnBlog) {
       const children = getChildren(selectedTopic, descendants)
       let newSelected: Topic | null = null
       if (children.length > 0) {
@@ -372,11 +376,12 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   selectTopic = (topic: Topic, event: React.MouseEvent<HTMLElement>) => {
-    const { selectedTopic, currentBlogUsername } = this.props
+    const { selectedTopic, currentBlogger, currentUser } = this.props
+    const isOwnBlog = currentUser && currentUser.id === currentBlogger.id
 
     if (event.altKey) {
-      window.location.href = `/${currentBlogUsername}/${topic.slug}`
-    } else {
+      window.location.href = `/${currentBlogger.username}/${topic.slug}`
+    } else if (isOwnBlog) {
       // Update previously selected topic:
       if (selectedTopic) {
         updateBackendTopic(selectedTopic, this.props.setAppState)
@@ -388,7 +393,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   public render () {
-    const { selectedTopic, topic, renderSubtopics, descendants, currentBlogUsername, currentTopic } = this.props
+    const { selectedTopic, topic, renderSubtopics, descendants, currentBlogger, currentUser, currentTopic } = this.props
     const isSelected = selectedTopic && (selectedTopic.id === topic.id && selectedTopic.tmp_key === topic.tmp_key)
     const children = getChildren(topic, descendants)
 
@@ -403,7 +408,8 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             <ul>
               {children.map((subTopic) => (
                 <TopicRenderer
-                  currentBlogUsername={currentBlogUsername}
+                  currentBlogger={currentBlogger}
+                  currentUser={currentUser}
                   key={"sub" + topicKey(subTopic)}
                   topic={subTopic}
                   descendants={descendants}

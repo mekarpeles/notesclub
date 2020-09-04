@@ -50,9 +50,10 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
         if (blogger) {
           fetchBackendTopics({ slug: currentTopicKey, user_ids: [blogger.id], include_descendants: true, include_ancestors: true }, this.props.setAppState)
             .then(fetchBackendTopicsAndDescendants => {
+              const isOwnBlog = currentUser && currentUser.id === blogger.id
               if (fetchBackendTopicsAndDescendants.length === 0) {
                 // Create topic
-                if (currentUser) {
+                if (isOwnBlog && currentUser) {
                   const newNonSavedTopic = newTopic({
                     slug: currentTopicKey,
                     user_id: currentUser.id,
@@ -72,14 +73,16 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                 this.setState({currentTopic: topicAndFamily})
                 if (topicAndFamily.descendants) {
                   this.setState({ descendants: topicAndFamily.descendants})
-                  if (topicAndFamily.descendants.length === 1) {
+                  if (isOwnBlog && topicAndFamily.descendants.length === 1) {
                     this.setState({ selectedTopic: topicAndFamily.descendants[0] })
                   }
                 }
                 if (topicAndFamily.ancestors) {
                   this.setState({ ancestors: topicAndFamily.ancestors })
                 }
-                this.createEmptyTopicIfNoDescendants()
+                if (isOwnBlog) {
+                  this.createEmptyTopicIfNoDescendants()
+                }
                 this.setReferences()
               }
             })
@@ -171,10 +174,14 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
   public render () {
     const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references, unlinkedReferences } = this.state
-    const { currentBlogUsername } = this.props
+    const { currentUser } = this.props
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
 
     const ancestor_count = ancestors ? ancestors.length : 0
+    const isOwnBlog = currentUser && currentBlogger && currentUser.id === currentBlogger.id
+    const linkToOwnPage = !isOwnBlog && currentTopic && references && unlinkedReferences && currentUser && !references.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id) && !unlinkedReferences.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id)
+    const ownPagePath = currentUser && currentTopic ? `/${currentUser.username}/${currentTopic.slug}` : ""
+
     return (
       <>
         <div className="container">
@@ -208,7 +215,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
               <ul>
                 {children.map((subTopic) => (
                   <TopicRenderer
-                    currentBlogUsername={currentBlogUsername}
+                    currentBlogger={currentBlogger}
                     key={"sub" + topicKey(subTopic)}
                     topic={subTopic}
                     descendants={descendants}
@@ -217,9 +224,15 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     renderSubtopics={true}
                     selectedTopic={selectedTopic}
                     setUserTopicPageState={this.updateState}
-                    setAppState={this.props.setAppState} />
+                    setAppState={this.props.setAppState}
+                    currentUser={currentUser} />
                 ))}
               </ul>
+              {linkToOwnPage &&
+                <p>
+                  <Link to={ownPagePath} onClick={() => window.location.href=ownPagePath}>Create your topic "{currentTopic.content}"</Link>
+                </p>
+              }
               {references && references.length > 0 &&
                 <>
                   References:
@@ -230,7 +243,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                         topic={ref}
                         selectedTopic={selectedTopic}
                         setUserTopicPageState={this.updateState}
-                        setAppState={this.props.setAppState} />
+                        setAppState={this.props.setAppState}
+                        currentUser={currentUser} />
                     ))}
                   </ul>
                 </>
@@ -245,7 +259,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                         topic={ref}
                         selectedTopic={selectedTopic}
                         setUserTopicPageState={this.updateState}
-                        setAppState={this.props.setAppState} />
+                        setAppState={this.props.setAppState}
+                        currentUser={currentUser} />
                     ))}
                   </ul>
                 </>

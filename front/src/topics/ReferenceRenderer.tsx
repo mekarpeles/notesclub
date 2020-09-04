@@ -10,6 +10,7 @@ interface ReferenceRendererProps {
   selectedTopic: Topic | null
   setUserTopicPageState: Function
   setAppState: Function
+  currentUser: User | undefined
 }
 
 interface ReferenceRendererState {
@@ -25,10 +26,15 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
   }
 
   renderElement = (topic: Topic | Reference, user: User) => {
-    const path = `/${user.username}/${topic.slug}`
+    const user_path = `/${user.username}`
+    const path = `${user_path}/${topic.slug}`
 
     return (
-      <Link to={path} onClick={() => window.location.href = path}>{topic.content}</Link>
+      <>
+        <Link to={path} onClick={() => window.location.href = path}>{topic.content}</Link>
+        {" by "}
+        <Link to={user_path} onClick={() => window.location.href = user_path}>{user.name || user.username}</Link>
+      </>
     )
   }
 
@@ -37,7 +43,7 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
       <ul>
         {children.map((subTopic) => (
           <TopicRenderer
-            currentBlogUsername={topic.user.username}
+            currentBlogger={topic.user}
             key={"sub" + topicKey(subTopic)}
             topic={subTopic}
             descendants={topic.descendants}
@@ -46,7 +52,8 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
             renderSubtopics={true}
             selectedTopic={this.props.selectedTopic}
             setUserTopicPageState={this.props.setUserTopicPageState}
-            setAppState={this.props.setAppState} />
+            setAppState={this.props.setAppState}
+            currentUser={this.props.currentUser} />
         ))}
       </ul>
     )
@@ -59,7 +66,7 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
     return (
       <ul>
         <TopicRenderer
-          currentBlogUsername={topic.user.username}
+          currentBlogger={topic.user}
           topic={topic}
           descendants={descendantsAndTopic}
           siblings={[topic]}
@@ -67,7 +74,8 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
           renderSubtopics={true}
           selectedTopic={this.props.selectedTopic}
           setUserTopicPageState={this.props.setUserTopicPageState}
-          setAppState={this.props.setAppState} />
+          setAppState={this.props.setAppState}
+          currentUser={this.props.currentUser} />
       </ul>
     )
   }

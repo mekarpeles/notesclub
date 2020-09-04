@@ -40,6 +40,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   renderHeader = () => {
+    const { currentUser } = this.props
     return (
       <>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -50,6 +51,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           <NavDropdown title="Create" id="basic-nav-dropdown">
             <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
           </NavDropdown> */}
+          {currentUser && (currentUser.name || currentUser.username)}
           <Nav.Link onClick={this.logout}>Logout</Nav.Link>
         </Navbar.Collapse>
       </>
