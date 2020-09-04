@@ -172,10 +172,33 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     }
   }
 
+  getReferenceRoots = (references: Reference[]): Topic[] => {
+    return (references.map((r, index) => this.getReferenceRoot(r, index)))
+  }
+
+  getReferenceRoot = (reference: Reference, index: number): Topic => {
+    const ancestors = reference.ancestors
+    const root = ancestors.length > 0 ? ancestors[ancestors.length - 1] : reference
+    return (root)
+  }
+
+  uniqueUnlinkedReferences = () => {
+    const { unlinkedReferences, references } = this.state
+    const referenceRoots = references ? this.getReferenceRoots(references) || [] : []
+    const referenceRootIds = referenceRoots.map(r => r?.id).filter(r => r)
+    return (
+      (unlinkedReferences || []).filter((r, index) => {
+        const root_id = this.getReferenceRoot(r, index).id
+        return (!referenceRootIds.includes(root_id))
+      })
+    )
+  }
+
   public render () {
-    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references, unlinkedReferences } = this.state
+    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references } = this.state
     const { currentUser } = this.props
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
+    const unlinkedReferences = this.uniqueUnlinkedReferences()
 
     const ancestor_count = ancestors ? ancestors.length : 0
     const isOwnBlog = currentUser && currentBlogger && currentUser.id === currentBlogger.id
