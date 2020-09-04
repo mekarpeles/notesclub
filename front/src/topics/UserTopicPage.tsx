@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Topic, TopicWithFamily, Reference, newTopicWithDescendants, topicKey, newTopic } from './Topic'
+import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
 import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
@@ -123,7 +123,6 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
     if (currentTopic && currentUser && references) {
       const except_ids = (references.filter(ref => ref.id).map((ref) => ref.id as number))
-      console.log(`except_ids: ${except_ids.join(', ')}`)
       fetchBackendTopics(
         {
           include_descendants: true,
