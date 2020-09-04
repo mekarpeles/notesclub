@@ -107,13 +107,23 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
           this.setState(
             {
               references: (references as Reference[]).
-                filter((t) => ancestors && this.getReferenceRoot(t, t.ancestors).id != this.getReferenceRoot(currentTopic, ancestors).id).
+                filter((r) => this.inCurrentTopic(r)).
                 sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
                 sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
             })
           this.setUnlinkedReferences()
         }
         )
+    }
+  }
+
+  inCurrentTopic = (reference: Reference): boolean => {
+    const { currentTopic, ancestors } = this.state
+
+    if (ancestors && currentTopic) {
+      return (this.getReferenceRoot(reference, reference.ancestors).id != this.getReferenceRoot(currentTopic, ancestors).id)
+    } else {
+      return (false)
     }
   }
 
@@ -134,7 +144,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
         this.props.setAppState)
         .then(unlinkedReferences => {
           const unlinkedRef = this.uniqueUnlinkedReferences(references, unlinkedReferences as Reference[]).
-            filter((t) => ancestors && this.getReferenceRoot(t, t.ancestors).id != this.getReferenceRoot(currentTopic, ancestors).id).
+            filter(r => this.inCurrentTopic(r)).
             sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
             sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
           this.setState({ unlinkedReferences: unlinkedRef })
