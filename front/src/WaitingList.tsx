@@ -71,7 +71,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
           <div className="col-lg-4"></div>
           <div className="col-lg-4">
             <Form.Group>
-              <Form.Label>Email</Form.Label>
+              <Form.Label>Email:</Form.Label>
               <Form.Control
                 type="text"
                 value={email}
@@ -80,7 +80,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Why would you like to join?</Form.Label>
+              <Form.Label>Why would you like to join? (optional)</Form.Label>
               <Form.Control
                 as="textarea"
                 rows="3"
