@@ -18,6 +18,7 @@ interface TopicRendererProps {
   setAppState: Function
   currentBlogger: User
   currentUser: User | undefined
+  isReference: boolean
 }
 
 interface TopicRendererState {
@@ -211,62 +212,73 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    const { topic, selectedTopic, siblings } = this.props
+    const { topic, selectedTopic, isReference } = this.props
     let { descendants } = this.props
 
     if (selectedTopic) {
       switch (event.key) {
         case "Enter":
-          const newPosition = selectedTopic.position + 1
+          if (isReference) {
+            updateBackendTopic(selectedTopic, this.props.setAppState)
+            this.props.setUserTopicPageState({ selectedTopic: null })
+          } else {
+            const newPosition = selectedTopic.position + 1
 
-          descendants = descendants.map((descendant) => {
-            if (areSibling(descendant, topic) && descendant.position >= newPosition) {
-              descendant.position += 1
-            }
-            return (descendant)
-          })
-          const newNonSavedTopic = newTopicWithDescendants({
-            position: newPosition,
-            user_id: selectedTopic.user_id,
-            ancestry: selectedTopic.ancestry
-          })
-          descendants.push(newNonSavedTopic)
-          updateBackendTopic(selectedTopic, this.props.setAppState)
-
-          this.props.setUserTopicPageState({ selectedTopic: newNonSavedTopic, descendants: descendants })
-          createBackendTopic(newNonSavedTopic, this.props.setAppState)
-            .then(topicWithId => {
-              const selected = this.props.selectedTopic
-              this.props.setUserTopicPageState({
-                descendants: descendants.map((d) => d.tmp_key === topicWithId.tmp_key ? topicWithId : d),
-                selectedTopic: selected && selected.tmp_key === topicWithId.tmp_key ? topicWithId : selected
-              })
+            descendants = descendants.map((descendant) => {
+              if (areSibling(descendant, topic) && descendant.position >= newPosition) {
+                descendant.position += 1
+              }
+              return (descendant)
             })
+            const newNonSavedTopic = newTopicWithDescendants({
+              position: newPosition,
+              user_id: selectedTopic.user_id,
+              ancestry: selectedTopic.ancestry
+            })
+            descendants.push(newNonSavedTopic)
+            updateBackendTopic(selectedTopic, this.props.setAppState)
+
+            this.props.setUserTopicPageState({ selectedTopic: newNonSavedTopic, descendants: descendants })
+            createBackendTopic(newNonSavedTopic, this.props.setAppState)
+              .then(topicWithId => {
+                const selected = this.props.selectedTopic
+                this.props.setUserTopicPageState({
+                  descendants: descendants.map((d) => d.tmp_key === topicWithId.tmp_key ? topicWithId : d),
+                  selectedTopic: selected && selected.tmp_key === topicWithId.tmp_key ? topicWithId : selected
+                })
+              })
+          }
           break
         case "Escape":
-          this.props.setUserTopicPageState({ selectedTopic: null })
           updateBackendTopic(selectedTopic, this.props.setAppState)
+          this.props.setUserTopicPageState({ selectedTopic: null })
           break
         case "Tab":
-          event.shiftKey ? this.unindentTopic() : this.indentTopic()
+          if (!isReference) {
+            event.shiftKey ? this.unindentTopic() : this.indentTopic()
+          }
           event.preventDefault()
           break
         case "ArrowDown":
-          if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
-            this.moveTopicBelow()
-          } else {
-            this.selectTopicBelow()
+          if (!isReference) {
+            if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
+              this.moveTopicBelow()
+            } else {
+              this.selectTopicBelow()
+            }
           }
           break
         case "ArrowUp":
-          if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
-            this.moveTopicAbove()
-          } else {
-            this.selectTopicAbove()
+          if (!isReference) {
+            if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
+              this.moveTopicAbove()
+            } else {
+              this.selectTopicAbove()
+            }
           }
           break
         case "Backspace":
-          if (selectedTopic.content === "") {
+          if (!isReference && selectedTopic.content === "") {
             let selectedTopicIndex: number | undefined = undefined
             let siblingAbove: Topic | null = null
             let newSelected: Topic | null = null
@@ -418,7 +430,8 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
                   renderSubtopics={true}
                   selectedTopic={selectedTopic}
                   setUserTopicPageState={this.props.setUserTopicPageState}
-                  setAppState={this.props.setAppState} />
+                  setAppState={this.props.setAppState}
+                  isReference={this.props.isReference} />
               ))}
             </ul>
           </li>

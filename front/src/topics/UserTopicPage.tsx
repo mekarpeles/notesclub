@@ -225,7 +225,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     selectedTopic={selectedTopic}
                     setUserTopicPageState={this.updateState}
                     setAppState={this.props.setAppState}
-                    currentUser={currentUser} />
+                    currentUser={currentUser}
+                    isReference={false} />
                 ))}
               </ul>
               {linkToOwnPage &&

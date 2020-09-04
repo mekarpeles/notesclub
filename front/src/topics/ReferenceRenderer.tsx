@@ -11,6 +11,7 @@ interface ReferenceRendererProps {
   setUserTopicPageState: Function
   setAppState: Function
   currentUser: User | undefined
+
 }
 
 interface ReferenceRendererState {
@@ -53,7 +54,8 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
             selectedTopic={this.props.selectedTopic}
             setUserTopicPageState={this.props.setUserTopicPageState}
             setAppState={this.props.setAppState}
-            currentUser={this.props.currentUser} />
+            currentUser={this.props.currentUser}
+            isReference={true} />
         ))}
       </ul>
     )
@@ -75,7 +77,8 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
           selectedTopic={this.props.selectedTopic}
           setUserTopicPageState={this.props.setUserTopicPageState}
           setAppState={this.props.setAppState}
-          currentUser={this.props.currentUser} />
+          currentUser={this.props.currentUser}
+          isReference={true} />
       </ul>
     )
   }
