@@ -154,8 +154,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   updateState = (partialState: Partial<UserTopicPageState>) => {
-    const newState: UserTopicPageState = { ...this.state, ...partialState };
-    this.setState(newState);
+    const newState: UserTopicPageState = { ...this.state, ...partialState }
+    this.setState(newState)
   }
 
   createEmptyTopicIfNoDescendants = (): void => {

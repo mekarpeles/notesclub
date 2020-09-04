@@ -363,6 +363,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   renderUnselectedTopic = (topic: Topic) => {
+    const { currentBlogger } = this.props
     const arr = topic.content.split(this.LINK_REGEX)
     return (
       <>
@@ -370,7 +371,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           if (index % 2 === 0) {
             return (<span key={index}>{element}</span>)
           } else {
-            const path = `/hec/${parameterize(element, 100)}`
+            const path = `/${currentBlogger.username}/${parameterize(element, 100)}`
             return (
               <Link
                 to={path}

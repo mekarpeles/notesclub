@@ -18,7 +18,6 @@ class TopicsController < ApplicationController
     end
     limit = params["slug"] || (params["ids"] && params["ids"].size == 1) ? 1 : 100
     topics = topics.order(id: :desc).limit(limit)
-
     methods = []
     methods << :descendants if params[:include_descendants]
     methods << :ancestors if params[:include_ancestors]
