@@ -42,7 +42,11 @@ class TopicsController < ApplicationController
     args = params.permit(:content, :ancestry, :position, :slug).merge(user_id: current_user.id)
     topic = Topic.new(args)
     if topic.save
-      render json: topic, status: :created
+      methods = []
+      methods << :descendants if params[:include_descendants]
+      methods << :ancestors if params[:include_ancestors]
+      methods << :user if params[:include_user]
+      render json: topic.to_json(methods: methods)
     else
       render json: topic.errors.full_messages, status: :bad_request
     end

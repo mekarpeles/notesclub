@@ -57,7 +57,7 @@ export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, se
 //   return (response)
 // }
 
-export const createBackendTopic = async (newTopic: Topic, setAppState: Function): Promise<Topic> => {
+export const createBackendTopic = async (newTopic: Topic, setAppState: Function): Promise<TopicWithFamily> => {
   const position = newTopic.position === -1 ? null : newTopic.position
   const args = { ...newTopic, ...{ position: position } }
 

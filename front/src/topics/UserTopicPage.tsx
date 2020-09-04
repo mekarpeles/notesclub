@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic } from './Topic'
+import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic, TopicWithFamily } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
 import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
@@ -50,7 +50,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
         if (blogger) {
           fetchBackendTopics({ slug: currentTopicKey, user_ids: [blogger.id], include_descendants: true, include_ancestors: true }, this.props.setAppState)
             .then(fetchBackendTopicsAndDescendants => {
-              const isOwnBlog = currentUser && currentUser.id === blogger.id
+              const isOwnBlog = currentUser ? currentUser.id === blogger.id : false
               if (fetchBackendTopicsAndDescendants.length === 0) {
                 // Create topic
                 if (isOwnBlog && currentUser) {
@@ -60,34 +60,36 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     ancestry: null,
                     position: -1 // We'll replace this with null before sending it to the backend so it adds it to the end
                   })
-                  createBackendTopic(newNonSavedTopic, this.props.setAppState)
+                  const args = {...newNonSavedTopic, ...{include_ancestors: true, include_descendants: true}}
+                  createBackendTopic(args, this.props.setAppState)
                     .then(topic => {
-                      this.setState({currentTopic: topic, descendants: []})
-                      this.createEmptyTopicIfNoDescendants()
-                      this.setReferences()
+                      this.setTopic(topic, isOwnBlog)
                     })
                 }
               } else {
                 // Topic already exists
-                const topicAndFamily = fetchBackendTopicsAndDescendants[0]
-                this.setState({currentTopic: topicAndFamily})
-                if (topicAndFamily.descendants) {
-                  this.setState({ descendants: topicAndFamily.descendants})
-                  if (isOwnBlog && topicAndFamily.descendants.length === 1) {
-                    this.setState({ selectedTopic: topicAndFamily.descendants[0] })
-                  }
-                }
-                if (topicAndFamily.ancestors) {
-                  this.setState({ ancestors: topicAndFamily.ancestors })
-                }
-                if (isOwnBlog) {
-                  this.createEmptyTopicIfNoDescendants()
-                }
-                this.setReferences()
+                this.setTopic(fetchBackendTopicsAndDescendants[0], isOwnBlog)
               }
             })
         }
       })
+  }
+
+  setTopic = (topicAndFamily: TopicWithFamily, isOwnBlog: boolean) => {
+    this.setState({ currentTopic: topicAndFamily })
+    if (topicAndFamily.descendants) {
+      this.setState({ descendants: topicAndFamily.descendants })
+      if (isOwnBlog && topicAndFamily.descendants.length === 1) {
+        this.setState({ selectedTopic: topicAndFamily.descendants[0] })
+      }
+    }
+    if (topicAndFamily.ancestors) {
+      this.setState({ ancestors: topicAndFamily.ancestors })
+    }
+    if (isOwnBlog) {
+      this.createEmptyTopicIfNoDescendants()
+    }
+    this.setReferences()
   }
 
   setReferences = () => {
