@@ -132,12 +132,12 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
           except_ids: except_ids
         },
         this.props.setAppState)
-        .then(references => {
-          const unlinkedReferences = (references as Reference[]).
+        .then(unlinkedReferences => {
+          const unlinkedRef = this.uniqueUnlinkedReferences(references, unlinkedReferences as Reference[]).
             filter((t) => t.id != currentTopic.id).
             sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
             sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
-          this.setState({ unlinkedReferences: unlinkedReferences })
+          this.setState({ unlinkedReferences: unlinkedRef })
         }
         )
     }
@@ -181,8 +181,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     return (root)
   }
 
-  uniqueUnlinkedReferences = () => {
-    const { unlinkedReferences, references } = this.state
+  uniqueUnlinkedReferences = (references: Reference[], unlinkedReferences: Reference[]): Reference[] => {
     const referenceRoots = references ? this.getReferenceRoots(references) || [] : []
     const referenceRootIds = referenceRoots.map(r => r?.id).filter(r => r)
     return (
@@ -194,10 +193,9 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   public render () {
-    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references } = this.state
+    const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references, unlinkedReferences } = this.state
     const { currentUser } = this.props
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
-    const unlinkedReferences = this.uniqueUnlinkedReferences()
 
     const ancestor_count = ancestors ? ancestors.length : 0
     const isOwnBlog = currentUser && currentBlogger && currentUser.id === currentBlogger.id
