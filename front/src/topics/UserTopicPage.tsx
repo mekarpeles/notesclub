@@ -118,7 +118,9 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                 sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
                 sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
             })
-          this.setUnlinkedReferences()
+          if (currentTopic.slug != "welcome_to_wikir") {
+            this.setUnlinkedReferences()
+          }
         }
         )
     }
