@@ -63,7 +63,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     user_id: currentUser.id,
                     ancestry: null,
                     position: -1, // We'll replace this with null before sending it to the backend so it adds it to the end
-                    content: String(params["content"])
+                    content: params["content"] ? String(params["content"]) : undefined
                   })
                   const args = {...newNonSavedTopic, ...{include_ancestors: true, include_descendants: true}}
                   createBackendTopic(args, this.props.setAppState)
