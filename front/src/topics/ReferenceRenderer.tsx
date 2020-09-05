@@ -26,15 +26,19 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
     }
   }
 
-  renderElement = (topic: Topic | Reference, user: User) => {
+  renderElement = (topic: Topic | Reference, user: User, showUser: boolean) => {
     const user_path = `/${user.username}`
     const path = `${user_path}/${topic.slug}`
 
     return (
       <>
         <Link to={path} onClick={() => window.location.href = path}>{topic.content}</Link>
-        {" by "}
-        <Link to={user_path} onClick={() => window.location.href = user_path}>{user.name || user.username}</Link>
+        { showUser &&
+          <>
+            {" by "}
+            <Link to={user_path} onClick={() => window.location.href = user_path}>{user.name || user.username}</Link>
+          </>
+        }
       </>
     )
   }
@@ -107,13 +111,13 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
       <>
         {second_line_count > 0 &&
           <li key={`ref_${first_element.id}`}>
-            {this.renderElement(first_element, topic.user)}
+            {this.renderElement(first_element, topic.user, true)}
             <p>
               {second_line.map((ancestor, index) => {
                 const path = topic.user ? `/${topic.user.username}/${ancestor.slug}` : '/'
                 return (
                   <span>
-                    {this.renderElement(ancestor, topic.user)}
+                    {this.renderElement(ancestor, topic.user, false)}
                     {index < second_line_count - 1 ? ' > ' : ''}
                   </span>
                 )
@@ -125,7 +129,7 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
 
         {second_line_count === 0 && first_element.id === topic.id &&
           <li key={`ref_${first_element.id}`}>
-            {this.renderElement(first_element, topic.user)}
+            {this.renderElement(first_element, topic.user, true)}
 
             {this.renderDescendants(topic, children)}
           </li>
@@ -133,7 +137,7 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
 
         {second_line_count === 0 && first_element.id != topic.id &&
           <li key={`ref_${first_element.id}`}>
-            {this.renderElement(first_element, topic.user)}
+            {this.renderElement(first_element, topic.user, true)}
             {this.renderParentWithDescendants(topic, parent)}
           </li>
         }
