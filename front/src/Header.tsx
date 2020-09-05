@@ -19,16 +19,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       .then(res => {
         localStorage.removeItem('currentUser')
         this.props.setParentState({ currentUsername: undefined, alert: undefined })
-        return (
-          <Redirect to="/" push />
-        )
+        window.location.href = '/'
       })
       .catch(res => {
         localStorage.removeItem('currentUser')
         this.props.setParentState({ currentUsername: undefined, alert: undefined })
-        return (
-          <Redirect to="/" push />
-        )
+        window.location.href = '/'
       })
   }
   renderLoggedInHeader = () => {
@@ -52,7 +48,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
           </NavDropdown> */}
           {currentUser && (currentUser.name || currentUser.username)}
-          <Nav.Link onClick={this.logout}>Logout</Nav.Link>
+          <Nav.Link href='/logout' onClick={this.logout}>Logout</Nav.Link>
         </Navbar.Collapse>
       </>
     )
@@ -65,6 +61,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
+          <Nav.Link href='/signup' onClick={() => window.location.href = '/signup'}>Sign up</Nav.Link>
           <Nav.Link href='/login' onClick={() => window.location.href='/login'}>Log in</Nav.Link>
         </Navbar.Collapse>
       </>

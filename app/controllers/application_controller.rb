@@ -36,4 +36,19 @@ class ApplicationController < ActionController::API
   def signed_in?
     current_user_id.present?
   end
+
+  def log_in_as(user)
+    user.reset_jwt_token
+    user.save!
+    cookies.signed[:jwt] = {value: user.jwt_token, httponly: true}
+    # response.set_cookie(
+    #   :jwt,
+    #   {
+    #     value: user.jwt_token,
+    #     expires: 30.days.from_now,
+    #     httponly: true,
+    #   }
+    # )
+    @current_user = user
+  end
 end

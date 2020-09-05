@@ -2,7 +2,9 @@ import * as React from 'react'
 import { Form, Button } from 'react-bootstrap'
 import axios from 'axios'
 import { apiDomain } from './appConfig'
-import './WaitingList.scss';
+import './WaitingList.scss'
+import { Link } from 'react-router-dom'
+import { backendErrorsToMessage } from './backendSync'
 
 interface WaitingListProps {
   setAppState: Function
@@ -48,14 +50,8 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
         this.props.setAppState({ alert: { message: "You are in the waiting list now. See you soon!" , variant: "success" } })
       })
       .catch(res => {
-        const errors = res.response.data && res.response.data.errors
-        let errors_arr: string[] = []
-        for (let key in errors) {
-          const capitalized_key = key.charAt(0).toUpperCase() + key.slice(1)
-          let value = errors[key].join(`. ${capitalized_key} `)
-          errors_arr.push(`${capitalized_key} ${value}`)
-        }
-        this.props.setAppState({ alert: { message: errors_arr.join(". "), variant: "danger" } })
+        const message = backendErrorsToMessage(res)
+        this.props.setAppState({ alert: { message: message, variant: "danger" } })
       })
   }
 
@@ -89,6 +85,8 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
                 onChange={this.handleChange as any} autoFocus />
             </Form.Group>
             <Button onClick={this.submit}>Join</Button>
+            {" or "}
+            <Link to="/signup" onClick={() => window.location.href = `/signup`}>Sign up</Link> if you have a Golden Ticket
           </div>
           <div className="col-lg-4"></div>
         </div>

@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe SessionsController, type: :request do
+  fixtures :users
   context "Login" do
+    let(:user) { users(:user1) }
     before do
-      @params = { email: "hec2@hec.com", password: "hec2hec" }
+      @params = { email: "hec2@hec.com", password: "hec2hec", username: "kkkk", invited_by: user }
       @user = User.create!(@params)
     end
 

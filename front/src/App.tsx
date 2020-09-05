@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import UserTopicPage from './topics/UserTopicPage'
 import UserPage from './UserPage'
 import WaitingList from './WaitingList'
+import GoldenTicket from './GoldenTicket'
 import { User } from './User'
 import { fetchBackendUser } from './backendSync'
 
@@ -70,7 +71,12 @@ class App extends React.Component<AppProps, AppState> {
           <>
             <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} /> } />
             <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
+          </>
+        }
+        { !currentUser &&
+          <>
             <Route path="/login" exact render={() => <Login setParentState={this.updateState} />} />
+            <Route path="/signup" exact render={() => <GoldenTicket setAppState={this.updateState} />} />
           </>
         }
       </>
@@ -91,7 +97,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/" exact>
               {currentUsername ? <Redirect to={`/${currentUsername}`} /> : <WaitingList setAppState={this.updateState} />}
             </Route>
-            {currentUsername ? this.renderRoutes() : <Login setParentState={this.updateState} />}
+            {this.renderRoutes()}
           </Switch>
         </Router>
       </div>

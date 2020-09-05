@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
-  EXPOSED_ATTRIBUTES = %w(id name username created_at updated_at).freeze
+  skip_before_action :authenticate_user!, only: :create
   before_action :authenticate_param_user!, only: :update
+  EXPOSED_ATTRIBUTES = %w(id name username created_at updated_at).freeze
 
   def index
     users = User.select(EXPOSED_ATTRIBUTES)
@@ -19,6 +20,17 @@ class UsersController < ApplicationController
       render :show
     else
       render json: { errors: current_user.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def create
+    creator = UserCreator.new(params.permit(:email, :password, :name, :username, :golden_ticket_code))
+    if creator.create
+      log_in_as(creator.user)
+      render json: creator.user.slice(EXPOSED_ATTRIBUTES), status: :created
+    else
+      Rails.logger.info "Errors: #{creator.errors.inspect}"
+      render json: { errors: creator.errors }, status: :unprocessable_entity
     end
   end
 

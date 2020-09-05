@@ -46,7 +46,7 @@ class TopicsController < ApplicationController
       methods << :descendants if params[:include_descendants]
       methods << :ancestors if params[:include_ancestors]
       methods << :user if params[:include_user]
-      render json: topic.to_json(methods: methods)
+      render json: topic.to_json(methods: methods), status: :created
     else
       render json: topic.errors.full_messages, status: :bad_request
     end

@@ -46,7 +46,8 @@ class Login extends React.Component<LoginProps, LoginState> {
       .then(res => {
         const currentUser = res.data["user"]
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
-        this.props.setParentState({ currentUsername: currentUser.username, alert: undefined })
+        window.location.href = `/${currentUser.username}`
+        // this.props.setParentState({ currentUsername: currentUser.username, alert: undefined })
       })
       .catch(res => {
         let msg = ""

@@ -1,5 +1,6 @@
 
 import axios from 'axios'
+import { AxiosPromise } from 'axios'
 import { User } from './User'
 import { apiDomain } from './appConfig'
 import { Topic, Reference, TopicWithFamily } from './topics/Topic'
@@ -90,6 +91,17 @@ export const deleteBackendTopic = async (topic: Topic, setAppState: Function): P
 
 const syncError = (setAppState: Function) => {
   setAppState({ alert: { variant: "danger", message: "Sync error. Please copy your last change and refresh. Sorry, we're in alpha!" } })
+}
+
+export const backendErrorsToMessage = (res: any) => {
+  const errors = res.response.data && res.response.data.errors
+  let errors_arr: string[] = []
+  for (let key in errors) {
+    const capitalized_key = key.charAt(0).toUpperCase() + key.slice(1)
+    let value = errors[key].join(`. ${capitalized_key} `)
+    errors_arr.push(`${capitalized_key} ${value}`)
+  }
+  return (errors_arr.join(". "))
 }
 
 // export const updateBackendTopicWithRetries = async (topic: Topic): Promise<Topic> => {
