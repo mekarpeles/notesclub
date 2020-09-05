@@ -34,4 +34,16 @@ RSpec.describe UsersController, type: :request do
       expect(User.last.slice("name", "username", "email", "invited_by_id")).to eq("name" => "Hec", "username" => "hec878", "email" => "hec878@hec.com", "invited_by_id" => user.id)
     end
   end
+
+  describe "#confirmation" do
+    it "should create a user" do
+      user.update!(confirmation_token: "a2sadq2113as12", confirmed_at: nil)
+      expect(user.confirmed?).to eq(false)
+      post "/v1/users/confirmation", params: { token: "a2sadq2113as12" }
+      result = JSON.parse(response.body)
+      expect(result["errors"] || []).to eq([])
+      expect(response).to have_http_status(:success)
+      expect(user.reload.confirmed?).to eq(true)
+    end
+  end
 end

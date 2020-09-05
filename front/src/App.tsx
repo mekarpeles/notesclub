@@ -11,6 +11,7 @@ import WaitingList from './WaitingList'
 import GoldenTicket from './GoldenTicket'
 import { User } from './User'
 import { fetchBackendUser } from './backendSync'
+import ConfirmationToken from './ConfirmationToken'
 
 interface AppProps {
 
@@ -79,6 +80,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/signup" exact render={() => <GoldenTicket setAppState={this.updateState} />} />
           </>
         }
+        <Route path="/users/confirmation/:token" exact render={({ match }) => <ConfirmationToken token={match.params.token} setAppState={this.updateState} />} />
       </>
     )
   }

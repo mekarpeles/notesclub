@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  devise :database_authenticatable, :confirmable, :validatable
+  devise :database_authenticatable, :confirmable, :rememberable, :validatable
 
   self.skip_session_storage = [:http_auth, :params_auth]
 

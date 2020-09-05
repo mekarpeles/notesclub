@@ -10,7 +10,7 @@ interface GoldenTicketProps {
 }
 
 interface GoldenTicketState {
-  step: "code" | "signup" | "onboarding"
+  step: "code" | "signup"
   code: string
   email: string
   password: string
@@ -54,10 +54,10 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
       golden_ticket_code: code
     }
 
-    axios.post(apiDomain() + "/v1/users", args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+    axios.post(apiDomain() + "/v1/users", args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" } })
       .then(res => {
-        this.setState({ step: 'onboarding' })
-        this.props.setAppState({ alert: { message: "Welcome to Wikir!", variant: "success" } })
+        localStorage.setItem('currentUser', JSON.stringify(res.data["user"]))
+        window.location.href = '/hec/wikir_help'
       })
       .catch(res => {
         this.props.setAppState({ alert: { message: backendErrorsToMessage(res), variant: "danger" } })
@@ -66,7 +66,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
 
   checkCode = () => {
     const { code } = this.state
-    axios.get(apiDomain() + "/v1/golden_tickets/check", { params: { code: code}, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+    axios.get(apiDomain() + "/v1/golden_tickets/check", { params: { code: code}, headers: { 'Content-Type': 'application/json', "Accept": "application/json" } })
       .then(res => {
         if (res.data.found) {
           this.props.setAppState({ alert: { message: "Golden ticket successful!", variant: "success" } })
@@ -147,11 +147,6 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
                     onChange={this.handleChange as any} autoFocus />
                 </Form.Group>
                 <Button onClick={this.signup}>Join</Button>
-              </>
-            }
-            {step === 'onboarding' &&
-              <>
-                You will receive a confirmation email.
               </>
             }
           </div>

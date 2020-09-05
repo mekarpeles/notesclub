@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   scope :v1, defaults: { format: :json} do
-    resources :users, only: [:index, :show, :create, :update]
+    resources :users, only: [:index, :show, :create, :update] do
+      collection do
+        post 'confirmation'
+      end
+    end
     devise_for :users, controllers: { sessions: :sessions },
                        path_names: { sign_in: :login, sign_out: :logout },
                        skip: [:confirmations], skip_helpers: [:confirmations]
