@@ -15,6 +15,6 @@ RSpec.describe "UserCreator" do
   it "should NOT create a user if the password is not passed" do
     creator = UserCreator.new(name: "Hec", username: "hec878", email: "hec@tor.com", golden_ticket_code: golden_ticket.code)
     creator.create
-    expect(creator.errors).to eq(["Validation failed: Password can't be blank"])
+    expect(creator.errors).to eq(["Password can't be blank"])
   end
 end

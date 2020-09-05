@@ -56,8 +56,9 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
 
     axios.post(apiDomain() + "/v1/users", args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" } })
       .then(res => {
-        localStorage.setItem('currentUser', JSON.stringify(res.data["user"]))
-        window.location.href = '/hec/wikir_help'
+        const currentUser = res.data["user"]
+        localStorage.setItem('currentUser', JSON.stringify(currentUser))
+        window.location.href = `/${currentUser.username}/welcome_to_wikir`
       })
       .catch(res => {
         this.props.setAppState({ alert: { message: backendErrorsToMessage(res), variant: "danger" } })

@@ -16,7 +16,7 @@ class TopicsController < ApplicationController
     if params["except_ids"].present?
       topics = topics.where.not(id: params["except_ids"])
     end
-    limit = params["slug"] || (params["ids"] && params["ids"].size == 1) ? 1 : 100
+    limit = params["slug"] || (params["ids"] && params["ids"].size == 1) ? 1 : [params["limit"] || 100, 100].min
     topics = topics.order(id: :desc).limit(limit)
     methods = []
     methods << :descendants if params[:include_descendants]
