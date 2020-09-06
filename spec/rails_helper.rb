@@ -66,5 +66,5 @@ RSpec.configure do |config|
 end
 
 def log_in(user)
-  cookies[:jwt] = user.jwt_token
+  cookies[:jwt] = user.generate_jwt
 end

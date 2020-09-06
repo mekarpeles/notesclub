@@ -18,67 +18,51 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     axios.delete(`http://localhost:3000/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
       .then(res => {
         localStorage.removeItem('currentUser')
-        this.props.setParentState({ user: undefined, alert: undefined })
-        console.log(res)
-        console.log(res.data)
-        return (
-          <Redirect to="/" push />
-        )
+        this.props.setParentState({ currentUsername: undefined, alert: undefined })
+        window.location.href = '/'
       })
       .catch(res => {
         localStorage.removeItem('currentUser')
-        this.props.setParentState({ user: undefined, alert: undefined })
-        console.log("error ");
-        console.log(res);
-        return (
-          <Redirect to="/" push />
-        )
+        this.props.setParentState({ currentUsername: undefined, alert: undefined })
+        window.location.href = '/'
       })
   }
   renderLoggedInHeader = () => {
     const { currentUser } = this.props
 
     return(
-      (currentUser && currentUser["role"] === "teacher") ? this.renderTeacherHeader() : this.renderStudentHeader()
+      currentUser && this.renderHeader()
     )
   }
 
-  renderStudentHeader = () => {
+  renderHeader = () => {
+    const { currentUser } = this.props
     return (
       <>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          <Nav.Link href="/">Practice</Nav.Link>
+          {/* <Nav.Link href="/">Practice</Nav.Link>
           <NavDropdown title="Create" id="basic-nav-dropdown">
             <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
-          </NavDropdown>
-          <Nav.Link onClick={this.logout}>Logout</Nav.Link>
-          {/* <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-success">Search</Button>
-          </Form> */}
+          </NavDropdown> */}
+          {currentUser && (currentUser.name || currentUser.username)}
+          <Nav.Link href='/logout' onClick={this.logout}>Logout</Nav.Link>
         </Navbar.Collapse>
       </>
     )
   }
-  renderTeacherHeader = () => {
+
+  renderAnonymousHeader = () => {
     return (
       <>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          <Nav.Link href="/exercises">Exercises</Nav.Link>
-          <NavDropdown title="Create" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
-          </NavDropdown>
-          <Nav.Link onClick={this.logout}>Logout</Nav.Link>
-          {/* <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-success">Search</Button>
-          </Form> */}
+          <Nav.Link href='/signup' onClick={() => window.location.href = '/signup'}>Sign up</Nav.Link>
+          <Nav.Link href='/login' onClick={() => window.location.href='/login'}>Log in</Nav.Link>
         </Navbar.Collapse>
       </>
     )
@@ -86,10 +70,11 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   public render() {
     const { currentUser } = this.props
+
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/">Treeconf</Navbar.Brand>
-        {currentUser ? this.renderLoggedInHeader() : <></>}
+        <Navbar.Brand href="/">Wikir</Navbar.Brand>
+        {currentUser ? this.renderLoggedInHeader() : this.renderAnonymousHeader()}
       </Navbar>
     )
   }

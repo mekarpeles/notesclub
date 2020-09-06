@@ -12,7 +12,7 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate
-    return 1 if Rails.env.development? && ENV["SKIP_AUTH_IN_DEV"]
+    return 16 if Rails.env.development? && ENV["SKIP_AUTH_IN_DEV"]
     begin
       jwt_payload = JWT.decode(jwt_token, Rails.application.credentials.config[:secret_key_base]).first
       jwt_payload['id']
@@ -35,5 +35,20 @@ class ApplicationController < ActionController::API
 
   def signed_in?
     current_user_id.present?
+  end
+
+  def log_in_as(user)
+    user.reset_jwt_token
+    user.save!
+    cookies.signed[:jwt] = {value: user.jwt_token, httponly: true}
+    # response.set_cookie(
+    #   :jwt,
+    #   {
+    #     value: user.jwt_token,
+    #     expires: 30.days.from_now,
+    #     httponly: true,
+    #   }
+    # )
+    @current_user = user
   end
 end

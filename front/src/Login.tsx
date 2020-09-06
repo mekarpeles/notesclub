@@ -1,8 +1,7 @@
-import * as React from 'react';
-import { Form, Button } from 'react-bootstrap';
-import axios from 'axios';
+import * as React from 'react'
+import { Form, Button } from 'react-bootstrap'
+import axios from 'axios'
 import { apiDomain } from './appConfig'
-import { humanize } from './stringTools'
 
 interface LoginProps {
   setParentState: Function
@@ -45,11 +44,10 @@ class Login extends React.Component<LoginProps, LoginState> {
     // axios.defaults.withCredentials = true
     axios.post(apiDomain() + "/v1/users/login", { user }, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
-        console.log(res)
-        console.log(res.data)
         const currentUser = res.data["user"]
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
-        this.props.setParentState({ user: currentUser, alert: undefined })
+        window.location.href = `/${currentUser.username}`
+        // this.props.setParentState({ currentUsername: currentUser.username, alert: undefined })
       })
       .catch(res => {
         let msg = ""
@@ -59,8 +57,6 @@ class Login extends React.Component<LoginProps, LoginState> {
           msg = "There was an error. Try again later."
         }
         this.props.setParentState({ alert: { variant: "danger", message: msg } })
-        console.log("error ");
-        console.log(res);
       })
   }
   public render() {
