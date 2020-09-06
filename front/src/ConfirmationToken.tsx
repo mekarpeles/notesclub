@@ -29,7 +29,7 @@ class ConfirmationToken extends React.Component<ConfirmationTokenProps, Confirma
       .then(res => {
         const currentUser = res.data["user"]
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
-        window.location.href = '/onboarding'
+        window.location.href = `/${currentUser.username}/welcome_to_wikir`
       })
       .catch(res => {
         this.props.setAppState({ alert: { message: "There was an error. Please try again.", variant: "danger" } })
