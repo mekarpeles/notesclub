@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Topic, Reference, topicKey } from './Topic'
+import { Topic, Reference, topicKey, sameTopic } from './Topic'
 import { User } from './../User'
 import { getChildren } from './ancestry'
 import TopicRenderer from './TopicRenderer'
@@ -114,9 +114,8 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
             {this.renderElement(first_element, topic.user, true)}
             <p>
               {second_line.map((ancestor, index) => {
-                const path = topic.user ? `/${topic.user.username}/${ancestor.slug}` : '/'
                 return (
-                  <span>
+                  <span key={ancestor.id}>
                     {this.renderElement(ancestor, topic.user, false)}
                     {index < second_line_count - 1 ? ' > ' : ''}
                   </span>
@@ -135,7 +134,7 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
           </li>
         }
 
-        {second_line_count === 0 && first_element.id != topic.id &&
+        {second_line_count === 0 && !sameTopic(first_element, topic) &&
           <li key={`ref_${first_element.id}`}>
             {this.renderElement(first_element, topic.user, true)}
             {this.renderParentWithDescendants(topic, parent)}

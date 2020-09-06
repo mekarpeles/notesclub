@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import queryString from 'query-string'
-import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic, TopicWithFamily } from './Topic'
+import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic, TopicWithFamily, sameTopic } from './Topic'
 import TopicRenderer from './TopicRenderer'
 import { User } from './../User'
 import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
@@ -98,7 +98,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   setReferences = () => {
-    const { currentTopic, ancestors } = this.state
+    const { currentTopic } = this.state
     const { currentUser } = this.props
 
     if (currentTopic && currentUser) {
@@ -118,7 +118,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                 sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
                 sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
             })
-          if (currentTopic.slug != "welcome_to_wikir") {
+          if (currentTopic.slug !== "welcome_to_wikir") {
             this.setUnlinkedReferences()
           }
         }
@@ -130,14 +130,14 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     const { currentTopic, ancestors } = this.state
 
     if (ancestors && currentTopic) {
-      return (this.getReferenceRoot(reference, reference.ancestors).id != this.getReferenceRoot(currentTopic, ancestors).id)
+      return (!sameTopic(this.getReferenceRoot(reference, reference.ancestors), this.getReferenceRoot(currentTopic, ancestors)))
     } else {
       return (false)
     }
   }
 
   setUnlinkedReferences = () => {
-    const { currentTopic, references, ancestors } = this.state
+    const { currentTopic, references } = this.state
     const { currentUser } = this.props
 
     if (currentTopic && currentUser && references) {
@@ -152,10 +152,10 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
         },
         this.props.setAppState)
         .then(unlinkedReferences => {
-          const unlinkedRef = this.uniqueUnlinkedReferences(references, unlinkedReferences as Reference[]).
-            filter(r => this.inCurrentTopic(r)).
-            sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
-            sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
+          const unlinkedRef = this.uniqueUnlinkedReferences(references, unlinkedReferences as Reference[])
+            .filter(r => this.inCurrentTopic(r))
+            .sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1)
+            .sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
           this.setState({ unlinkedReferences: unlinkedRef })
         }
         )
@@ -226,7 +226,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
           { currentBlogger && !currentTopic &&
           <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a></h1>
           }
-          {!currentBlogger || !currentTopic || !children || !descendants &&
+          {(!currentBlogger || !currentTopic || !children || !descendants) &&
             <p>Loading</p>
           }
           {currentBlogger && currentTopic && children && descendants && ancestors &&

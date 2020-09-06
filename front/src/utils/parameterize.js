@@ -61,7 +61,7 @@ var LATVIAN_MAP = {
     'Ķ':'k', 'Ļ':'L', 'Ņ':'N', 'Š':'S', 'Ū':'u', 'Ž':'Z'
 }
 
-var ALL_DOWNCODE_MAPS=new Array()
+var ALL_DOWNCODE_MAPS=[]
 ALL_DOWNCODE_MAPS[0]=LATIN_MAP
 ALL_DOWNCODE_MAPS[1]=LATIN_SYMBOLS_MAP
 ALL_DOWNCODE_MAPS[2]=GREEK_MAP
@@ -72,7 +72,7 @@ ALL_DOWNCODE_MAPS[6]=CZECH_MAP
 ALL_DOWNCODE_MAPS[7]=POLISH_MAP
 ALL_DOWNCODE_MAPS[8]=LATVIAN_MAP
 
-var Downcoder = new Object();
+var Downcoder = {};
 Downcoder.Initialize = function()
 {
     if (Downcoder.map) // already made
@@ -99,7 +99,7 @@ const downcode = ( slug ) => {
     {
         for (var i = 0 ; i < pieces.length ; i++)
         {
-            if (pieces[i].length == 1)
+            if (pieces[i].length === 1)
             {
                 var mapped = Downcoder.map[pieces[i]] ;
                 if (mapped != null)
@@ -127,7 +127,7 @@ export const parameterize = (s, num_chars) => {
     s = s.replace(/https:\/\//g, 'https_')
     s = s.replace(/http:\/\//g, 'http_')
     s = s.replace(/[^-\w\s]/g, '_');  // remove unneeded chars
-    s = s.replace(/^\s+|\s+\_+$/g, ''); // trim leading/trailing spaces or underscores
+    s = s.replace(/^\s+|\s+_+$/g, ''); // trim leading/trailing spaces or underscores
     s = s.replace(/[\s]+/g, '_');   // convert spaces to hyphens
     s = s.replace(/__*/g, '_') // remove consecutive underscores
     s = s.toLowerCase();             // convert to lowercase

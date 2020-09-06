@@ -1,9 +1,8 @@
 
 import axios from 'axios'
-import { AxiosPromise } from 'axios'
 import { User } from './User'
 import { apiDomain } from './appConfig'
-import { Topic, Reference, TopicWithFamily } from './topics/Topic'
+import { Topic, TopicWithFamily } from './topics/Topic'
 // import { sleep } from './utils/sleep'
 
 export const fetchBackendUsers = async (ids: number[]) : Promise<User[]> => {

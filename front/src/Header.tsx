@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap'
+import { Navbar, Nav } from 'react-bootstrap'
 import axios from 'axios'
 import { User } from './User'
-import { Redirect } from 'react-router-dom'
 
 interface HeaderProps {
   setParentState: Function
@@ -43,10 +42,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          {/* <Nav.Link href="/">Practice</Nav.Link>
-          <NavDropdown title="Create" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/exercises/open-cloze/new">Open Cloze</NavDropdown.Item>
-          </NavDropdown> */}
           {currentUser && (currentUser.name || currentUser.username)}
           <Nav.Link href='/logout' onClick={this.logout}>Logout</Nav.Link>
         </Navbar.Collapse>

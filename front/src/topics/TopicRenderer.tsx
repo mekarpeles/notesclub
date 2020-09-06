@@ -25,7 +25,7 @@ interface TopicRendererState {
 }
 
 class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererState> {
-  readonly LINK_REGEX = /\[\[([^\[]*)\]\]/
+  readonly LINK_REGEX = /\[\[([^[]*)\]\]/
 
   constructor(props: TopicRendererProps) {
     super(props)
@@ -84,7 +84,6 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     const { currentTopic } = this.props
     let { descendants, selectedTopic } = this.props
     let selectedTopicIndex: number | undefined = undefined
-    let siblingAbove: Topic | null = null
 
     if (selectedTopic) {
       let selected = selectedTopic as Topic // Don't know why it complains if I skip this
@@ -179,7 +178,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
         newSelected = lastDesc ? lastDesc : tAbove
       } else {
         const parent = getParent(selectedTopic, descendants)
-        if (parent != currentTopic) {
+        if (parent && !sameTopic(parent as Topic, currentTopic)) {
           newSelected = parent
         }
       }
@@ -322,7 +321,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
               }
             }
 
-            if (newSelected && selectedTopicIndex != undefined) {
+            if (newSelected && selectedTopicIndex !== undefined) {
               // delete selectedTopic from descendants:
               descendants.splice(selectedTopicIndex, 1)
               deleteBackendTopic(selectedTopic, this.props.setAppState)
@@ -338,7 +337,6 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
     const value = target.value
-    const name = target.name
     let { selectedTopic } = this.props
     if (selectedTopic) {
       selectedTopic.content = value
