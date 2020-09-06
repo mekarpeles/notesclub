@@ -113,10 +113,10 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
         .then(references => {
           this.setState(
             {
-              references: (references as Reference[]).
-                filter((r) => this.inCurrentTopic(r)).
-                sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1).
-                sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
+              references: (references as Reference[])
+                .filter((r) => this.inCurrentTopic(r))
+                .sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1)
+                .sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
             })
           if (currentTopic.slug !== "welcome_to_wikir") {
             this.setUnlinkedReferences()
