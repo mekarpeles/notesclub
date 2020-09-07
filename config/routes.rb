@@ -12,5 +12,6 @@ Rails.application.routes.draw do
     resources :waiting_users, only: [:create]
     get 'golden_tickets/check', to: 'golden_tickets#check'
     get 'ping', to: 'ping#ping'
+    get 'search/count', to: 'search#count'
   end
 end
