@@ -29,10 +29,10 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
   renderElement = (topic: Topic | Reference, user: User, showUser: boolean) => {
     const user_path = `/${user.username}`
     const path = `${user_path}/${topic.slug}`
-
+    const content = topic.content.replace(/\[\[|\]\]/g, '')
     return (
       <>
-        <Link to={path} onClick={() => window.location.href = path}>{topic.content}</Link>
+        <Link to={path} onClick={() => window.location.href = path}>{content}</Link>
         { showUser &&
           <>
             {" by "}
