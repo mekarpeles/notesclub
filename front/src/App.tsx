@@ -74,19 +74,22 @@ class App extends React.Component<AppProps, AppState> {
         <Route path="/privacy" exact render={() => <Privacy />} />
         <Route path="/terms" exact render={() => <Terms />} />
         <Route path="/users/confirmation/:token" exact render={({ match }) => <ConfirmationToken token={match.params.token} setAppState={this.updateState} />} />
-        {currentUsername &&
+        {currentUser &&
           <Switch>
             <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} />} />
             <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
             <Route path="/" exact render={() => <Redirect to={`/${currentUsername}`} />} />
           </Switch>
         }
-        {!currentUsername &&
+        {!currentUser &&
           <Switch>
             <Route path="/" exact render={() => <WaitingList setAppState={this.updateState} />} />
             <Route path="/login" exact render={() => <Login setParentState={this.updateState} />} />
             <Route path="/signup" exact render={() => <GoldenTicket setAppState={this.updateState} />} />
-
+          </Switch>
+        }
+        {!currentUsername &&
+          <>
             <Route path="/:whatever" exact>
               {<WaitingList setAppState={this.updateState} />}
             </Route>
@@ -94,7 +97,7 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/:whatever/:something" exact>
               {<WaitingList setAppState={this.updateState} />}
             </Route>
-          </Switch>
+          </>
         }
       </Switch>
     )
