@@ -3,6 +3,7 @@ import './App.scss';
 import '@ionic/react/css/core.css';
 import Login from './Login';
 import Header from './Header';
+import Footer from './Footer';
 import { Alert } from 'react-bootstrap';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import UserTopicPage from './topics/UserTopicPage'
@@ -12,6 +13,8 @@ import GoldenTicket from './GoldenTicket'
 import { User } from './User'
 import { fetchBackendUser } from './backendSync'
 import ConfirmationToken from './ConfirmationToken'
+import Privacy from './Privacy'
+import Terms from './Terms'
 
 interface AppProps {
 
@@ -68,9 +71,18 @@ class App extends React.Component<AppProps, AppState> {
 
     return (
       <>
+        <Route path="/privacy" exact render={() => <Privacy />} />
+        <Route path="/terms" exact render={() => <Terms />} />
         { currentUser &&
           <>
-            <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} /> } />
+            <Route path="/:blogUsername" exact render={({ match }) => {
+              const blogUsername = match.params.blogUsername
+              if (blogUsername != "privacy" && blogUsername != "terms") {
+                return (<UserPage blogUsername={blogUsername} setAppState={this.updateState} />)
+              } else {
+                return (<></>)
+              }
+            }} />
             <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
           </>
         }
@@ -101,6 +113,7 @@ class App extends React.Component<AppProps, AppState> {
             </Route>
             {this.renderRoutes()}
           </Switch>
+          <Footer />
         </Router>
       </div>
     )
