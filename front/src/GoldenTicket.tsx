@@ -96,7 +96,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
           <div className="col-lg-4">
             {step === 'code' &&
               <>
-                You'll need a <b>Golden Ticket</b>.
+                You'll need a <b>Golden Ticket</b> from a current user.
                 <Form.Group>
                   <Form.Label>Please introduce its code:</Form.Label>
                   <Form.Control
