@@ -102,7 +102,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public render() {
-    const { currentUsername, alert, currentUser } = this.state
+    const { alert, currentUser } = this.state
 
     return (
       <div className="App">
