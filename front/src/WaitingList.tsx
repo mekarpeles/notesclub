@@ -82,7 +82,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
                 rows="3"
                 value={comment}
                 name="comment"
-                onChange={this.handleChange as any} autoFocus />
+                onChange={this.handleChange as any} />
             </Form.Group>
             <Button onClick={this.submit}>Join</Button>
             {" or "}
