@@ -54,7 +54,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
       golden_ticket_code: code
     }
 
-    axios.post(apiDomain() + "/v1/users", args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" } })
+    axios.post(apiDomain() + "/v1/users", args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
         const currentUser = res.data["user"]
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
@@ -67,7 +67,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
 
   checkCode = () => {
     const { code } = this.state
-    axios.get(apiDomain() + "/v1/golden_tickets/check", { params: { code: code}, headers: { 'Content-Type': 'application/json', "Accept": "application/json" } })
+    axios.get(apiDomain() + "/v1/golden_tickets/check", { params: { code: code}, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
         if (res.data.found) {
           this.props.setAppState({ alert: { message: "Golden ticket successful!", variant: "success" } })
