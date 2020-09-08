@@ -67,33 +67,37 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   renderRoutes = () => {
-    const { currentUser } = this.state
+    const { currentUser, currentUsername } = this.state
 
     return (
-      <>
+      <Switch>
         <Route path="/privacy" exact render={() => <Privacy />} />
         <Route path="/terms" exact render={() => <Terms />} />
+        <Route path="/users/confirmation/:token" exact render={({ match }) => <ConfirmationToken token={match.params.token} setAppState={this.updateState} />} />
         { currentUser &&
-          <>
-            <Route path="/:blogUsername" exact render={({ match }) => {
-              const blogUsername = match.params.blogUsername
-              if (blogUsername !== "privacy" && blogUsername !== "terms") {
-                return (<UserPage blogUsername={blogUsername} setAppState={this.updateState} />)
-              } else {
-                return (<></>)
-              }
-            }} />
+          <Switch>
+            <WaitingList setAppState={this.updateState} />
+            <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} />} />
             <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
-          </>
+            <Route path="/" exact render={() => <Redirect to={`/${currentUsername}`} />} />
+          </Switch>
         }
         { !currentUser &&
-          <>
+          <Switch>
+            <Route path="/" exact render={() => <Redirect to={`/login`} />} />
             <Route path="/login" exact render={() => <Login setParentState={this.updateState} />} />
             <Route path="/signup" exact render={() => <GoldenTicket setAppState={this.updateState} />} />
-          </>
+
+            <Route path="/:whatever" exact>
+              {<WaitingList setAppState={this.updateState} />}
+            </Route>
+
+            <Route path="/:whatever/:something" exact>
+              {<WaitingList setAppState={this.updateState} />}
+            </Route>
+          </Switch>
         }
-        <Route path="/users/confirmation/:token" exact render={({ match }) => <ConfirmationToken token={match.params.token} setAppState={this.updateState} />} />
-      </>
+      </Switch>
     )
   }
 
@@ -107,12 +111,7 @@ class App extends React.Component<AppProps, AppState> {
           <div className="text-center">
             {alert ? <Alert variant={alert["variant"]} onClose={() => this.updateState({alert: undefined})} dismissible>{alert["message"]}</Alert> : <></>}
           </div>
-          <Switch>
-            <Route path="/" exact>
-              {currentUsername ? <Redirect to={`/${currentUsername}`} /> : <WaitingList setAppState={this.updateState} />}
-            </Route>
-            {this.renderRoutes()}
-          </Switch>
+          {this.renderRoutes()}
           <Footer />
         </Router>
       </div>
