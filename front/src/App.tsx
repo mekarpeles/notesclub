@@ -77,7 +77,7 @@ class App extends React.Component<AppProps, AppState> {
           <>
             <Route path="/:blogUsername" exact render={({ match }) => {
               const blogUsername = match.params.blogUsername
-              if (blogUsername != "privacy" && blogUsername != "terms") {
+              if (blogUsername !== "privacy" && blogUsername !== "terms") {
                 return (<UserPage blogUsername={blogUsername} setAppState={this.updateState} />)
               } else {
                 return (<></>)
