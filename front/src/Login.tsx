@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Form, Button } from 'react-bootstrap'
 import axios from 'axios'
 import { apiDomain } from './appConfig'
+import { Link } from 'react-router-dom'
 
 interface LoginProps {
   setParentState: Function
@@ -88,6 +89,8 @@ class Login extends React.Component<LoginProps, LoginState> {
             </Form.Group>
 
             <Button onClick={this.submit}>Login</Button>
+            {" or join the "}
+            <Link to="/" onClick={() => window.location.href = `/`}>waiting list</Link>.
           </div>
           <div className="col-lg-4"></div>
         </div>
