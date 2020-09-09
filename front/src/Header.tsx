@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { Navbar, Nav } from 'react-bootstrap'
-import axios from 'axios'
 import { User } from './User'
-import { apiDomain } from './appConfig'
 
 interface HeaderProps {
   setParentState: Function
