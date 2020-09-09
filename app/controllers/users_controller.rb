@@ -27,8 +27,10 @@ class UsersController < ApplicationController
   def create
     creator = UserCreator.new(params.permit(:email, :password, :name, :username, :golden_ticket_code))
     if creator.create
-      log_in_as(creator.user)
+      user = creator.user
+      log_in_as(user)
       track_user
+      track_action("Sign up", name: user.name, username: user.username)
       render json: { user: creator.user.slice(EXPOSED_ATTRIBUTES) }, status: :created
     else
       Rails.logger.info "Errors: #{creator.errors.inspect}"
