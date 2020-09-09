@@ -1,4 +1,6 @@
 class SearchController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:count]
+
   def count
     if params['url'].present?
       url = params['url'].downcase
