@@ -75,7 +75,10 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
         selectedTopic.position = children.length + 1 // add at the end
         descendants.splice(selectedTopicIndex, 1, selectedTopic)
         this.props.setUserTopicPageState({descendants: descendants, selectedTopic: selectedTopic})
-        updateBackendTopic(selectedTopic, this.props.setAppState)
+        if (selectedTopic.id) {
+          // If there is no id, it must have been recently created
+          updateBackendTopic(selectedTopic, this.props.setAppState)
+        }
       }
     }
   }
