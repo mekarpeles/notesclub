@@ -14,17 +14,6 @@ interface HeaderState {
 }
 
 class Header extends React.Component<HeaderProps, HeaderState> {
-  logout = () => {
-    axios.delete(`${apiDomain}/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
-      .then(res => {
-        localStorage.removeItem('currentUser')
-        window.location.href = '/'
-      })
-      .catch(res => {
-        localStorage.removeItem('currentUser')
-        window.location.href = '/'
-      })
-  }
   renderLoggedInHeader = () => {
     const { currentUser } = this.props
 
@@ -42,7 +31,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           <Nav className="mr-auto">
           </Nav>
           {currentUser && (currentUser.name || currentUser.username)}
-          <Nav.Link href='/logout' onClick={this.logout}>Logout</Nav.Link>
+          <Nav.Link href='/logout'>Logout</Nav.Link>
         </Navbar.Collapse>
       </>
     )

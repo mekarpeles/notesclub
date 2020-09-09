@@ -2,6 +2,7 @@ import * as React from 'react';
 import './App.scss';
 import '@ionic/react/css/core.css';
 import Login from './Login';
+import Logout from './Logout';
 import Header from './Header';
 import Footer from './Footer';
 import { Alert } from 'react-bootstrap';
@@ -73,6 +74,7 @@ class App extends React.Component<AppProps, AppState> {
       <Switch>
         <Route path="/privacy" exact render={() => <Privacy />} />
         <Route path="/terms" exact render={() => <Terms />} />
+        <Route path="/logout" exact render={() => <Logout />} />
         <Route path="/users/confirmation/:token" exact render={({ match }) => <ConfirmationToken token={match.params.token} setAppState={this.updateState} />} />
         {currentUser &&
           <Switch>
