@@ -7,6 +7,15 @@ class ApplicationController < ActionController::API
 
   private
 
+  def track_action(event, properties = {})
+    if current_user.present? && ENV['WIKIR_SEGMENT_ENABLED'].to_s == "true"
+      Analytics.track(
+        user_id: current_user.id.to_s,
+        event: event,
+        properties: properties.merge({ current_user_username: current_user.username} ))
+    end
+  end
+
   def current_user_id
     @current_user_id ||= authenticate
   end

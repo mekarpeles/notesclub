@@ -4,9 +4,10 @@ class TopicsController < ApplicationController
   before_action :authenticate_param_user_id!, only: [:create]
 
   def index
+    track_topic if params["user_ids"].is_a?(Array) && params["user_ids"].size == 1
     topics = Topic
     topics = topics.where(id: params["ids"]) if params["ids"].present? && params["ids"].is_a?(Array)
-    topics = topics.where(user_id: params["user_ids"]) if params["user_ids"].present? && params["user_ids"].is_a?(Array)
+    topics = topics.where(user_id: params["user_ids"])
     topics = topics.where(ancestry: params["ancestry"]&.empty? ? nil : params["ancestry"]) if params.include?("ancestry")
     topics = topics.where(slug: params["slug"]) if params["slug"]
     topics = topics.where(content: params["content"]) if params["content"]
@@ -42,6 +43,7 @@ class TopicsController < ApplicationController
     args = params.permit(:content, :ancestry, :position, :slug).merge(user_id: current_user.id)
     topic = Topic.new(args)
     if topic.save
+      track_action("Create topic", topic_id: topic.id)
       methods = []
       methods << :descendants if params[:include_descendants]
       methods << :ancestors if params[:include_ancestors]
@@ -55,6 +57,7 @@ class TopicsController < ApplicationController
   def update
     updator = TopicUpdator.new(@topic)
     if updator.update(params.permit(:content, :ancestry, :position, :slug))
+      track_action("Update topic", topic_id: @topic.id)
       render json: @topic, status: :ok
     else
       render json: @topic.errors.full_messages, status: :not_modified
@@ -70,6 +73,16 @@ class TopicsController < ApplicationController
   end
 
   private
+
+  def track_topic
+    id = params["user_ids"].first
+    blogger = User.find_by(id: id)
+    if params["slug"]
+      track_action("Get topic", { blog_username: blogger.username, topic_slug: params['slug'], blogger_id: blogger.id })
+    else
+      track_action("Get user topics", { blog_username: blogger.username, blogger_id: blogger.id })
+    end
+  end
 
   def set_topic
     @topic = Topic.find(params[:id])

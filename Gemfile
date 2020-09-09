@@ -45,3 +45,4 @@ gem 'rack-cors', '~> 1.1.1'
 
 gem 'ancestry', '~> 3.1.0'
 gem 'acts_as_list', '~> 1.0.1'
+gem 'analytics-ruby', '~> 2.2.8', :require => 'segment/analytics'

@@ -27,6 +27,7 @@ class UsersController < ApplicationController
     creator = UserCreator.new(params.permit(:email, :password, :name, :username, :golden_ticket_code))
     if creator.create
       log_in_as(creator.user)
+      identify_on_segment(creator.user)
       render json: { user: creator.user.slice(EXPOSED_ATTRIBUTES) }, status: :created
     else
       Rails.logger.info "Errors: #{creator.errors.inspect}"
@@ -46,6 +47,20 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def identify_on_segment(user)
+    if ENV['WIKIR_SEGMENT_ENABLED'].to_s == "true"
+      Analytics.identify(
+        user_id: user.id,
+        traits: {
+          name: user.name,
+          username: user.username,
+          email: user.email,
+          created_at: user.created_at
+        }
+      )
+    end
+  end
 
   def authenticate_param_user!
     head :unauthorized if current_user.id.to_s != params[:id]
