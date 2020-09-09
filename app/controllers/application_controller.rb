@@ -24,7 +24,9 @@ class ApplicationController < ActionController::API
     return 1 if Rails.env.development? && ENV["SKIP_AUTH_IN_DEV"]
     begin
       jwt_payload = JWT.decode(jwt_token, Rails.application.credentials.config[:secret_key_base]).first
-      jwt_payload['id']
+      id = jwt_payload['id']
+      Rails.logger.info "authenticate: id: #{id}"
+      id
     rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
       head :unauthorized
     end
