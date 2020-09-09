@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Navbar, Nav } from 'react-bootstrap'
 import axios from 'axios'
 import { User } from './User'
+import { apiDomain } from './appConfig'
 
 interface HeaderProps {
   setParentState: Function
@@ -14,7 +15,7 @@ interface HeaderState {
 
 class Header extends React.Component<HeaderProps, HeaderState> {
   logout = () => {
-    axios.delete(`http://localhost:3000/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
+    axios.delete(`${apiDomain}/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
       .then(res => {
         localStorage.removeItem('currentUser')
         this.props.setParentState({ currentUsername: undefined, alert: undefined })
