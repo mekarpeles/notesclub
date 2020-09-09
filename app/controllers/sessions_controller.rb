@@ -14,9 +14,12 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    track_action("Log out")
-    cookies.signed[:jwt] = {}
-    # response.delete_cookie(:jwt)
-    render json: "done".to_json
+    if current_user
+      track_action("Log out")
+      cookies.delete(:jwt)
+      render json: "done", status: :ok
+    else
+      render json: "session not found", status: :unprocessable_entity
+    end
   end
 end
