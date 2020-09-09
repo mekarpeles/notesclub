@@ -18,12 +18,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     axios.delete(`${apiDomain}/v1/users/logout`, { headers: { 'Content-Type': 'application/json' }, withCredentials: true })
       .then(res => {
         localStorage.removeItem('currentUser')
-        this.props.setParentState({ currentUsername: undefined, alert: undefined })
         window.location.href = '/'
       })
       .catch(res => {
         localStorage.removeItem('currentUser')
-        this.props.setParentState({ currentUsername: undefined, alert: undefined })
         window.location.href = '/'
       })
   }
