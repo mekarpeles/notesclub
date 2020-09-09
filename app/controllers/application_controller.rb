@@ -16,6 +16,20 @@ class ApplicationController < ActionController::API
     end
   end
 
+  def track_user
+    if ENV['WIKIR_SEGMENT_ENABLED'].to_s == "true"
+      Analytics.identify(
+        user_id: user.id,
+        traits: {
+          name: user.name,
+          username: user.username,
+          email: user.email,
+          created_at: user.created_at
+        }
+      )
+    end
+  end
+
   def current_user_id
     @current_user_id ||= authenticate
   end
