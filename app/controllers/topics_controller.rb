@@ -2,12 +2,13 @@ class TopicsController < ApplicationController
   before_action :set_topic, only: [:update, :destroy]
   before_action :authenticate_param_id!, only: [:update, :destroy]
   before_action :authenticate_param_user_id!, only: [:create]
+  skip_before_action :authenticate_user!, only: [:count]
 
   def index
-    track_topic if params["user_ids"].is_a?(Array) && params["user_ids"].size == 1
+    track_topic if params["user_ids"] && params["user_ids"].is_a?(Array) && params["user_ids"].size == 1
     topics = Topic
     topics = topics.where(id: params["ids"]) if params["ids"].present? && params["ids"].is_a?(Array)
-    topics = topics.where(user_id: params["user_ids"])
+    topics = topics.where(user_id: params["user_ids"]) if params["user_ids"].present? && params["user_ids"].is_a?(Array)
     topics = topics.where(ancestry: params["ancestry"]&.empty? ? nil : params["ancestry"]) if params.include?("ancestry")
     topics = topics.where(slug: params["slug"]) if params["slug"]
     topics = topics.where(content: params["content"]) if params["content"]
@@ -24,6 +25,25 @@ class TopicsController < ApplicationController
     methods << :ancestors if params[:include_ancestors]
     methods << :user if params[:include_user]
     render json: topics.to_json(methods: methods)
+  end
+
+  def count
+    if params['url'].present?
+      url = params['url'].downcase
+      # We count all non-root topics (ancestry != nil):
+      count1 = Topic.
+        where("lower(content) like ?", "%#{url}%").
+        where("ancestry is not null").limit(10).count
+      # We also count root topics with a first child where content is not empty:
+      count2 = Topic.
+        joins("inner join topics as t on t.ancestry = cast(topics.id as VARCHAR(255)) and t.position=1 and t.content != ''").
+        where("topics.ancestry is null").
+        where("lower(topics.content) like ?", "%#{url}%").limit(10).count
+      count = [count1 + count2, 10].min
+    else
+      count = 0
+    end
+    render json: count, status: :ok
   end
 
   def show

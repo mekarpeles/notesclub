@@ -131,4 +131,36 @@ RSpec.describe TopicsController, type: :request do
       expect(response.status).to eq 401
     end
   end
+
+  describe "#count" do
+    it "should count non-root topics regardless of descendants" do
+      topic1.children.create!(content: "http://climate.com", user: user)
+      get "/v1/topics/count?url=http://climate.com"
+      count = JSON.parse(response.body)
+      expect(count).to eq 1
+    end
+
+    it "should NOT count root a topic if its eldest is empty" do
+      t1 = Topic.create!(content: "http://climate.com", user: user)
+      t1.children.create!(content: "", user: user)
+      get "/v1/topics/count?url=http://climate.com"
+      count = JSON.parse(response.body)
+      expect(count).to eq 0
+    end
+
+    it "should count root topics if their eldests are not empty" do
+      t1 = Topic.create!(content: "http://climate.com", user: user)
+      t1.children.create!(content: "whatever", user: user)
+      get "/v1/topics/count?url=http://climate.com"
+      count = JSON.parse(response.body)
+      expect(count).to eq 1
+    end
+
+    it "should return 10 if the count is higher" do
+      15.times { topic1.children.create!(content: "http://climate.com", user: user) }
+      get "/v1/topics/count?url=http://climate.com"
+      count = JSON.parse(response.body)
+      expect(count).to eq 10
+    end
+  end
 end
