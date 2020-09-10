@@ -89,10 +89,10 @@ class App extends React.Component<AppProps, AppState> {
             <Route path="/login" exact render={() => <Login setParentState={this.updateState} />} />
             <Route path="/signup" exact render={() => <GoldenTicket setAppState={this.updateState} />} />
             <Route path="/:whatever" exact>
-              {<WaitingList setAppState={this.updateState} />}
+              {<Login setParentState={this.updateState} />}
             </Route>
             <Route path="/:whatever/:something" exact>
-              {<WaitingList setAppState={this.updateState} />}
+              {<Login setParentState={this.updateState} />}
             </Route>
           </Switch>
         }
