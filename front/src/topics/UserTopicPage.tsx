@@ -186,7 +186,6 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
       const descendants: Topic[] = [newNonSavedTopic]
       createBackendTopic({ topic: newNonSavedTopic, setAppState: this.props.setAppState })
         .then(topicWithId => {
-          const selected = this.state.selectedTopic
           this.setState({
             descendants: descendants.map((d) => d.tmp_key === topicWithId.tmp_key ? topicWithId : d),
             selectedTopic: topicWithId
