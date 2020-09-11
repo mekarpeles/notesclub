@@ -65,7 +65,7 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
 
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    const { currentTopic, selectedTopic } = this.props
+    const { selectedTopic } = this.props
 
     if (selectedTopic) {
       if (event.key === "Enter" || event.key === "Escape") {
