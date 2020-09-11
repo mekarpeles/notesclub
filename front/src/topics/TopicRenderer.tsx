@@ -6,6 +6,7 @@ import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './..
 import { getChildren, areSibling, getParent } from './ancestry'
 import { parameterize } from './../utils/parameterize'
 import { User } from './../User'
+import { sleep } from './../utils/sleep'
 
 interface TopicRendererProps {
   selectedTopic: Topic | null
@@ -42,43 +43,46 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     let siblingAbove: Topic | null = null
 
     if (selectedTopic) {
-      const selected = selectedTopic as Topic // Don't know why it complains if I skip this
-      descendants = descendants.map((descendant, index) => {
-        if (sameTopic(selected, descendant)) {
-          selectedTopicIndex = index
-        } else if (areSibling(descendant, selected)) {
-          if (descendant.position === (selected).position - 1) {
-            siblingAbove = descendant
-          }
-          if (descendant.position > (selected).position) {
-            descendant.position -= 1
-          }
-        }
-        return (descendant)
-      })
-
-      if (siblingAbove && selectedTopicIndex) {
-        const newParent = siblingAbove as Topic
-
-        // Indent subtree too:
-        const old_ancestry = new RegExp(`^${selected.ancestry}/${selected.id}`)
-        descendants = descendants.map((descendant) => {
-          // Replace ancestry of selected's descendants
-          if (descendant.ancestry && old_ancestry.test(descendant.ancestry)) {
-            descendant.ancestry = descendant.ancestry.replace(old_ancestry, `${selected.ancestry}/${newParent.id}/${selected.id}`)
+      if (selectedTopic.id) {
+        const selected = selectedTopic as Topic // Don't know why it complains if I skip this
+        descendants = descendants.map((descendant, index) => {
+          if (sameTopic(selected, descendant)) {
+            selectedTopicIndex = index
+          } else if (areSibling(descendant, selected)) {
+            if (descendant.position === (selected).position - 1) {
+              siblingAbove = descendant
+            }
+            if (descendant.position > (selected).position) {
+              descendant.position -= 1
+            }
           }
           return (descendant)
         })
 
-        const children = getChildren(newParent, descendants)
-        selectedTopic.ancestry = `${selectedTopic.ancestry}/${(siblingAbove as Topic).id}`
-        selectedTopic.position = children.length + 1 // add at the end
-        descendants.splice(selectedTopicIndex, 1, selectedTopic)
-        this.props.setUserTopicPageState({descendants: descendants, selectedTopic: selectedTopic})
-        if (selectedTopic.id) {
-          // If there is no id, it must have been recently created
+        if (siblingAbove && selectedTopicIndex) {
+          const newParent = siblingAbove as Topic
+
+          // Indent subtree too:
+          const old_ancestry = new RegExp(`^${selected.ancestry}/${selected.id}`)
+          descendants = descendants.map((descendant) => {
+            // Replace ancestry of selected's descendants
+            if (descendant.ancestry && old_ancestry.test(descendant.ancestry)) {
+              descendant.ancestry = descendant.ancestry.replace(old_ancestry, `${selected.ancestry}/${newParent.id}/${selected.id}`)
+            }
+            return (descendant)
+          })
+
+          const children = getChildren(newParent, descendants)
+          selectedTopic.ancestry = `${selectedTopic.ancestry}/${(siblingAbove as Topic).id}`
+          selectedTopic.position = children.length + 1 // add at the end
+          descendants.splice(selectedTopicIndex, 1, selectedTopic)
+          this.props.setUserTopicPageState({descendants: descendants, selectedTopic: selectedTopic})
           updateBackendTopic(selectedTopic, this.props.setAppState)
         }
+      } else {
+        // selectedTopic.id is null -> the topic has been created and we're waiting for the id from the backend
+        this.props.setAppState({ alert: {variant: "danger", message: "Sorry, too fast. We're in alpha! It should be ok now."}})
+        sleep(3000).then(() => this.props.setAppState({ alert: null }))
       }
     }
   }
