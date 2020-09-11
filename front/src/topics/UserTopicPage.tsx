@@ -245,7 +245,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                   {ancestors.map((ancestor, index) => {
                     const path = `/${currentBlogger.username}/${ancestor.slug}`
                     return (
-                      <span>
+                      <span key={`ancestor_${ancestor.id}`}>
                         <Link
                           to={path}
                           onClick={(event) => {
