@@ -24,4 +24,25 @@ RSpec.describe TopicUpdator do
       "user_id" => topic.user_id
     })
   end
+
+  context "when update_topics_with_links=true" do
+    let(:user1) { users(:user1) }
+    let(:user2) { users(:user2) }
+
+    it "should update all topics from the user with links" do
+      t1 = Topic.create!(content: "Books", user: user1)
+      t2 = Topic.create!(content: "I like [[Books]] and [[Music]] and [[Books]]", user: user1)
+      t3 = Topic.create!(content: "Favourite [[Books]]", user: user1)
+      t4 = Topic.create!(content: "Great [[Books]]", user: user2)
+
+      update_topics_with_links = true
+      updator = TopicUpdator.new(t1, update_topics_with_links)
+      expect(updator.update(content: "Books and articles")).to eq(true)
+      expect(t1.reload.content).to eq("Books and articles")
+      expect(t2.reload.content).to eq("I like [[Books and articles]] and [[Music]] and [[Books and articles]]")
+      expect(t3.reload.content).to eq("Favourite [[Books and articles]]")
+      # Should not modify t4 because user is different
+      expect(t4.reload.content).to eq("Great [[Books]]")
+    end
+  end
 end

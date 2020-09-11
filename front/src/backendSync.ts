@@ -59,7 +59,9 @@ export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, se
 
 export const createBackendTopic = async (newTopic: Topic, setAppState: Function): Promise<TopicWithFamily> => {
   const position = newTopic.position === -1 ? null : newTopic.position
-  const args = { ...newTopic, ...{ position: position } }
+  const args = {
+    topic: { ...newTopic, ...{ position: position } }
+  }
 
   return (
     axios.post(apiDomain() + '/v1/topics', args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
@@ -72,9 +74,13 @@ export const createBackendTopic = async (newTopic: Topic, setAppState: Function)
   )
 }
 
-export const updateBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
+export const updateBackendTopic = async (topic: Topic, setAppState: Function, update_topics_with_links?: boolean): Promise<Topic> => {
+  let args = {
+    topic: topic,
+    update_topics_with_links: update_topics_with_links
+  }
   return (
-    axios.put(apiDomain() + `/v1/topics/${topic.id}`, topic, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+    axios.put(apiDomain() + `/v1/topics/${topic.id}`, args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => res.data)
       .catch(_ => syncError(setAppState))
   )

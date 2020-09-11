@@ -90,7 +90,7 @@ RSpec.describe TopicsController, type: :request do
   context "#create" do
     it "should create the topic" do
       t0 = Topic.create!(content: "whatever whatever", user: user)
-      expect { post "/v1/topics", params: { content: "The sky is blue", ancestry: t0.id.to_s, user_id: user.id } }.to change{ Topic.count }.by(1)
+      expect { post "/v1/topics", params: { topic: { content: "The sky is blue", ancestry: t0.id.to_s, user_id: user.id } } }.to change{ Topic.count }.by(1)
       expect(response.status).to eq 201
       expect(Topic.last.attributes.slice("content", "ancestry", "user_id", "position")).to eq("content" => "The sky is blue", "ancestry" => t0.id.to_s, "user_id" => user.id, "position" => 1)
     end
@@ -106,14 +106,14 @@ RSpec.describe TopicsController, type: :request do
   context "#update" do
     it "should update the content" do
       topic1.update!(user_id: user.id)
-      put "/v1/topics/#{topic1.id}", params: { content: "The sky is blue" }
+      put "/v1/topics/#{topic1.id}", params: { topic: { content: "The sky is blue" } }
       expect(response.status).to eq 200
       expect(topic1.reload.content).to eq("The sky is blue")
     end
 
     it "should return unauthorized if user_id doesn't match the auhtenticated user" do
       expect(topic5.user_id).not_to eq(user.id)
-      put "/v1/topics/#{topic5.id}", params: { content: "The sky is blue" }
+      put "/v1/topics/#{topic5.id}", params: { topic: { content: "The sky is blue" } }
       expect(response.status).to eq 401
       expect(topic1.reload.content).not_to eq("The sky is blue")
     end

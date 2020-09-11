@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import queryString from 'query-string'
 import { Topic, Reference, newTopicWithDescendants, topicKey, newTopic, TopicWithFamily, sameTopic } from './Topic'
 import TopicRenderer from './TopicRenderer'
+import CurrentTopicContentRenderer from './CurrentTopicContentRenderer'
 import { User } from './../User'
 import { fetchBackendUser, fetchBackendTopics, createBackendTopic } from './../backendSync'
 import { getChildren } from './ancestry'
@@ -257,7 +258,18 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                   })}
                 </p>
               }
-              <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a> · {currentTopic.content}</h1>
+              <h1>
+                <a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a>
+                {" · "}
+                <CurrentTopicContentRenderer
+                  descendants={descendants}
+                  references={references}
+                  currentTopic={currentTopic}
+                  selectedTopic={selectedTopic}
+                  setUserTopicPageState={this.updateState}
+                  setAppState={this.props.setAppState}
+                  currentUser={currentUser} />
+              </h1>
               <ul>
                 {children.map((subTopic) => (
                   <TopicRenderer
