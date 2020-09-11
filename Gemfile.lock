@@ -58,6 +58,10 @@ GEM
       zeitwerk (~> 2.2)
     acts_as_list (1.0.1)
       activerecord (>= 4.2)
+    airbrake (11.0.0)
+      airbrake-ruby (~> 5.0)
+    airbrake-ruby (5.0.2)
+      rbtree3 (~> 0.5)
     analytics-ruby (2.2.8)
     ancestry (3.1.0)
       activerecord (>= 4.2.0)
@@ -156,6 +160,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rbtree3 (0.6.0)
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -209,6 +214,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_list (~> 1.0.1)
+  airbrake
   analytics-ruby (~> 2.2.8)
   ancestry (~> 3.1.0)
   bootsnap (>= 1.4.2)
