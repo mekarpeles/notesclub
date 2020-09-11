@@ -47,6 +47,8 @@ gem 'ancestry', '~> 3.1.0'
 gem 'acts_as_list', '~> 1.0.1'
 gem 'analytics-ruby', '~> 2.2.8', :require => 'segment/analytics'
 
+gem 'newrelic_rpm'
+
 group :production do
-  gem 'airbrake'
+  gem 'airbrake' # Only production errors so dev errors don't use the free quota
 end
