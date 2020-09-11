@@ -60,7 +60,7 @@ class TopicsController < ApplicationController
   end
 
   def create
-    args = params.permit(:content, :ancestry, :position, :slug).merge(user_id: current_user.id)
+    args = params.require(:topic).permit(:content, :ancestry, :position, :slug).merge(user_id: current_user.id)
     topic = Topic.new(args)
     if topic.save
       track_action("Create topic", topic_id: topic.id)
@@ -75,8 +75,8 @@ class TopicsController < ApplicationController
   end
 
   def update
-    updator = TopicUpdator.new(@topic)
-    if updator.update(params.permit(:content, :ancestry, :position, :slug))
+    updator = TopicUpdator.new(@topic, params[:update_topics_with_links])
+    if updator.update(params.require(:topic).permit(:content, :ancestry, :position, :slug))
       track_action("Update topic", topic_id: @topic.id)
       render json: @topic, status: :ok
     else
@@ -113,6 +113,6 @@ class TopicsController < ApplicationController
   end
 
   def authenticate_param_user_id!
-    head :unauthorized if current_user.id.to_s != params[:user_id].to_s
+    head :unauthorized if !params[:topic] || current_user.id.to_s != params[:topic][:user_id].to_s
   end
 end
