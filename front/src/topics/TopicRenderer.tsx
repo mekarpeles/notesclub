@@ -245,7 +245,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             updateBackendTopic(selectedTopic, this.props.setAppState)
 
             this.props.setUserTopicPageState({ selectedTopic: newNonSavedTopic, descendants: descendants })
-            createBackendTopic(newNonSavedTopic, this.props.setAppState)
+            createBackendTopic({ topic: newNonSavedTopic, setAppState: this.props.setAppState })
               .then(topicWithId => {
                 const selected = this.props.selectedTopic
                 this.props.setUserTopicPageState({

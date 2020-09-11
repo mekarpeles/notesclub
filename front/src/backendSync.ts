@@ -57,20 +57,28 @@ export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, se
 //   return (response)
 // }
 
-export const createBackendTopic = async (newTopic: Topic, setAppState: Function): Promise<TopicWithFamily> => {
-  const position = newTopic.position === -1 ? null : newTopic.position
+interface createBackendTopic {
+  topic: Topic
+  setAppState: Function
+  include_ancestors?: boolean
+  include_descendants?: boolean
+}
+export const createBackendTopic = async (params: createBackendTopic): Promise<TopicWithFamily> => {
+  const position = params["topic"].position === -1 ? null : params["topic"].position
   const args = {
-    topic: { ...newTopic, ...{ position: position } }
+    topic: { ...params["topic"], ...{ position: position } },
+    include_ancestors: params["include_ancestors"],
+    include_descendants: params["include_descendants"]
   }
 
   return (
     axios.post(apiDomain() + '/v1/topics', args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
-        let topic = res.data
-        topic["tmp_key"] = newTopic.tmp_key
-        return (topic)
+        let t = res.data
+        t["tmp_key"] = params["topic"].tmp_key
+        return (t)
       })
-      .catch(_ => syncError(setAppState))
+      .catch(_ => syncError(params["setAppState"]))
   )
 }
 

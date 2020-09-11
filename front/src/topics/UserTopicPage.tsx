@@ -73,34 +73,29 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     position: -1, // We'll replace this with null before sending it to the backend so it adds it to the end
                     content: params["content"] ? String(params["content"]) : undefined
                   })
-                  const args = {...newNonSavedTopic, ...{include_ancestors: true, include_descendants: true}}
-                  createBackendTopic(args, this.props.setAppState)
+                  const args = { topic: newNonSavedTopic, setAppState: this.props.setAppState, include_ancestors: true, include_descendants: true }
+                  createBackendTopic(args)
                     .then(topic => {
-                      this.setTopic(topic, isOwnBlog)
+                      this.setTopicAndCreateDescendantIfNone(topic, isOwnBlog)
                     })
                 }
               } else {
                 // Topic already exists
-                this.setTopic(fetchBackendTopicsAndDescendants[0], isOwnBlog)
+                this.setTopicAndCreateDescendantIfNone(fetchBackendTopicsAndDescendants[0], isOwnBlog)
               }
             })
         }
       })
   }
 
-  setTopic = (topicAndFamily: TopicWithFamily, isOwnBlog: boolean) => {
-    this.setState({ currentTopic: topicAndFamily })
+  setTopicAndCreateDescendantIfNone = (topicAndFamily: TopicWithFamily, isOwnBlog: boolean) => {
+    this.setState({ currentTopic: topicAndFamily, descendants: topicAndFamily.descendants, ancestors: topicAndFamily.ancestors })
     if (topicAndFamily.descendants) {
-      this.setState({ descendants: topicAndFamily.descendants })
       if (isOwnBlog && topicAndFamily.descendants.length === 1) {
         this.setState({ selectedTopic: topicAndFamily.descendants[0] })
+      } else if (isOwnBlog && topicAndFamily.descendants.length === 0) {
+        this.createDescendantAsThereAreNone()
       }
-    }
-    if (topicAndFamily.ancestors) {
-      this.setState({ ancestors: topicAndFamily.ancestors })
-    }
-    if (isOwnBlog) {
-      this.createEmptyTopicIfNoDescendants()
     }
     this.setReferences()
   }
@@ -176,24 +171,25 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     this.setState(newState)
   }
 
-  createEmptyTopicIfNoDescendants = (): void => {
-    const { currentTopic, descendants } = this.state
+  createDescendantAsThereAreNone = (): void => {
+    const { currentTopic } = this.state
     const { currentUser } = this.props
 
-    if (currentUser && currentTopic && descendants && descendants.length === 0) {
+    console.log("jjjj")
+    if (currentUser && currentTopic) {
+      console.log("kkkjj")
       const newNonSavedTopic = newTopicWithDescendants({
         position: 1,
         user_id: currentUser.id,
         ancestry: currentTopic.ancestry ? `${currentTopic.ancestry}/${currentTopic.id}` : String(currentTopic.id)
       })
-      descendants.push(newNonSavedTopic)
-      this.setState({ selectedTopic: newNonSavedTopic, descendants: descendants })
-      createBackendTopic(newNonSavedTopic, this.props.setAppState)
+      const descendants: Topic[] = [newNonSavedTopic]
+      createBackendTopic({ topic: newNonSavedTopic, setAppState: this.props.setAppState })
         .then(topicWithId => {
           const selected = this.state.selectedTopic
           this.setState({
             descendants: descendants.map((d) => d.tmp_key === topicWithId.tmp_key ? topicWithId : d),
-            selectedTopic: selected && selected.tmp_key === topicWithId.tmp_key ? topicWithId : selected
+            selectedTopic: topicWithId
           })
         })
     }
