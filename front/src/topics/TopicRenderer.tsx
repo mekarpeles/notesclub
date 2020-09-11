@@ -6,7 +6,6 @@ import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './..
 import { getChildren, areSibling, getParent } from './ancestry'
 import { parameterize } from './../utils/parameterize'
 import { User } from './../User'
-import { sleep } from './../utils/sleep'
 
 interface TopicRendererProps {
   selectedTopic: Topic | null
