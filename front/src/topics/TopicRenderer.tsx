@@ -81,8 +81,9 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
         }
       } else {
         // selectedTopic.id is null -> the topic has been created and we're waiting for the id from the backend
-        this.props.setAppState({ alert: {variant: "danger", message: "Sorry, too fast. We're in alpha! It should be ok now."}})
-        sleep(3000).then(() => this.props.setAppState({ alert: null }))
+        // We could alert but maybe it's better do nothing (they'll retry and then it will work)
+        // this.props.setAppState({ alert: {variant: "danger", message: "Sorry, too fast. We're in alpha! It should be ok now."}})
+        // sleep(3000).then(() => this.props.setAppState({ alert: null }))
       }
     }
   }
