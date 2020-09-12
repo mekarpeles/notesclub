@@ -39,6 +39,7 @@ interface fetchBackendTopicsInterface {
   except_ids?: number[]
   tmp_key?: string
   skip_if_no_descendants?: boolean
+  except_slug?: string
 }
 
 export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, setAppState: Function): Promise<TopicWithFamily[]> => {

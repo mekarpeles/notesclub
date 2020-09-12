@@ -42,7 +42,8 @@ class Feed extends React.Component<FeedProps, FeedState> {
             skip_if_no_descendants: true,
             include_descendants: true,
             include_ancestors: true,
-            include_user: true }, this.props.setAppState)
+            include_user: true,
+            except_slug: "welcome_to_wikir" }, this.props.setAppState)
             .then(topics => topics && this.setState({ topics: topics as Reference[] }))
         }
       })
