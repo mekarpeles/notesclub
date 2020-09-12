@@ -18,6 +18,9 @@ class TopicsController < ApplicationController
     if params["except_ids"].present?
       topics = topics.where.not(id: params["except_ids"])
     end
+    if params["except_slug"].present?
+      topics = topics.where.not(slug: params["except_slug"])
+    end
     if params["skip_if_no_descendants"]
       topics = topics.joins("inner join topics as t on t.ancestry = cast(topics.id as VARCHAR(255)) and t.position=1 and t.content != ''")
     end
