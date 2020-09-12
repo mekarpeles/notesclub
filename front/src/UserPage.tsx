@@ -3,6 +3,7 @@ import { User } from './User'
 import { Topic, Reference } from './topics/Topic'
 import { fetchBackendUser, fetchBackendTopics } from './backendSync'
 import ReferenceRenderer from './topics/ReferenceRenderer'
+import TodaysLink from './topics/TodaysLink'
 
 interface UserPageProps {
   blogUsername: string
@@ -57,10 +58,11 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
     const { blogger, topics, selectedTopic } = this.state
     const { currentUser } = this.props
 
-    return (
+     return (
       <div className="container">
         {blogger && topics && currentUser &&
           <>
+            <TodaysLink currentUser={currentUser} />
             <h1>{blogger.name}'s recent activity</h1>
             <ul>
               {topics.map((ref) => (

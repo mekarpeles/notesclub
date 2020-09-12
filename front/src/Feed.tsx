@@ -3,6 +3,7 @@ import { User } from './User'
 import { Topic, Reference } from './topics/Topic'
 import { fetchBackendUser, fetchBackendTopics } from './backendSync'
 import ReferenceRenderer from './topics/ReferenceRenderer'
+import TodaysLink from './topics/TodaysLink'
 
 interface FeedProps {
   blogUsername: string
@@ -60,6 +61,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
       <div className="container">
         {blogger && topics && currentUser &&
           <>
+            <TodaysLink currentUser={currentUser} />
             <h1>Recent activity</h1>
             <ul>
               {topics.map((ref) => (
