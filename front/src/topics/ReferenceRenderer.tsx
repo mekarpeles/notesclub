@@ -11,7 +11,7 @@ interface ReferenceRendererProps {
   setUserTopicPageState: Function
   setAppState: Function
   currentUser: User | undefined
-
+  showUser: boolean
 }
 
 interface ReferenceRendererState {
@@ -88,7 +88,7 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
   }
 
   public render () {
-    const { topic } = this.props
+    const { topic, showUser } = this.props
     const ancestors = topic.ancestors
 
     let second_line: Topic[]
@@ -111,7 +111,7 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
       <>
         {second_line_count > 0 &&
           <li key={`ref_${first_element.id}`}>
-            {this.renderElement(first_element, topic.user, true)}
+            {this.renderElement(first_element, topic.user, showUser)}
             <p>
               {second_line.map((ancestor, index) => {
                 return (
@@ -128,7 +128,7 @@ class ReferenceRenderer extends React.Component<ReferenceRendererProps, Referenc
 
         {second_line_count === 0 && first_element.id === topic.id &&
           <li key={`ref_${first_element.id}`}>
-            {this.renderElement(first_element, topic.user, true)}
+            {this.renderElement(first_element, topic.user, showUser)}
 
             {this.renderDescendants(topic, children)}
           </li>

@@ -4,20 +4,20 @@ import { Topic, Reference } from './topics/Topic'
 import { fetchBackendUser, fetchBackendTopics } from './backendSync'
 import ReferenceRenderer from './topics/ReferenceRenderer'
 
-interface UserPageProps {
+interface FeedProps {
   blogUsername: string
   setAppState: Function
   currentUser?: User
 }
 
-interface UserPageState {
+interface FeedState {
   topics?: Reference[]
   blogger?: User
   selectedTopic: Topic | null
 }
 
-class UserPage extends React.Component<UserPageProps, UserPageState> {
-  constructor(props: UserPageProps) {
+class Feed extends React.Component<FeedProps, FeedState> {
+  constructor(props: FeedProps) {
     super(props)
 
     this.state = {
@@ -37,7 +37,6 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
 
         if (blogger) {
           fetchBackendTopics({
-            user_ids: [blogger.id],
             ancestry: null,
             skip_if_no_descendants: true,
             include_descendants: true,
@@ -48,8 +47,8 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
       })
   }
 
-  updateState = (partialState: Partial<UserPageState>) => {
-    const newState: UserPageState = { ...this.state, ...partialState }
+  updateState = (partialState: Partial<FeedState>) => {
+    const newState: FeedState = { ...this.state, ...partialState }
     this.setState(newState)
   }
 
@@ -61,7 +60,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
       <div className="container">
         {blogger && topics && currentUser &&
           <>
-            <h1>{blogger.name}'s recent activity</h1>
+            <h1>Recent activity</h1>
             <ul>
               {topics.map((ref) => (
                 <ReferenceRenderer
@@ -71,7 +70,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
                   setUserTopicPageState={this.updateState}
                   setAppState={this.props.setAppState}
                   currentUser={currentUser}
-                  showUser={false} />
+                  showUser={true} />
               ))}
             </ul>
           </>
@@ -84,4 +83,4 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
   }
 }
 
-export default UserPage
+export default Feed

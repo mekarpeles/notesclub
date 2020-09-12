@@ -298,7 +298,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                         selectedTopic={selectedTopic}
                         setUserTopicPageState={this.updateState}
                         setAppState={this.props.setAppState}
-                        currentUser={currentUser} />
+                        currentUser={currentUser}
+                        showUser={true} />
                     ))}
                   </ul>
                 </>
@@ -314,7 +315,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                         selectedTopic={selectedTopic}
                         setUserTopicPageState={this.updateState}
                         setAppState={this.props.setAppState}
-                        currentUser={currentUser} />
+                        currentUser={currentUser}
+                        showUser={true} />
                     ))}
                   </ul>
                 </>

@@ -28,7 +28,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          {currentUser && (currentUser.name || currentUser.username)}
+          {currentUser &&
+            <Nav.Link href={`/${currentUser.username}`}>{(currentUser.name || currentUser.username)}</Nav.Link>
+          }
           <Nav.Link href='/logout'>Logout</Nav.Link>
         </Navbar.Collapse>
       </>

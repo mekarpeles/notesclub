@@ -9,6 +9,7 @@ import { Alert } from 'react-bootstrap';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import UserTopicPage from './topics/UserTopicPage'
 import UserPage from './UserPage'
+import Feed from './Feed'
 import WaitingList from './WaitingList'
 import GoldenTicket from './GoldenTicket'
 import { User } from './User'
@@ -78,9 +79,9 @@ class App extends React.Component<AppProps, AppState> {
         <Route path="/users/confirmation/:token" exact render={({ match }) => <ConfirmationToken token={match.params.token} setAppState={this.updateState} />} />
         {currentUser &&
           <Switch>
-            <Route path="/:blogUsername" exact render={({ match }) => <UserPage blogUsername={match.params.blogUsername} setAppState={this.updateState} />} />
+            <Route path="/:blogUsername" exact render={({ match }) => <UserPage currentUser={currentUser} blogUsername={match.params.blogUsername} setAppState={this.updateState} />} />
             <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
-            <Route path="/" exact render={() => <Redirect to={`/${currentUsername}`} />} />
+            <Route path="/" exact render={({ match }) => <Feed currentUser={currentUser} blogUsername={match.params.blogUsername} setAppState={this.updateState} />} />
           </Switch>
         }
         {!currentUsername &&
