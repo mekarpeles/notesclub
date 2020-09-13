@@ -175,9 +175,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
     const { currentTopic } = this.state
     const { currentUser } = this.props
 
-    console.log("jjjj")
     if (currentUser && currentTopic) {
-      console.log("kkkjj")
       const newNonSavedTopic = newTopicWithDescendants({
         position: 1,
         user_id: currentUser.id,
@@ -265,6 +263,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                   setAppState={this.props.setAppState}
                   currentUser={currentUser} />
               </h1>
+
               <ul>
                 {children.map((subTopic) => (
                   <TopicRenderer

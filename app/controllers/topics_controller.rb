@@ -98,10 +98,13 @@ class TopicsController < ApplicationController
   end
 
   def destroy
-    if @topic.destroy
+    destroyer = TopicDeleter.new(@topic, include_descendants: true)
+    if destroyer.delete
+      track_action("Delete topic")
       render json: @topic, status: :ok
     else
-      render json: topic.errors.full_messages, status: :not_modified
+      Rails.logger.error("Error deleting topic #{@topic.inspect} - params: #{params.inspect}")
+      render json: { errors: "Couldn't delete topic or descendants" }, status: :not_modified
     end
   end
 

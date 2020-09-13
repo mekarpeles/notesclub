@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, Button, Modal } from 'react-bootstrap'
 import { Topic, Reference, sameTopic } from './Topic'
 import { User } from './../User'
 import { updateBackendTopic } from './../backendSync'
 import StringWithHtmlLinks from './StringWithHtmlLinks'
+import { deleteBackendTopic } from './../backendSync'
 
 interface CurrentTopicContentRendererProps {
   selectedTopic: Topic | null
@@ -16,6 +17,7 @@ interface CurrentTopicContentRendererProps {
 }
 
 interface CurrentTopicContentRendererState {
+  showDeleteModal: boolean
 }
 
 class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRendererProps, CurrentTopicContentRendererState> {
@@ -24,6 +26,7 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
     super(props)
 
     this.state = {
+      showDeleteModal: false
     }
     this.onKeyDown = this.onKeyDown.bind(this)
   }
@@ -75,19 +78,38 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
     }
   }
 
+  confirmDelete = (event: React.MouseEvent<HTMLElement>) => {
+    this.setState({ showDeleteModal: true })
+    event.stopPropagation()
+  }
+
+  deleteTopicAndDescendants = () => {
+    const { currentTopic, currentUser } = this.props
+
+    deleteBackendTopic(currentTopic, this.props.setAppState)
+      .then(_ => window.location.href = `/${currentUser ? currentUser.username : ""}`)
+      .catch(_ => {
+        this.props.setAppState({ alert: { message: "Error deleting topic or children :(" , variant: "danger" }})
+        this.setState({ showDeleteModal: false })
+      })
+  }
+
   public render() {
-    const { currentTopic, selectedTopic } = this.props
+    const { currentTopic, selectedTopic, descendants } = this.props
+    const { showDeleteModal } = this.state
     const currentTopicSelected = currentTopic && selectedTopic && sameTopic(selectedTopic, currentTopic)
     const isLink = /^https?:\/\/[^\s]*$/.test(currentTopic.content)
+
     return (
       <>
         {currentTopic && !currentTopicSelected &&
           <span onClick={() => this.selectCurrentTopic()}>
-          {isLink ?
-            <StringWithHtmlLinks element={currentTopic.content}/>
-          :
-            currentTopic.content
-          }
+            {isLink ?
+              <StringWithHtmlLinks element={currentTopic.content}/>
+            :
+              currentTopic.content
+            }
+            <Button onClick={this.confirmDelete} variant="link"><img className="delete-icon" src={process.env.PUBLIC_URL + '/images/close-outline.svg'} /></Button>
           </span>
         }
 
@@ -102,6 +124,22 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
             />
           </Form.Group>
         }
+        <Modal show={showDeleteModal} onHide={() => this.setState({ showDeleteModal: false })}>
+          <Modal.Header closeButton>
+            <Modal.Title>Delete topic and children?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            This will delete <b>{currentTopic.content}</b> and {descendants.length} {descendants.length == 1 ? "child" : "children"}.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => this.setState({ showDeleteModal: false })}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.deleteTopicAndDescendants}>
+              Delete topic and children
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </>
     )
   }

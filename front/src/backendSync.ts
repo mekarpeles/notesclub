@@ -101,8 +101,7 @@ export const updateBackendTopic = async (topic: Topic, setAppState: Function, up
 export const deleteBackendTopic = async (topic: Topic, setAppState: Function): Promise<Topic> => {
   return (
     axios.delete(apiDomain() + `/v1/topics/${topic.id}`, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
-      .then(res => res.data)
-      .catch(_ => syncError(setAppState))
+      .then(res => Promise.resolve(res.data))
   )
 }
 

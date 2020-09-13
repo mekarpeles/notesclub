@@ -10,6 +10,9 @@ class Topic < ApplicationRecord
   before_validation :set_content, on: [:create]
   before_validation :set_slug, on: [:create]
   before_save :nulify_empty_ancestry
+  # If at any time we need before_* or after_delete
+  # or an association dependent on destroy
+  # We'll need to change TopicDeleter#delete_descendants
 
   def as_json(options = {})
     json = super(options)
