@@ -41,7 +41,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
   loadMore = () => {
     const { topics, blogger } = this.state
     const lastId = topics ? topics[topics.length - 1].id : undefined
-    if (blogger && topics && lastId && window.innerHeight + document.documentElement.scrollTop === document.scrollingElement?.scrollHeight) {
+    if (blogger && topics && lastId && document.scrollingElement && window.innerHeight + document.documentElement.scrollTop + 5 >= document.scrollingElement.scrollHeight) {
       fetchBackendTopics({
         user_ids: [blogger.id],
         ancestry: null,
