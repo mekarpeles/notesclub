@@ -42,7 +42,6 @@ class Feed extends React.Component<FeedProps, FeedState> {
     const { topics } = this.state
     const lastId = topics ? topics[topics.length - 1].id : undefined
     if (topics && lastId && window.innerHeight + document.documentElement.scrollTop === document.scrollingElement?.scrollHeight) {
-      console.log("Loading more")
       fetchBackendTopics({
         ancestry: null,
         skip_if_no_descendants: true,
