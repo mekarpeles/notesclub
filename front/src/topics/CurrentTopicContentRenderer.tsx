@@ -84,7 +84,7 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
         {currentTopic && !currentTopicSelected &&
           <span onClick={() => this.selectCurrentTopic()}>
           {isLink ?
-            <a href={currentTopic.content} target="_blank" without rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>{contentShortened}</a>
+            <a href={currentTopic.content} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>{contentShortened}</a>
           :
             currentTopic.content
           }
