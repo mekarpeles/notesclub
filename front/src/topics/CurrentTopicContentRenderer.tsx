@@ -5,6 +5,7 @@ import { User } from './../User'
 import { updateBackendTopic } from './../backendSync'
 import StringWithHtmlLinks from './StringWithHtmlLinks'
 import { deleteBackendTopic } from './../backendSync'
+import './CurrentTopicContentRenderer.scss'
 
 interface CurrentTopicContentRendererProps {
   selectedTopic: Topic | null
