@@ -45,7 +45,12 @@ class UserCreator
       t2.children.create!(content: "Press Esc to leave edit mode (and save changes)", user: @user)
       t.children.create!(content: "Below your changes, you'll see references from other of your topics and from other users' topics", user: @user)
       today = Time.now.strftime("%Y-%m-%d")
-      t.children.create!(content: "Last, you can go to today's topic ([[#{today}]]) and add some content. Whenever you don't know where to add something, you can do it in a topic for the current date.", user: @user)
+      t.children.create!(content: "Also, you can go to today's topic ([[#{today}]]) and add some content. Whenever you don't know where to add something, you can do it in a topic for the current date.", user: @user)
+      t3 = t.children.create!(content: "Last, you can also install our Chrome Extension https://chrome.google.com/webstore/detail/wikir/gifmjjjggghkppgeblekdopigpkbipii", user: @user)
+      t4 = t3.children.create!(content: "Click our chrome extensions' icon to:", user: @user)
+      t4.children.create!(content: "annotate the website you have open", user: @user)
+      t4.children.create!(content: "see the existent comments and content regarding the website you have open", user: @user)
+      t3.children.create!(content: "Our chrome extension's icon displays the number of occurrences of the current website on Wikir.", user: @user)
     end
     true
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotDestroyed => e
