@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap'
 import { Topic, Reference, sameTopic } from './Topic'
 import { User } from './../User'
 import { updateBackendTopic } from './../backendSync'
+import { Link } from 'react-router-dom'
 
 interface CurrentTopicContentRendererProps {
   selectedTopic: Topic | null
@@ -77,12 +78,17 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
   public render() {
     const { currentTopic, selectedTopic } = this.props
     const currentTopicSelected = currentTopic && selectedTopic && sameTopic(selectedTopic, currentTopic)
-
+    const isLink = /^https?:\/\/[^\s]*$/.test(currentTopic.content)
+    const contentShortened = currentTopic.content.length > 50 ? currentTopic.content.slice(0, 50) + "..." : currentTopic.content
     return (
       <>
         {currentTopic && !currentTopicSelected &&
           <span onClick={() => this.selectCurrentTopic()}>
-            {currentTopic.content}
+          {isLink ?
+            <a href={currentTopic.content} target="_blank" onClick={(event) => event.stopPropagation()}>{contentShortened}</a>
+          :
+            currentTopic.content
+          }
           </span>
         }
 
