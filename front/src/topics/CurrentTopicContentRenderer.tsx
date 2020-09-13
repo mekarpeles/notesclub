@@ -96,7 +96,7 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
   }
 
   public render() {
-    const { currentTopic, selectedTopic, descendants } = this.props
+    const { currentTopic, currentUser, selectedTopic, descendants } = this.props
     const { showDeleteModal } = this.state
     const currentTopicSelected = currentTopic && selectedTopic && sameTopic(selectedTopic, currentTopic)
     const isLink = /^https?:\/\/[^\s]*$/.test(currentTopic.content)
@@ -110,7 +110,7 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
             :
               currentTopic.content
             }
-            {!selectedTopic &&
+          {!selectedTopic && currentUser && currentTopic.user_id === currentUser.id &&
               <Button onClick={this.confirmDelete} className="delete-button" variant="link">
                 <img src={process.env.PUBLIC_URL + '/images/close-outline.svg'} alt="delete" />
               </Button>
