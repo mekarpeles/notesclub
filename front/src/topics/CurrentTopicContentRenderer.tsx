@@ -130,7 +130,7 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
             <Modal.Title>Delete topic and children?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            This will delete <b>{currentTopic.content}</b> and {descendants.length} {descendants.length == 1 ? "child" : "children"}.
+            This will delete <b>{currentTopic.content}</b> and {descendants.length} {descendants.length === 1 ? "child" : "children"}.
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => this.setState({ showDeleteModal: false })}>
