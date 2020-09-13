@@ -6,6 +6,7 @@ import { createBackendTopic, updateBackendTopic, deleteBackendTopic } from './..
 import { getChildren, areSibling, getParent } from './ancestry'
 import { parameterize } from './../utils/parameterize'
 import { User } from './../User'
+import StringWithHtmlLinks from './StringWithHtmlLinks'
 
 interface TopicRendererProps {
   selectedTopic: Topic | null
@@ -25,7 +26,7 @@ interface TopicRendererState {
 }
 
 class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererState> {
-  readonly LINK_REGEX = /\[\[([^[]*)\]\]/
+  readonly WIKIR_LINK_REGEX = /\[\[([^[]*)\]\]/
 
   constructor(props: TopicRendererProps) {
     super(props)
@@ -369,12 +370,13 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
 
   renderUnselectedTopic = (topic: Topic) => {
     const { currentBlogger } = this.props
-    const arr = topic.content.split(this.LINK_REGEX)
+    const arr = topic.content.split(this.WIKIR_LINK_REGEX)
+
     return (
       <>
         {arr.map((element, index) => {
           if (index % 2 === 0) {
-            return (<span key={index}>{element}</span>)
+            return (<StringWithHtmlLinks element={element} key={index} />)
           } else {
             const path = `/${currentBlogger.username}/${parameterize(element, 100)}`
             return (
