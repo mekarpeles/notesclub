@@ -111,7 +111,9 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
               currentTopic.content
             }
             {!selectedTopic &&
-              <Button onClick={this.confirmDelete} className="delete-button" variant="link"><img src={process.env.PUBLIC_URL + '/images/close-outline.svg'} /></Button>
+              <Button onClick={this.confirmDelete} className="delete-button" variant="link">
+                <img src={process.env.PUBLIC_URL + '/images/close-outline.svg'} alt="delete" />
+              </Button>
             }
           </span>
         }
