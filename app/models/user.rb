@@ -10,8 +10,6 @@ class User < ApplicationRecord
 
   after_create :reset_jwt_token
 
-  PROVISIONAL_USERNAME_LENGTH = 10
-
   validates :email,
     format: { with: /\A(.+)@(.+)\z/, message: "invalid"  },
     uniqueness: { case_sensitive: false },
