@@ -3,7 +3,6 @@ import { Form } from 'react-bootstrap'
 import { Topic, Reference, sameTopic } from './Topic'
 import { User } from './../User'
 import { updateBackendTopic } from './../backendSync'
-import { Link } from 'react-router-dom'
 
 interface CurrentTopicContentRendererProps {
   selectedTopic: Topic | null
