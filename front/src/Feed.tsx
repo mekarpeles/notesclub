@@ -30,6 +30,33 @@ class Feed extends React.Component<FeedProps, FeedState> {
     this.fetchBackendUserTopics()
   }
 
+  componentWillMount() {
+    window.addEventListener('scroll', this.loadMore)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.loadMore)
+  }
+
+  loadMore = () => {
+    const { topics } = this.state
+    const lastId = topics ? topics[topics.length - 1].id : undefined
+    if (topics && lastId && window.innerHeight + document.documentElement.scrollTop === document.scrollingElement?.scrollHeight) {
+      console.log("Loading more")
+      fetchBackendTopics({
+        ancestry: null,
+        skip_if_no_descendants: true,
+        include_descendants: true,
+        include_ancestors: true,
+        include_user: true,
+        except_slug: "welcome_to_wikir",
+        limit: 5,
+        id_lte: lastId - 1
+      }, this.props.setAppState)
+        .then(newTopics => newTopics && this.setState({ topics: topics.concat(newTopics as Reference[]) }))
+    }
+  }
+
   fetchBackendUserTopics = () => {
     const { blogUsername } = this.props
     fetchBackendUser(blogUsername)
@@ -43,7 +70,9 @@ class Feed extends React.Component<FeedProps, FeedState> {
             include_descendants: true,
             include_ancestors: true,
             include_user: true,
-            except_slug: "welcome_to_wikir" }, this.props.setAppState)
+            except_slug: "welcome_to_wikir",
+            limit: 10
+          }, this.props.setAppState)
             .then(topics => topics && this.setState({ topics: topics as Reference[] }))
         }
       })

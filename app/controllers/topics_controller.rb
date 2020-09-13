@@ -18,13 +18,20 @@ class TopicsController < ApplicationController
     if params["except_ids"].present?
       topics = topics.where.not(id: params["except_ids"])
     end
+    if params["id_lte"].present?
+      topics = topics.where("topics.id <= ?", params["id_lte"])
+    end
+    if params["id_gte"].present?
+      topics = topics.where("topics.id >= ?", params["id_gte"])
+    end
     if params["except_slug"].present?
       topics = topics.where.not(slug: params["except_slug"])
     end
     if params["skip_if_no_descendants"]
       topics = topics.joins("inner join topics as t on t.ancestry = cast(topics.id as VARCHAR(255)) and t.position=1 and t.content != ''")
     end
-    limit = params["slug"] || (params["ids"] && params["ids"].size == 1) ? 1 : [params["limit"] || 100, 100].min
+    limit = params["limit"] ? [params["limit"].to_i, 100].min : 100
+    limit = 1 if params["slug"] || (params["ids"] && params["ids"].size == 1)
     topics = topics.order(id: :desc).limit(limit)
     methods = []
     methods << :descendants if params[:include_descendants]
