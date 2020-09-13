@@ -22,7 +22,7 @@ class TodaysLink extends React.Component<TodaysLinkProps, TodaysLinkState> {
     const { currentUser } = this.props
     const [day, month, year] = (new Date()).toLocaleDateString().split("/")
     const todayTopicContent = `${year}-${month}-${day}`
-    const todayTopicUrl = currentUser ? `/${currentUser.username}/${todayTopicContent}?content=${todayTopicContent}` : ""
+    const todayTopicUrl = currentUser ? `/${currentUser.username}/${todayTopicContent}` : ""
 
     return (
       <>

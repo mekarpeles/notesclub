@@ -24,7 +24,13 @@ class Topic < ApplicationRecord
   private
 
   def set_content
-    self.content = slug.titleize if content.blank? && slug.present?
+    self.content = should_titleize? ? slug.titleize : slug if content.blank? && slug.present?
+  end
+
+  def should_titleize?
+    month_regex = /\A[0-9]{4}-[0-9]{2}\z/         # E.g. 2020-09
+    date_regex = /\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/ # E.g. 2020-09-10
+    !month_regex.match(slug) && !date_regex.match(slug)
   end
 
   def set_slug

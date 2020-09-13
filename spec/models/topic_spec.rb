@@ -44,6 +44,33 @@ RSpec.describe Topic, type: :model do
       expect(t1.reload.position).to eq(1)
       expect(t2.reload.position).to eq(2)
     end
+
+    describe "when no content but slug" do
+      it "should create a record" do
+        t = Topic.new(slug: "climate_change", user: user)
+        t.save
+        expect(t.errors.full_messages).to eq([])
+        expect(t.reload.content).to eq("Climate Change")
+      end
+
+      describe "when slug is a date" do
+        it "should NOT titleize" do
+          t = Topic.new(slug: "2020-09-13", user: user)
+          t.save
+          expect(t.errors.full_messages).to eq([])
+          expect(t.reload.content).to eq("2020-09-13")
+        end
+      end
+
+      describe "when slug is a month" do
+        it "should NOT titleize" do
+          t = Topic.new(slug: "2020-09", user: user)
+          t.save
+          expect(t.errors.full_messages).to eq([])
+          expect(t.reload.content).to eq("2020-09")
+        end
+      end
+    end
   end
 
   context "#update" do
