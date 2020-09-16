@@ -63,7 +63,7 @@ class UserCreator
   def args
     {
       name: name,
-      username: username,
+      username: username.downcase,
       email: email,
       password: password,
       password_confirmation: password,

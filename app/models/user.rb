@@ -16,7 +16,7 @@ class User < ApplicationRecord
     length: { minimum: 4, maximum: 254 }
 
   validates_uniqueness_of :username,
-    uniqueness: { case_insensitive: false },
+    uniqueness: { case_sensitive: false },
     length: { minimum: 3, maximum: 15 }
 
   def reset_jwt_token
@@ -32,5 +32,9 @@ class User < ApplicationRecord
       },
       Rails.application.credentials.config[:secret_key_base]
     )
+  end
+
+  def username=(u)
+    super(u.downcase)
   end
 end

@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   def index
     users = User.select(EXPOSED_ATTRIBUTES)
     users = users.where(id: params["ids"]) if params["ids"].present?
-    users = users.where(username: params["username"]) if params["username"].present?
+    users = users.where(username: params["username"].downcase) if params["username"].present?
     render json: users.order(id: :desc).limit(100).to_json
   end
 
