@@ -100,10 +100,12 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
     const { showDeleteModal } = this.state
     const currentTopicSelected = currentTopic && selectedTopic && sameTopic(selectedTopic, currentTopic)
     const isLink = /^https?:\/\/[^\s]*$/.test(currentTopic.content)
+    const isOwnBlog = currentUser && currentTopic && currentUser.id === currentTopic.user_id
+    const editCurrentTopic = isOwnBlog && currentTopicSelected
 
     return (
       <>
-        {currentTopic && !currentTopicSelected &&
+        {!editCurrentTopic &&
           <span onClick={() => this.selectCurrentTopic()}>
             {isLink ?
               <StringWithHtmlLinks element={currentTopic.content}/>
@@ -118,7 +120,7 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
           </span>
         }
 
-        {currentTopic && currentTopicSelected &&
+        {editCurrentTopic &&
           <Form.Group>
             <Form.Control
               type="text"
