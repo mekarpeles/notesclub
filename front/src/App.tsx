@@ -76,6 +76,7 @@ class App extends React.Component<AppProps, AppState> {
         <Route path="/privacy" exact render={() => <Privacy />} />
         <Route path="/terms" exact render={() => <Terms />} />
         <Route path="/logout" exact render={() => <Logout />} />
+        <Route path="/login" exact render={() => <Login setParentState={this.updateState} />} />
         <Route path="/users/confirmation/:token" exact render={({ match }) => <ConfirmationToken token={match.params.token} setAppState={this.updateState} />} />
         {currentUser &&
           <Switch>
@@ -87,7 +88,6 @@ class App extends React.Component<AppProps, AppState> {
         {!currentUsername &&
           <Switch>
             <Route path="/" exact render={() => <WaitingList setAppState={this.updateState} />} />
-            <Route path="/login" exact render={() => <Login setParentState={this.updateState} />} />
             <Route path="/signup" exact render={() => <GoldenTicket setAppState={this.updateState} />} />
             <Route path="/:whatever" exact>
               {<Login setParentState={this.updateState} />}
