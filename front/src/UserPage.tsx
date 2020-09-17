@@ -70,7 +70,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
             include_descendants: true,
             include_ancestors: true,
             include_user: true,
-            limit: 10 }, this.props.setAppState)
+            limit: 20 }, this.props.setAppState)
             .then(topics => topics && this.setState({ topics: topics as Reference[] }))
         }
       })

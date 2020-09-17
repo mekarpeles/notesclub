@@ -70,7 +70,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
             include_ancestors: true,
             include_user: true,
             except_slug: "welcome_to_wikir",
-            limit: 10
+            limit: 20
           }, this.props.setAppState)
             .then(topics => topics && this.setState({ topics: topics as Reference[] }))
         }
