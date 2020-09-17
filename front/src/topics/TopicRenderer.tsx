@@ -400,7 +400,11 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             return (this.renderLink(element, index, false))
           } else {
             // n === 2 || n === 3
-            return (this.renderLink(element, index, true))
+            if (element === "") {
+              return (n === 3 ? "#" : "")
+            } else {
+              return (this.renderLink(element, index, true))
+            }
           }
         })}
       </>
