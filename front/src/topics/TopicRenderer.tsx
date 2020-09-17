@@ -26,7 +26,7 @@ interface TopicRendererState {
 }
 
 class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererState> {
-  // We don't use #? so we know if the result between parentheses had a hashtag.
+  // We don't use #? so we know if the result between parentheses had a hashtag:
   readonly WIKIR_LINK_REGEX = /\[\[([^[]*)\]\]|#\[\[([^[]*)\]\]|#([^\s.:,;]*)/
 
   constructor(props: TopicRendererProps) {
@@ -398,7 +398,8 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             return (<StringWithHtmlLinks element={element} key={index} />)
           } else if (n === 1) {
             return (this.renderLink(element, index, false))
-          } else if (n === 2 || n === 3) {
+          } else {
+            // n === 2 || n === 3
             return (this.renderLink(element, index, true))
           }
         })}
