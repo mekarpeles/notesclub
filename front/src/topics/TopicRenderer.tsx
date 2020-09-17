@@ -26,7 +26,7 @@ interface TopicRendererState {
 }
 
 class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererState> {
-  readonly WIKIR_LINK_REGEX = /\[\[([^[]*)\]\]/
+  readonly WIKIR_LINK_REGEX = /\[\[([^[]*)\]\]|#\[\[([^[]*)\]\]|#([^\s.:,;]*)/
 
   constructor(props: TopicRendererProps) {
     super(props)
@@ -368,27 +368,37 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     )
   }
 
-  renderUnselectedTopic = (topic: Topic) => {
+  renderLink = (element: string, index: number, include_hashtag: boolean) => {
     const { currentBlogger } = this.props
+    const path = `/${currentBlogger.username}/${parameterize(element, 100)}`
+    const e = include_hashtag ? `#${element}` : element
+    return (
+      <Link
+        to={path}
+        key={index}
+        onClick={(event) => {
+          window.location.href = path
+          event.stopPropagation()
+        }}
+      >{e}</Link>
+    )
+  }
+
+  renderUnselectedTopic = (topic: Topic) => {
     const arr = topic.content.split(this.WIKIR_LINK_REGEX)
 
     return (
       <>
         {arr.map((element, index) => {
-          if (index % 2 === 0) {
+          const n = index % 4
+          if (element === undefined) {
+            return (<span key={index}></span>)
+          } else if (n === 0) {
             return (<StringWithHtmlLinks element={element} key={index} />)
-          } else {
-            const path = `/${currentBlogger.username}/${parameterize(element, 100)}`
-            return (
-              <Link
-                to={path}
-                key={index}
-                onClick={(event) => {
-                  window.location.href = path
-                  event.stopPropagation()
-                }}
-                >{element}</Link>
-            )
+          } else if (n === 1) {
+            return (this.renderLink(element, index, false))
+          } else if (n === 2 || n === 3) {
+            return (this.renderLink(element, index, true))
           }
         })}
       </>
