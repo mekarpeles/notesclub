@@ -26,6 +26,7 @@ interface TopicRendererState {
 }
 
 class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererState> {
+  // We don't use #? so we know if the result between parentheses had a hashtag.
   readonly WIKIR_LINK_REGEX = /\[\[([^[]*)\]\]|#\[\[([^[]*)\]\]|#([^\s.:,;]*)/
 
   constructor(props: TopicRendererProps) {
