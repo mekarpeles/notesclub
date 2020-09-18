@@ -10,6 +10,14 @@ interface TodaysLinkState {
 
 }
 
+const pad = (number: number) => {
+  if (number < 10) {
+    return '0' + number
+  }
+
+  return number
+}
+
 class TodaysLink extends React.Component<TodaysLinkProps, TodaysLinkState> {
   constructor(props: TodaysLinkProps) {
     super(props)
@@ -20,7 +28,10 @@ class TodaysLink extends React.Component<TodaysLinkProps, TodaysLinkState> {
 
   public render () {
     const { currentUser } = this.props
-    const [day, month, year] = (new Date()).toLocaleDateString().split("/")
+    const today = new Date()
+    const year = today.getUTCFullYear()
+    const month = pad(today.getUTCMonth() + 1)
+    const day = pad(today.getUTCDate())
     const todayTopicContent = `${year}-${month}-${day}`
     const todayTopicUrl = currentUser ? `/${currentUser.username}/${todayTopicContent}` : ""
 
