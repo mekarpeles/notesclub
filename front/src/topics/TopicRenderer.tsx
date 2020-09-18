@@ -371,7 +371,13 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
 
   renderLink = (element: string, index: number, include_hashtag: boolean) => {
     const { currentBlogger } = this.props
-    const path = `/${currentBlogger.username}/${parameterize(element, 100)}`
+    const otherUserLink = element.match(/^([^\s\/]+)\/(.*)/)
+    let path: string
+    if (otherUserLink) {
+      path = `/${otherUserLink[1]}/${parameterize(otherUserLink[2], 100)}`
+    } else {
+      path = `/${currentBlogger.username}/${parameterize(element, 100)}`
+    }
     const e = include_hashtag ? `#${element}` : element
     return (
       <Link
