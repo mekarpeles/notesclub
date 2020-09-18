@@ -371,7 +371,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
 
   renderLink = (element: string, index: number, include_hashtag: boolean) => {
     const { currentBlogger } = this.props
-    const otherUserLink = element.match(/^([^\s/]+)\/(.*)/)
+    const otherUserLink = element.match(/^([^\s:]+):(.*)/)
     let path: string
     if (otherUserLink) {
       path = `/${otherUserLink[1]}/${parameterize(otherUserLink[2], 100)}`

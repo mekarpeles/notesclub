@@ -22,7 +22,7 @@ class TopicUpdator
 
   def create_new_topics_from_links!
     topic.content.split(/\[\[([^\[]*)\]\]/).each_with_index do |content, index|
-      link_to_other_user = content.match(/^([^\s\/]+)\/(.*)/)
+      link_to_other_user = content.match(/^([^\s:]+):(.*)/)
       create_new_topic!(content) if !link_to_other_user && link_to_topic?(index) && !root_topic_exists?(content)
     end
   end
