@@ -22,7 +22,8 @@ class TopicUpdator
 
   def create_new_topics_from_links!
     topic.content.split(/\[\[([^\[]*)\]\]/).each_with_index do |content, index|
-      create_new_topic!(content) if link_to_topic?(index) && !root_topic_exists?(content)
+      link_to_other_user = content.match(/^([^\s\/]+)\/(.*)/)
+      create_new_topic!(content) if !link_to_other_user && link_to_topic?(index) && !root_topic_exists?(content)
     end
   end
 
@@ -40,7 +41,8 @@ class TopicUpdator
   end
 
   def root_topic_exists?(content)
-    Topic.where(content: content, ancestry: nil, user_id: topic.user_id).exists?
+    slug = Topic::ContentSlugGenerator.new(content).generate
+    Topic.where(slug: slug, ancestry: nil, user_id: topic.user_id).exists?
   end
 
   def link_to_topic?(index)
