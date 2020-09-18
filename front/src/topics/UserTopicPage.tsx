@@ -43,7 +43,11 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
       // This is used by Wikir's Chrome Extension so it can redirect to a topic without knowing the username
       // We should use history.push or replace, but I couldn't make it work. Although I didn't spend much time.
       const params = queryString.parse(this.props.location.search)
-      window.location.href = `/${currentUser.username}/${currentTopicKey}?content=${params["content"]}`
+      if (params["content"]) {
+        window.location.href = `/${currentUser.username}/${currentTopicKey}?content=${params["content"]}`
+      } else {
+        window.location.href = `/${currentUser.username}/${currentTopicKey}`
+      }
     }
 
     if(!currentBlogger) {
