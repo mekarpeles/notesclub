@@ -3,7 +3,7 @@
 # .NET, PHP, Python, Node, and Go applications with deep visibility and low
 # overhead.  For more information, visit www.newrelic.com.
 #
-# Generated September 11, 2020
+# Generated September 24, 2020
 #
 # This configuration file is custom generated for NewRelic Administration
 #
@@ -12,11 +12,11 @@
 
 common: &default_settings
   # Required license key associated with your New Relic account.
-  license_key: eu01xx10fb5814cd9023a14e14cfc61064edNRAL
+  license_key: eu01xxc88ec897134e79fe532f09b300ed63NRAL
 
   # Your application name. Renaming here affects where data displays in New
   # Relic.  For more details, see https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/renaming-applications
-  app_name: Wikir Backend
+  app_name: notesclub
 
   distributed_tracing:
     enabled: true
@@ -33,7 +33,7 @@ common: &default_settings
 # If your application has other named environments, configure them here.
 development:
   <<: *default_settings
-  app_name: Wikir Backend (Development)
+  app_name: notesclub (Development)
 
 test:
   <<: *default_settings
@@ -42,7 +42,7 @@ test:
 
 staging:
   <<: *default_settings
-  app_name: Wikir Backend (Staging)
+  app_name: notesclub (Staging)
 
 production:
   <<: *default_settings
