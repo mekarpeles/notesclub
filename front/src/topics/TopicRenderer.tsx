@@ -27,7 +27,7 @@ interface TopicRendererState {
 
 class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererState> {
   // We don't use #? so we know if the result between parentheses had a hashtag:
-  readonly WIKIR_LINK_REGEX = /\[\[([^[]*)\]\]|#\[\[([^[]*)\]\]|#([^\s.:,;[()]*)/
+  readonly NOTES_LINK_REGEX = /\[\[([^[]*)\]\]|#\[\[([^[]*)\]\]|#([^\s.:,;[()]*)/
 
   constructor(props: TopicRendererProps) {
     super(props)
@@ -392,7 +392,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
   }
 
   renderUnselectedTopic = (topic: Topic) => {
-    const arr = topic.content.split(this.WIKIR_LINK_REGEX)
+    const arr = topic.content.split(this.NOTES_LINK_REGEX)
 
     return (
       <>

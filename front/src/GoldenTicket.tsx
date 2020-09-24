@@ -58,7 +58,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
       .then(res => {
         const currentUser = res.data["user"]
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
-        window.location.href = `/${currentUser.username}/welcome_to_wikir`
+        window.location.href = `/hec/welcome`
       })
       .catch(res => {
         this.props.setAppState({ alert: { message: backendErrorsToMessage(res), variant: "danger" } })
@@ -88,7 +88,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
       <div className="container">
         <div className="text-center waiting-list-title">
           {(step === 'code' || step === 'signup') &&
-            <h1>Ready to join Wikir?</h1>
+            <h1>Ready to join Book Notes Club?</h1>
           }
         </div>
         <div className="row">

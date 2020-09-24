@@ -38,7 +38,7 @@ module Arbol
 
     config.middleware.insert_before 0, Rack::Cors, debug: true do
       allow do
-        origins 'http://wikir-front.hec.ngrok.io', 'https://www.wikir.org'
+        origins 'http://wikir-front.hec.ngrok.io', 'https://book.club.org'
         resource '*',
           credentials: true,
           headers: :any,

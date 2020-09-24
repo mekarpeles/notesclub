@@ -113,5 +113,5 @@ Rails.application.configure do
           :password       => ENV['SENDGRID_PASSWORD'],
           :domain         => 'heroku.com'
   }
-  config.action_mailer.default_url_options = { :host => 'wikir.org' }
+  config.action_mailer.default_url_options = { :host => 'book.notes.club' }
 end

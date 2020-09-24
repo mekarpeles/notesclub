@@ -8,7 +8,7 @@ class ApplicationController < ActionController::API
   private
 
   def track_action(event, properties = {})
-    if current_user.present? && ENV['WIKIR_SEGMENT_ENABLED'].to_s == "true"
+    if current_user.present? && ENV['NOTES_SEGMENT_ENABLED'].to_s == "true"
       Analytics.track(
         user_id: current_user.id.to_s,
         event: event,
@@ -17,7 +17,7 @@ class ApplicationController < ActionController::API
   end
 
   def track_user
-    if ENV['WIKIR_SEGMENT_ENABLED'].to_s == "true"
+    if ENV['NOTES_SEGMENT_ENABLED'].to_s == "true"
       Analytics.identify(
         user_id: current_user.id,
         traits: {

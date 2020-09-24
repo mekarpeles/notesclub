@@ -48,7 +48,6 @@ class Feed extends React.Component<FeedProps, FeedState> {
         include_descendants: true,
         include_ancestors: true,
         include_user: true,
-        except_slug: "welcome_to_wikir",
         limit: 5,
         id_lte: lastId - 1
       }, this.props.setAppState)
@@ -69,7 +68,6 @@ class Feed extends React.Component<FeedProps, FeedState> {
             include_descendants: true,
             include_ancestors: true,
             include_user: true,
-            except_slug: "welcome_to_wikir",
             limit: 20
           }, this.props.setAppState)
             .then(topics => topics && this.setState({ topics: topics as Reference[] }))

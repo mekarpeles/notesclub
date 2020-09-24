@@ -56,7 +56,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/">Wikir</Navbar.Brand>
+        <Navbar.Brand href="/">Book Notes Club</Navbar.Brand>
         {currentUser ? this.renderLoggedInHeader() : this.renderAnonymousHeader()}
       </Navbar>
     )

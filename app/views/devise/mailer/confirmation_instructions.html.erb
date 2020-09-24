@@ -1,5 +1,5 @@
-<p>Hi <%= @resource.name %>, we're thrilled to have you at Wikir!</p>
+<p>Hi <%= @resource.name %>, we're thrilled to have you at Book Notes Club!</p>
 
 <p>You can confirm your account email through the link below:</p>
 
-<p><%= link_to 'Confirm my account', "#{ENV['WIKIR_FRONTEND_HOST']}/users/confirmation/#{@token}" %></p>
+<p><%= link_to 'Confirm my account', "#{ENV['NOTES_FRONTEND_HOST']}/users/confirmation/#{@token}" %></p>
