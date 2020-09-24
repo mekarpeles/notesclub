@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_many :topics
   has_many :golden_tickets
   has_many :invitees, class_name: 'User', foreign_key: :invited_by_id
-  belongs_to :invited_by, class_name: 'User', foreign_key: :invited_by_id
+  belongs_to :invited_by, class_name: 'User', foreign_key: :invited_by_id, required: false
 
   after_create :reset_jwt_token
 
