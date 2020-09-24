@@ -1,8 +1,9 @@
-# README
-Rails app
+# Book Notes Club
+
+## Start backend:
 `rails s`
 
-React SPA (front/)
+## Start frontend:
 `cd front`
 `yarn start`
 
