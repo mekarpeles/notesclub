@@ -1,9 +1,9 @@
 # Book Notes Club
 
-## Start backend:
+## Start backend
 `rails s`
 
-## Start frontend:
+## Start frontend
 `cd front`
 `yarn start`
 
