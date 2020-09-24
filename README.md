@@ -1,6 +1,12 @@
 # Book Notes Club
 
-## Start backend
+## Backend
+
+### Create db:
+rails db:create
+rails db:migrate
+
+### Start server:
 `rails s`
 
 ## Start frontend
