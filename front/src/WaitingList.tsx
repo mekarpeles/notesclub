@@ -60,17 +60,17 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
         <div className="text-center waiting-list-title">
           <h1>Are you a book reader?</h1>
           <div>Would you like to create <b>open notes</b> about your favorite books?</div>
-          <div>Leave your email and we'll send you an access code soon.</div>
         </div>
         <div className="row">
           <div className="col-lg-4"></div>
           <div className="col-lg-4">
             <Form.Group>
-              <Form.Label>Email:</Form.Label>
+              <Form.Label>Leave your <b>email</b> & get access soon:</Form.Label>
               <Form.Control
                 type="text"
                 value={email}
                 name="email"
+                placeholder="your@email.com"
                 onChange={this.handleChange as any} autoFocus />
             </Form.Group>
 
