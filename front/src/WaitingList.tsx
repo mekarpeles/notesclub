@@ -60,7 +60,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
         <div className="text-center waiting-list-title">
           <h1>Are you a book reader?</h1>
           <div>Would you like to create open notes about your favorite books?</div>
-          <div>Leave your email and we'll be in contact soon.</div>
+          <div>Leave your email and we'll send you an access code soon.</div>
         </div>
         <div className="row">
           <div className="col-lg-4"></div>
@@ -76,7 +76,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
 
             <Button onClick={this.submit}>Join</Button>
             {" or "}
-            <Link to="/signup" onClick={() => window.location.href = `/signup`}>Sign up</Link> if you have a Golden Ticket
+            <Link to="/signup" onClick={() => window.location.href = `/signup`}>Sign up</Link> if you have an access code.
           </div>
           <div className="col-lg-4"></div>
         </div>
