@@ -49,3 +49,4 @@ gem 'analytics-ruby', '~> 2.2.8', :require => 'segment/analytics'
 
 gem 'newrelic_rpm'
 gem 'airbrake'
+gem 'aws-sdk-rails'
