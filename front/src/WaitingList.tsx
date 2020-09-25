@@ -59,7 +59,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
       <div className="container">
         <div className="text-center waiting-list-title">
           <h1>Are you a book reader?</h1>
-          <div>Would you like to create open notes about your favorite books?</div>
+          <div>Would you like to create <b>open notes</b> about your favorite books?</div>
           <div>Leave your email and we'll send you an access code soon.</div>
         </div>
         <div className="row">
