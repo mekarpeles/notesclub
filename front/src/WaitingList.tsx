@@ -12,7 +12,6 @@ interface WaitingListProps {
 
 interface WaitingListState {
   email: string
-  comment: string
 }
 
 class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
@@ -20,8 +19,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
     super(props)
 
     this.state = {
-      email: "",
-      comment: ""
+      email: ""
     }
   }
 
@@ -37,16 +35,15 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
   }
 
   submit = () => {
-    const { email, comment } = this.state
+    const { email } = this.state
 
     const args = {
-      email: email,
-      comment: comment
+      email: email
     }
 
     axios.post(apiDomain() + "/v1/waiting_users", args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
-        this.setState({ email: "", comment: "" })
+        this.setState({ email: "" })
         this.props.setAppState({ alert: { message: "You are in the waiting list now. See you soon!" , variant: "success" } })
       })
       .catch(res => {
@@ -56,7 +53,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
   }
 
   public render() {
-    const { email, comment } = this.state
+    const { email } = this.state
 
     return (
       <div className="container">
