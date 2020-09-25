@@ -154,7 +154,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
           include_descendants: true,
           include_ancestors: true,
           include_user: true,
-          content_like: `%${currentTopic.content}%`,
+          content_like: `${currentTopic.content}`,
           except_ids: except_ids
         },
         this.props.setAppState)
@@ -307,7 +307,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
               }
               {unlinkedReferences && unlinkedReferences.length > 0 &&
                 <>
-                  Unlinked References:
+                  Related:
                     <ul>
                     {unlinkedReferences.map((ref) => (
                       <ReferenceRenderer
