@@ -44,7 +44,7 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
     axios.post(apiDomain() + "/v1/waiting_users", args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
         this.setState({ email: "" })
-        this.props.setAppState({ alert: { message: "You are in the waiting list now. See you soon!" , variant: "success" } })
+        this.props.setAppState({ alert: { message: "Saved. We send access codes every week. See you soon!" , variant: "success" } })
       })
       .catch(res => {
         const message = backendErrorsToMessage(res)
