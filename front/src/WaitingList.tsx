@@ -61,7 +61,9 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
     return (
       <div className="container">
         <div className="text-center waiting-list-title">
-          <h1>Join the waiting list!</h1>
+          <h1>Are you a book reader?</h1>
+          <div>Would you like to create open notes about your favorite books?</div>
+          <div>Leave your email and we'll be in contact soon.</div>
         </div>
         <div className="row">
           <div className="col-lg-4"></div>
@@ -75,15 +77,6 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
                 onChange={this.handleChange as any} autoFocus />
             </Form.Group>
 
-            <Form.Group>
-              <Form.Label>Why would you like to join? (optional)</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows="3"
-                value={comment}
-                name="comment"
-                onChange={this.handleChange as any} />
-            </Form.Group>
             <Button onClick={this.submit}>Join</Button>
             {" or "}
             <Link to="/signup" onClick={() => window.location.href = `/signup`}>Sign up</Link> if you have a Golden Ticket
