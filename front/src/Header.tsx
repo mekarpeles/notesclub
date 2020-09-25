@@ -31,6 +31,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           {currentUser &&
             <Nav.Link href={`/${currentUser.username}`}>{(currentUser.name || currentUser.username)}</Nav.Link>
           }
+          {currentUser && currentUser.name !== "Help" &&
+            <Nav.Link href="/help">Help</Nav.Link>
+          }
+
           <Nav.Link href='/logout'>Logout</Nav.Link>
         </Navbar.Collapse>
       </>
