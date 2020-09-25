@@ -37,8 +37,8 @@ class TodaysLink extends React.Component<TodaysLinkProps, TodaysLinkState> {
 
     return (
       <>
-        {"Writing is thinking. Not sure where to start? "}
-        <Link to={todayTopicUrl} onClick={() => window.location.href = todayTopicUrl}>{todayTopicContent}</Link> is a great place to add insights, summaries of what you read, links, etc.
+        {"Not sure where to start? "}
+        <Link to={todayTopicUrl} onClick={() => window.location.href = todayTopicUrl}>{todayTopicContent}</Link> is a great place to add notes about the books you're reading.
       </>
     )
   }
