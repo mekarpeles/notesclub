@@ -1,7 +1,8 @@
 export function apiDomain() {
   if (process.env["NODE_ENV"] === "production") {
-    return ("https://book.notes.club")
+    return ("https://api.notes.club")
   } else if (process.env["NODE_ENV"] === "development") {
-    return ("http://wikir-api.hec.ngrok.io")
+    return ("http://
+    -api.hec.ngrok.io")
   }
 }
