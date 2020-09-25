@@ -39,7 +39,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   componentDidMount() {
     const { currentBlogger } = this.state
     const { currentTopicKey, currentUser } = this.props
-    if (currentUser && this.props.currentBlogUsername === 'topic' ){
+    if (currentUser && (this.props.currentBlogUsername === 'topic' || this.props.currentBlogUsername === 'note') ){
       // This is used by Wikir's Chrome Extension so it can redirect to a topic without knowing the username
       // We should use history.push or replace, but I couldn't make it work. Although I didn't spend much time.
       const params = queryString.parse(this.props.location.search)
