@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    creator = UserCreator.new(params.permit(:email, :password, :name, :username, :golden_ticket_code))
+    creator = UserCreator.new(params.permit(:email, :password, :name, :username, :golden_ticket_code, :marketing))
     if creator.create
       user = creator.user
       log_in_as(user)

@@ -16,6 +16,7 @@ interface GoldenTicketState {
   password: string
   name: string
   username: string
+  marketing: boolean
 }
 
 class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState> {
@@ -28,14 +29,15 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
       email: "",
       password: "",
       name: "",
-      username: ""
+      username: "",
+      marketing: false
     }
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
-    const value = target.value
     const name = target.name
+    const value = target.type === 'checkbox' ? target.checked : target.value
 
     this.setState((prevState) => ({
       ...prevState,
@@ -45,13 +47,14 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
 
 
   signup = () => {
-    const { email, password, name, code, username } = this.state
+    const { email, password, name, code, username, marketing } = this.state
     const args = {
       email: email,
       password: password,
       name: name,
       username: username,
-      golden_ticket_code: code
+      golden_ticket_code: code,
+      marketing: marketing
     }
 
     axios.post(apiDomain() + "/v1/users", args, { headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
@@ -70,10 +73,10 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
     axios.get(apiDomain() + "/v1/golden_tickets/check", { params: { code: code}, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
       .then(res => {
         if (res.data.found) {
-          this.props.setAppState({ alert: { message: "Golden ticket successful!", variant: "success" } })
+          this.props.setAppState({ alert: { message: "Invitation code successful!", variant: "success" } })
           this.setState({ step: 'signup' })
         } else {
-          this.props.setAppState({ alert: { message: "Sorry, no active golden ticket found :(", variant: "danger" } })
+          this.props.setAppState({ alert: { message: "Sorry, no active invitation code found :(", variant: "danger" } })
         }
       })
       .catch(res => {
@@ -126,7 +129,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
                     type="text"
                     value={email}
                     name="email"
-                    onChange={this.handleChange as any} autoFocus />
+                    onChange={this.handleChange as any} />
                 </Form.Group>
 
                 <Form.Group>
@@ -135,7 +138,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
                     type="text"
                     value={username}
                     name="username"
-                    onChange={this.handleChange as any} autoFocus />
+                    onChange={this.handleChange as any} />
                 </Form.Group>
 
                 <Form.Group>
@@ -144,8 +147,16 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
                     type="password"
                     value={password}
                     name="password"
-                    onChange={this.handleChange as any} autoFocus />
+                    onChange={this.handleChange as any} />
                 </Form.Group>
+                <Form.Group controlId="termsAndConditions">
+                  <Form.Check
+                    type="checkbox"
+                    label="Join the Book Notes Club newsletter."
+                    onChange={this.handleChange as any}
+                    name="marketing" />
+                </Form.Group>
+                <p className="small">By clicking on Join, you agree to our <Link to="/terms">terms</Link> and <Link to="/privacy">privacy</Link> conditions.</p>
                 <Button onClick={this.signup}>Join</Button>
               </>
             }

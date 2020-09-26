@@ -7,6 +7,7 @@ class UserCreator
     @email = args[:email]
     @password = args[:password]
     @golden_ticket_code = args[:golden_ticket_code]
+    @marketing = args[:marketing]
   end
 
   def create
@@ -19,7 +20,7 @@ class UserCreator
   end
 
   private
-  attr_reader :name, :username, :email, :password, :golden_ticket_code
+  attr_reader :name, :username, :email, :password, :golden_ticket_code, :marketing
 
   def create_user
     @errors = []
@@ -43,7 +44,8 @@ class UserCreator
       email: email,
       password: password,
       password_confirmation: password,
-      invited_by_id: golden_ticket.user_id
+      invited_by_id: golden_ticket.user_id,
+      marketing: marketing
     }
   end
 
