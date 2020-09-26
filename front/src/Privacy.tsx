@@ -49,7 +49,7 @@ class Privacy extends React.Component<PrivacyProps, PrivacyState> {
         <p>If we make any material changes to this Privacy Policy, we will notify you either through the email address you have provided us, or by placing a prominent notice on our website.</p>
 
         <p><b>Contact Us</b></p>
-        <p>If you have any questions about this Privacy Policy, please contact us: hecpeare@gmail.com</p>
+        <p>If you have any questions about this Privacy Policy, please contact us: book@notes.club</p>
       </div>
     )
   }
