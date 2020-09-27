@@ -233,7 +233,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
     return (
       <>
-        <div className="topic-container container">
+        <div className="container">
           {currentBlogger && !currentTopic &&
           <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a></h1>
           }
