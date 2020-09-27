@@ -391,7 +391,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     const arr = topic.content.split(this.NOTES_LINK_REGEX)
 
     return (
-      <div className="form-group">
+      <>
         {arr.map((element, index) => {
           const n = index % 4
           if (element === undefined) {
@@ -409,7 +409,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             }
           }
         })}
-      </div>
+      </>
     )
   }
 

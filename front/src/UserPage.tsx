@@ -85,8 +85,8 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
     const { blogger, topics, selectedTopic } = this.state
     const { currentUser } = this.props
 
-    return (
-      <div className="topic-container container">
+     return (
+      <div className="container">
         {blogger && topics && currentUser &&
           <>
             <TodaysLink currentUser={currentUser} />
