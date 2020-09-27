@@ -8,11 +8,13 @@ class BulkAccessGiver
 
   def give_access
     @errors = []
+    i = 0
     WaitingUser.where("golden_ticket_id is null").order(id: :asc).limit(n).find_each do |waiting_user|
       success = WaitingUserAccessGiver.new(waiting_user).give_access
+      i += 1 if success
       @errors << waiting_user unless success
     end
-    @errors.empty?
+    i
   end
 
   private
