@@ -27,3 +27,19 @@
 .grey {
   color: grey;
 }
+
+.topic-container {
+  input[type="text"], textarea {
+    outline: none;
+    box-shadow:none !important;
+    border: none !important;
+    padding: 0px !important;
+    height: 25px;
+  }
+  .form-group {
+    margin: 2px 0px;
+  }
+  .form-control {
+    margin: 2px 0px;
+  }
+}

@@ -227,16 +227,13 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
     const ancestor_count = ancestors ? ancestors.length : 0
     const isOwnBlog = currentUser && currentBlogger && currentUser.id === currentBlogger.id
-    console.log(`isOwnBlog: ${isOwnBlog}`)
     const linkToOwnPage = !isOwnBlog && references && unlinkedReferences && currentUser && (currentTopic === null || (currentTopic && !references.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id) && !unlinkedReferences.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id)))
-    console.log(`linkToOwnPage: ${linkToOwnPage}`)
-
     const currentUsername = currentUser ? currentUser.username : ""
     const ownPagePath = currentTopic ? `/${currentUsername}/${currentTopic.slug}?content=${currentTopic.content}` : `/${currentUsername}/${currentTopicKey}`
 
     return (
       <>
-        <div className="container">
+        <div className="topic-container container">
           {currentBlogger && !currentTopic &&
           <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a></h1>
           }

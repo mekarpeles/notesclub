@@ -126,7 +126,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
               </>
             }
             {step === 'signup' &&
-              <>
+              <Form>
                 <Form.Group>
                   <Form.Label>Enter your name:</Form.Label>
                   <Form.Control
@@ -160,8 +160,10 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
                     type="password"
                     value={password}
                     name="password"
-                    onChange={this.handleChange as any} />
+                    onChange={this.handleChange as any}
+                    autoComplete="new-password" />
                 </Form.Group>
+
                 <Form.Group controlId="termsAndConditions">
                   <Form.Check
                     type="checkbox"
@@ -171,7 +173,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
                 </Form.Group>
                 <p className="small">By clicking on Join, you agree to our <Link to="/terms">terms</Link> and <Link to="/privacy">privacy</Link> conditions.</p>
                 <Button onClick={this.signup}>Join</Button>
-              </>
+              </Form>
             }
           </div>
           <div className="col-lg-4"></div>

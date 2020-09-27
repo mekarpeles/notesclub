@@ -268,21 +268,17 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
           event.preventDefault()
           break
         case "ArrowDown":
-          if (!isReference) {
-            if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
-              this.moveTopicBelow()
-            } else {
-              this.selectTopicBelow()
-            }
+          if (!isReference && event.shiftKey && (event.ctrlKey || event.metaKey)) {
+            this.moveTopicBelow()
+          } else {
+            this.selectTopicBelow()
           }
           break
         case "ArrowUp":
-          if (!isReference) {
-            if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
-              this.moveTopicAbove()
-            } else {
-              this.selectTopicAbove()
-            }
+          if (!isReference && event.shiftKey && (event.ctrlKey || event.metaKey)) {
+            this.moveTopicAbove()
+          } else {
+            this.selectTopicAbove()
           }
           break
         case "Backspace":
@@ -395,7 +391,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
     const arr = topic.content.split(this.NOTES_LINK_REGEX)
 
     return (
-      <>
+      <div className="form-group">
         {arr.map((element, index) => {
           const n = index % 4
           if (element === undefined) {
@@ -413,7 +409,7 @@ class TopicRenderer extends React.Component<TopicRendererProps, TopicRendererSta
             }
           }
         })}
-      </>
+      </div>
     )
   }
 

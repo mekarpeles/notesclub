@@ -69,28 +69,30 @@ class Login extends React.Component<LoginProps, LoginState> {
           <div className="col-lg-4"></div>
           <div className="col-lg-4">
             {error}
+            <Form>
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={email}
+                  name="email"
+                  onChange={this.handleChange as any} autoFocus />
+              </Form.Group>
 
-            <Form.Group>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="text"
-                value={email}
-                name="email"
-                onChange={this.handleChange as any} autoFocus />
-            </Form.Group>
+              <Form.Group>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  value={password}
+                  name="password"
+                  onChange={this.handleChange as any}
+                  autoComplete="current-password" />
+              </Form.Group>
 
-            <Form.Group>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                value={password}
-                name="password"
-                onChange={this.handleChange as any} autoFocus />
-            </Form.Group>
-
-            <Button onClick={this.submit}>Login</Button>
-            {" or join the "}
-            <Link to="/" onClick={() => window.location.href = `/`}>waiting list</Link>.
+              <Button onClick={this.submit}>Login</Button>
+              {" or join the "}
+              <Link to="/" onClick={() => window.location.href = `/`}>waiting list</Link>.
+            </Form>
           </div>
           <div className="col-lg-4"></div>
         </div>
