@@ -40,8 +40,6 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
     const current = recaptchaRef.current
     if (current) {
       const token = await current.executeAsync()
-      console.log(`hec: ${token}`)
-
       const { email } = this.state
       const args = {
         email: email,
@@ -53,8 +51,12 @@ class WaitingList extends React.Component<WaitingListProps, WaitingListState> {
           this.props.setAppState({ alert: { message: "Saved. We send access codes every week. See you soon!", variant: "success" } })
         })
         .catch(res => {
-          const message = backendErrorsToMessage(res)
-          this.props.setAppState({ alert: { message: message, variant: "danger" } })
+          if (res.response.status === 401) {
+            this.props.setAppState({ alert: { message: "Error. Are you human? If so, please refresh and try again.", variant: "danger" } })
+          } else {
+            const message = backendErrorsToMessage(res)
+            this.props.setAppState({ alert: { message: message, variant: "danger" } })
+          }
         })
     }
   }

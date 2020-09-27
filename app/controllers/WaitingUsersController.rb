@@ -4,7 +4,7 @@ class WaitingUsersController < ApplicationController
   def create
     waiting_user = WaitingUser.new(params.permit(:email, :comment))
     if !verify_recaptcha(model: waiting_user)
-      render json: { errors: "Are you a human? If so, please refresh and try again." }, status: :bad_request
+      render json: { errors: { captcha: ["Are you human? If so, please refresh and try again."]} }, status: :unauthorized
     elsif waiting_user.save
       render json: waiting_user
     else
