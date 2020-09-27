@@ -4,6 +4,7 @@ import axios from 'axios'
 import { apiDomain } from './appConfig'
 import { Link } from 'react-router-dom'
 import { backendErrorsToMessage } from './backendSync'
+import { recaptchaRef } from './index'
 
 interface GoldenTicketProps {
   setAppState: Function
@@ -68,20 +69,32 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
       })
   }
 
-  checkCode = () => {
-    const { code } = this.state
-    axios.get(apiDomain() + "/v1/golden_tickets/check", { params: { code: code}, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
-      .then(res => {
-        if (res.data.found) {
-          this.props.setAppState({ alert: { message: "Invitation code successful!", variant: "success" } })
-          this.setState({ step: 'signup' })
-        } else {
-          this.props.setAppState({ alert: { message: "Sorry, no active invitation code found :(", variant: "danger" } })
-        }
-      })
-      .catch(res => {
-        this.props.setAppState({ alert: { message: "There was an error. We're in alpha, sorry!", variant: "danger" } })
-      })
+  checkCode = async () => {
+    const current = recaptchaRef.current
+    if (current) {
+      const token = await current.executeAsync()
+      const { code } = this.state
+      const args = {
+        code: code,
+        "g-recaptcha-response": token
+      }
+      axios.get(apiDomain() + "/v1/golden_tickets/check", { params: args, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+        .then(res => {
+          if (res.data.found) {
+            this.props.setAppState({ alert: { message: "Invitation code successful!", variant: "success" } })
+            this.setState({ step: 'signup' })
+          } else {
+            this.props.setAppState({ alert: { message: "Sorry, no active invitation code found :(", variant: "danger" } })
+          }
+        })
+        .catch(error => {
+          if (error.response.status === 401 ) {
+            this.props.setAppState({ alert: { message: "Are you human? If so, please refresh and try again.", variant: "danger" } })
+          } else {
+            this.props.setAppState({ alert: { message: "There was an error. We're in alpha, sorry!", variant: "danger" } })
+          }
+        })
+    }
   }
 
   public render() {

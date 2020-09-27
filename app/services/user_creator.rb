@@ -27,7 +27,7 @@ class UserCreator
     @user = User.new(args)
     User.transaction do
       @user.save!
-      golden_ticket.waiting_user.destroy!
+      golden_ticket.waiting_user.destroy! if golden_ticket.waiting_user
       golden_ticket.destroy!
     end
     true
