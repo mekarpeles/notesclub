@@ -1,9 +1,7 @@
 class ApplicationController < ActionController::API
   include ::ActionController::Cookies
-
-  respond_to :json
-
   before_action :authenticate_user!
+  respond_to :json
 
   private
 
@@ -17,7 +15,7 @@ class ApplicationController < ActionController::API
   end
 
   def track_user
-    if ENV['NOTES_SEGMENT_ENABLED'].to_s == "true"
+    if current_user.present? && ENV['NOTES_SEGMENT_ENABLED'].to_s == "true"
       Analytics.identify(
         user_id: current_user.id,
         traits: {
@@ -41,7 +39,7 @@ class ApplicationController < ActionController::API
       Rails.logger.info "authenticate: id: #{id}"
       id
     rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
-      head :unauthorized
+      nil
     end
   end
 
@@ -54,7 +52,7 @@ class ApplicationController < ActionController::API
   end
 
   def current_user
-    @current_user ||= super || User.find(current_user_id)
+    @current_user ||= super || User.find_by(id: current_user_id)
   end
 
   def signed_in?

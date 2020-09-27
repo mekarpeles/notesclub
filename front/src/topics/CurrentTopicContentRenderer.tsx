@@ -14,7 +14,7 @@ interface CurrentTopicContentRendererProps {
   currentTopic: Topic
   setUserTopicPageState: Function
   setAppState: Function
-  currentUser: User | undefined
+  currentUser?: User | null
 }
 
 interface CurrentTopicContentRendererState {

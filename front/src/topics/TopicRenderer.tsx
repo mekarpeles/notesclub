@@ -18,7 +18,7 @@ interface TopicRendererProps {
   setUserTopicPageState: Function
   setAppState: Function
   currentBlogger: User
-  currentUser: User | undefined
+  currentUser?: User | null
   isReference: boolean
 }
 

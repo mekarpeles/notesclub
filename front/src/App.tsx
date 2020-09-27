@@ -28,7 +28,7 @@ interface alert {
 }
 
 interface AppState {
-  currentUser?: User
+  currentUser?: User | null
   currentUsername?: string
   alert?: alert
 }
@@ -48,10 +48,15 @@ class App extends React.Component<AppProps, AppState> {
 
   componentDidMount() {
     const { currentUsername, currentUser } = this.state
-    if (currentUsername && !currentUser) {
-      fetchBackendUser(currentUsername)
-        .then(currentUser => this.setState({ currentUser: currentUser }))
-        .catch(_ => this.setState({ alert: { message: "Sync error. Please try again later. Sorry, we're in alpha!", variant: "danger" } }))
+
+    if (currentUser === undefined) {
+      if (currentUsername) {
+        fetchBackendUser(currentUsername)
+          .then(currentUser => this.setState({ currentUser: currentUser === undefined ? null : currentUser }))
+          .catch(_ => this.setState({ alert: { message: "Sync error. Please try again later. Sorry, we're in alpha!", variant: "danger" } }))
+      } else {
+        this.setState({ currentUser: null })
+      }
     }
   }
 
@@ -78,10 +83,10 @@ class App extends React.Component<AppProps, AppState> {
         <Route path="/logout" exact render={() => <Logout />} />
         <Route path="/login" exact render={() => <Login setParentState={this.updateState} />} />
         <Route path="/users/confirmation/:token" exact render={({ match }) => <ConfirmationToken token={match.params.token} setAppState={this.updateState} />} />
+        <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
         {currentUser &&
           <Switch>
             <Route path="/:blogUsername" exact render={({ match }) => <UserPage currentUser={currentUser} blogUsername={match.params.blogUsername} setAppState={this.updateState} />} />
-            <Route path="/:blogUsername/:topicKey" exact render={({ match }) => <UserTopicPage currentBlogUsername={match.params.blogUsername} currentTopicKey={match.params.topicKey} currentUser={currentUser} setAppState={this.updateState} />} />
             <Route path="/" exact render={({ match }) => <Feed currentUser={currentUser} blogUsername={match.params.blogUsername} setAppState={this.updateState} />} />
           </Switch>
         }

@@ -10,7 +10,7 @@ interface ReferenceRendererProps {
   selectedTopic: Topic | null
   setUserTopicPageState: Function
   setAppState: Function
-  currentUser: User | undefined
+  currentUser?: User | null
   showUser: boolean
 }
 

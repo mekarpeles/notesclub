@@ -4,7 +4,7 @@ import { User } from './User'
 
 interface HeaderProps {
   setParentState: Function
-  currentUser?: User
+  currentUser?: User | null
 }
 
 interface HeaderState {

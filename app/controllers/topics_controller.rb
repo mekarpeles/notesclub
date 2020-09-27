@@ -2,7 +2,7 @@ class TopicsController < ApplicationController
   before_action :set_topic, only: [:update, :destroy]
   before_action :authenticate_param_id!, only: [:update, :destroy]
   before_action :authenticate_param_user_id!, only: [:create]
-  skip_before_action :authenticate_user!, only: [:count]
+  skip_before_action :authenticate_user!, only: [:index, :count]
 
   def index
     track_topic if params["user_ids"] && params["user_ids"].is_a?(Array) && params["user_ids"].size == 1
@@ -12,6 +12,7 @@ class TopicsController < ApplicationController
     topics = topics.where(ancestry: params["ancestry"]&.empty? ? nil : params["ancestry"]) if params.include?("ancestry")
     topics = topics.where(slug: params["slug"]) if params["slug"]
     topics = topics.where(content: params["content"]) if params["content"]
+
     if params["content_like"]
       topics = topics.where("lower(content) like ?", params['content_like'].downcase)
     end
@@ -37,7 +38,7 @@ class TopicsController < ApplicationController
     methods << :descendants if params[:include_descendants]
     methods << :ancestors if params[:include_ancestors]
     methods << :user if params[:include_user]
-    render json: topics.to_json(methods: methods)
+    render json: topics.to_json(methods: methods), status: :ok
   end
 
   def count

@@ -47,7 +47,7 @@ interface fetchBackendTopicsInterface {
 export const fetchBackendTopics = async (params: fetchBackendTopicsInterface, setAppState: Function): Promise<TopicWithFamily[]> => {
   if (params.ancestry === null) { params.ancestry = "" } // Axios skips null and undefined parameters
   const response = await axios.get(apiDomain() + '/v1/topics', { params: params, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
-    .then(res => {return(res.data)})
+    .then(res => Promise.resolve(res.data))
     .catch(_ => syncError(setAppState))
   return (response)
 }

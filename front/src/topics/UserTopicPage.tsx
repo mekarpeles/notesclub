@@ -12,14 +12,14 @@ import ReferenceRenderer from './ReferenceRenderer'
 
 interface UserTopicPageProps extends RouteComponentProps<any> {
   setAppState: Function
-  currentUser?: User
+  currentUser?: User | null
   currentTopicKey: string
   currentBlogUsername: string
 }
 
 interface UserTopicPageState {
-  currentBlogger?: User
-  currentTopic?: Topic
+  currentBlogger?: User | null
+  currentTopic?: Topic | null
   selectedTopic: Topic | null
   descendants?: Topic[]
   ancestors?: Topic[]
@@ -37,7 +37,6 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
   }
 
   componentDidMount() {
-    const { currentBlogger } = this.state
     const { currentTopicKey, currentUser } = this.props
     if (currentUser && (this.props.currentBlogUsername === 'topic' || this.props.currentBlogUsername === 'user') ){
       // This is used by Wikir's Chrome Extension so it can redirect to a topic without knowing the username
@@ -49,10 +48,6 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
         window.location.href = `/${currentUser.username}/${currentTopicKey}`
       }
     }
-
-    if(!currentBlogger) {
-      this.fetchBloggerAndCurrentTopic()
-    }
   }
 
   fetchBloggerAndCurrentTopic = () => {
@@ -60,9 +55,8 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
     fetchBackendUser(currentBlogUsername)
       .then(blogger => {
-        this.setState({ currentBlogger: blogger})
+        this.setState({ currentBlogger: blogger === undefined ? null : blogger})
         if (blogger) {
-
           fetchBackendTopics({ slug: currentTopicKey, user_ids: [blogger.id], include_descendants: true, include_ancestors: true }, this.props.setAppState)
             .then(fetchBackendTopicsAndDescendants => {
               const isOwnBlog = currentUser ? currentUser.id === blogger.id : false
@@ -82,6 +76,9 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
                     .then(topic => {
                       this.setTopicAndCreateDescendantIfNone(topic, isOwnBlog)
                     })
+                } else {
+                  this.setState({ currentTopic: null })
+                  this.setReferences()
                 }
               } else {
                 // Topic already exists
@@ -106,28 +103,29 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
   setReferences = () => {
     const { currentTopic } = this.state
-    const { currentUser } = this.props
+    const { currentUser, currentTopicKey } = this.props
+    const content_like = currentTopic ? currentTopic.content : currentTopicKey
 
-    if (currentTopic && currentUser) {
+    if (currentUser !== undefined ) {
       fetchBackendTopics(
         {
           include_descendants: true,
           include_ancestors: true,
           include_user: true,
-          content_like: `%[[${currentTopic.content}]]%`
+          content_like: `%[[${content_like}]]%`
         },
         this.props.setAppState)
         .then(references => {
-          this.setState(
-            {
-              references: (references as Reference[])
-                .filter((r) => !this.inCurrentTopic(r))
-                .sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1)
-                .sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
-            })
+          let refs = (references as Reference[]).filter((r) => !this.inCurrentTopic(r))
+          if (currentTopic) {
+            refs = refs.sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1)
+          }
+          if (currentUser) {
+            refs = refs.sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
+          }
+          this.setState({ references: refs })
           this.setUnlinkedReferences()
-        }
-        )
+        })
     }
   }
 
@@ -145,24 +143,28 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
   setUnlinkedReferences = () => {
     const { currentTopic, references } = this.state
-    const { currentUser } = this.props
-
-    if (currentTopic && currentUser && references) {
+    const { currentUser, currentTopicKey } = this.props
+    if (currentUser !== undefined && references) {
+      const content_like = currentTopic ? currentTopic.content : currentTopicKey
       const except_ids = (references.filter(ref => ref.id).map((ref) => ref.id as number))
       fetchBackendTopics(
         {
           include_descendants: true,
           include_ancestors: true,
           include_user: true,
-          content_like: `${currentTopic.content}`,
+          content_like: `${content_like}`,
           except_ids: except_ids
         },
         this.props.setAppState)
         .then(unlinkedReferences => {
-          const unlinkedRef = this.uniqueUnlinkedReferences(references, unlinkedReferences as Reference[])
+          let unlinkedRef = this.uniqueUnlinkedReferences(references, unlinkedReferences as Reference[])
             .filter(r => !this.inCurrentTopic(r))
-            .sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1)
-            .sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
+          if (currentTopic) {
+            unlinkedRef = unlinkedRef.sort((a, b) => a.user_id === currentTopic.user_id ? -1 : 1)
+          }
+          if (currentUser) {
+            unlinkedRef.sort((a, b) => a.user_id === currentUser.id ? -1 : 1)
+          }
           this.setState({ unlinkedReferences: unlinkedRef })
         })
     }
@@ -216,22 +218,50 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
 
   public render () {
     const { currentBlogger, currentTopic, selectedTopic, descendants, ancestors, references, unlinkedReferences } = this.state
-    const { currentUser } = this.props
+    const { currentUser, currentTopicKey } = this.props
+
+    if (currentBlogger === undefined && currentUser !== undefined) {
+      this.fetchBloggerAndCurrentTopic()
+    }
     const children = currentTopic && descendants ? getChildren(currentTopic, descendants) : undefined
 
     const ancestor_count = ancestors ? ancestors.length : 0
     const isOwnBlog = currentUser && currentBlogger && currentUser.id === currentBlogger.id
-    const linkToOwnPage = !isOwnBlog && currentTopic && references && unlinkedReferences && currentUser && !references.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id) && !unlinkedReferences.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id)
-    const ownPagePath = currentUser && currentTopic ? `/${currentUser.username}/${currentTopic.slug}?content=${currentTopic.content}` : ""
+    console.log(`isOwnBlog: ${isOwnBlog}`)
+    const linkToOwnPage = !isOwnBlog && references && unlinkedReferences && currentUser && (currentTopic === null || (currentTopic && !references.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id) && !unlinkedReferences.find((t) => t.slug === currentTopic.slug && t.user_id === currentUser.id)))
+    console.log(`linkToOwnPage: ${linkToOwnPage}`)
+
+    const currentUsername = currentUser ? currentUser.username : ""
+    const ownPagePath = currentTopic ? `/${currentUsername}/${currentTopic.slug}?content=${currentTopic.content}` : `/${currentUsername}/${currentTopicKey}`
 
     return (
       <>
         <div className="container">
-          { currentBlogger && !currentTopic &&
+          {currentBlogger && !currentTopic &&
           <h1><a href={`/${currentBlogger.username}`}>{currentBlogger.name}</a></h1>
           }
-          {(!currentBlogger || !currentTopic || !children || !descendants) &&
+          {currentBlogger !== null && currentTopic === undefined &&
             <p>Loading</p>
+          }
+          {currentUser && (currentBlogger === null || (currentTopic === null && linkToOwnPage)) &&
+            <>
+              <p>No notes on "{currentTopicKey}" yet.</p>
+              <p>
+                <Link to={ownPagePath} onClick={() => window.location.href = ownPagePath}>Create your note "{currentTopic ? currentTopic.content : currentTopicKey}"</Link>.
+              </p>
+            </>
+          }
+          {(!currentUser && (currentBlogger === null || currentTopic === null)) &&
+            <>
+              <p>No notes on "{currentTopicKey}" yet.</p>
+              <p>
+                {"You can "}
+                <Link to="/login" onClick={() => window.location.href = "/login"}>log in</Link>
+                {" or "}
+                <Link to="/signup" onClick={() => window.location.href = "/signup"}>sign up</Link>
+                {" to add notes."}
+              </p>
+            </>
           }
           {currentBlogger && currentTopic && children && descendants && ancestors &&
             <>
@@ -285,7 +315,7 @@ class UserTopicPage extends React.Component<UserTopicPageProps, UserTopicPageSta
               </ul>
               {linkToOwnPage &&
                 <p>
-                  <Link to={ownPagePath} onClick={() => window.location.href=ownPagePath}>Create your topic "{currentTopic.content}"</Link>
+                  <Link to={ownPagePath} onClick={() => window.location.href=ownPagePath}>Create your note "{currentTopic.content}"</Link>.
                 </p>
               }
               {references && references.length > 0 &&

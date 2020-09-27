@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:create, :confirmation]
+  skip_before_action :authenticate_user!, only: [:index, :create, :confirmation]
   before_action :authenticate_param_user!, only: :update
   EXPOSED_ATTRIBUTES = %w(id name username created_at updated_at).freeze
 
