@@ -112,10 +112,14 @@ const syncError = (setAppState: Function) => {
 export const backendErrorsToMessage = (res: any) => {
   const errors = res.response.data && res.response.data.errors
   let errors_arr: string[] = []
-  for (let key in errors) {
-    const capitalized_key = key.charAt(0).toUpperCase() + key.slice(1)
-    let value = errors[key].join(`. ${capitalized_key} `)
-    errors_arr.push(`${capitalized_key} ${value}`)
+  if (Array.isArray(errors)) {
+    errors_arr = errors
+  } else {
+    for (let key in errors) {
+      const capitalized_key = key.charAt(0).toUpperCase() + key.slice(1)
+      let value = errors[key].join(`. ${capitalized_key} `)
+      errors_arr.push(`${capitalized_key} ${value}`)
+    }
   }
   return (errors_arr.join(". "))
 }
