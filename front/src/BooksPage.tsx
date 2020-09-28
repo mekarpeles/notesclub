@@ -2,19 +2,26 @@ import * as React from 'react'
 import { fetchBackendTopics } from './backendSync'
 import { TopicWithFamily } from './topics/Topic'
 import { Link } from 'react-router-dom'
+import { User } from './User'
+import { Form, Button } from 'react-bootstrap'
+import { parameterize } from './utils/parameterize'
 
 interface BooksPageProps {
   setAppState: Function
+  currentUser?: User | null
 }
 
 interface BooksPageState{
   topics?: TopicWithFamily[]
+  newTopicContent: string
 }
 
 class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
   constructor(props: BooksPageProps) {
     super(props)
-    this.state = {}
+    this.state = {
+      newTopicContent: ""
+    }
   }
 
   componentDidMount() {
@@ -41,8 +48,30 @@ class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
     )
   }
 
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target
+    const value = target.value
+    this.setState({ newTopicContent: value })
+  }
+
+
+  createTopic = (newTopicPath: string) => {
+    const { newTopicContent } = this.state
+
+    if (newTopicContent.length < 5) {
+      this.props.setAppState({ alert: { message: "Book title too short", variant: "danger"}})
+    } else if (!/\(book\)/.test(newTopicContent)) {
+      this.props.setAppState({ alert: { message: "The title should include (book) to differentiate it from other notes. E.g. Dune (book) by Frank Herbert", variant: "danger" } })
+    } else {
+      window.location.href = newTopicPath
+    }
+  }
+
   public render () {
-    const { topics } = this.state
+    const { topics, newTopicContent } = this.state
+    const { currentUser } = this.props
+    const newTopicSlug = parameterize(newTopicContent, 100)
+    const newTopicPath = currentUser ? `/${currentUser.username}/${newTopicSlug}?content=${newTopicContent}` : "/"
 
     return (
       <div className="container">
@@ -51,9 +80,35 @@ class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
           <>Loading...</>
         }
         {topics &&
-          <ul>
-            {topics.map((topic, index) => this.renderTopic(topic, index))}
-          </ul>
+          <>
+            <ul>
+              {topics.map((topic, index) => this.renderTopic(topic, index))}
+            </ul>
+            {!currentUser &&
+              <>
+                <Link to="/login" onClick={() => window.location.href = "/login"}>Log in</Link>
+                {" to add your notes."}
+              </>
+            }
+            {currentUser &&
+              <>
+                <h4>Create a new book</h4>
+                <Form>
+                  <Form.Group>
+                    <Form.Label>Title and author:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={newTopicContent}
+                      name={"newTopicContent"}
+                      placeholder="E.g. Foundation (book) by Isaac Asimov"
+                      onChange={this.handleChange as any} autoFocus
+                    />
+                  </Form.Group>
+                  <Button onClick={() => this.createTopic(newTopicPath)}>Create</Button>
+                </Form>
+              </>
+            }
+          </>
         }
       </div>
     )
