@@ -6,6 +6,7 @@ class TopicUpdator
   end
 
   def update(args)
+    args[:slug] = Topic::ContentSlugGenerator.new(args[:content]).generate if args[:content].present? && args[:ancestry].nil?
     Topic.transaction do
       topic.update!(args)
       create_new_topics_from_links!

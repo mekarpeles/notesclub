@@ -7,8 +7,10 @@ import StringWithHtmlLinks from './StringWithHtmlLinks'
 import { deleteBackendTopic } from './../backendSync'
 import './CurrentTopicContentRenderer.scss'
 import { escapeRegExp } from './../utils/escapeRegex'
+import { withRouter } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 
-interface CurrentTopicContentRendererProps {
+interface CurrentTopicContentRendererProps extends RouteComponentProps {
   selectedTopic: Topic | null
   descendants: Topic[]
   references?: Reference[]
@@ -56,14 +58,25 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
       })
       selectedTopic.content = value
 
-      // We also need to update all topics which include [[currentTopic.content]] in their content
-      updateBackendTopic(currentTopic, this.props.setAppState, true)
       this.props.setUserTopicPageState({
         selectedTopic: selectedTopic,
         currentTopic: selectedTopic,
         descendants: descendants,
         references: references
       })
+      // We also need to update all topics which include [[currentTopic.content]] in their content
+      updateBackendTopic(currentTopic, this.props.setAppState, true)
+        .then(topic => {
+          this.props.setUserTopicPageState({
+            selectedTopic: topic,
+            currentTopic: topic,
+            descendants: descendants,
+            references: references
+          })
+          if (topic && topic.slug) {
+            this.props.history.push(topic.slug)
+          }
+        })
     }
   }
 
@@ -155,4 +168,4 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
   }
 }
 
-export default CurrentTopicContentRenderer
+export default withRouter(CurrentTopicContentRenderer)
