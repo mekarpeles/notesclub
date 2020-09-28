@@ -6,6 +6,7 @@ import { updateBackendTopic } from './../backendSync'
 import StringWithHtmlLinks from './StringWithHtmlLinks'
 import { deleteBackendTopic } from './../backendSync'
 import './CurrentTopicContentRenderer.scss'
+import { escapeRegExp } from './../utils/escapeRegex'
 
 interface CurrentTopicContentRendererProps {
   selectedTopic: Topic | null
@@ -38,16 +39,18 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
     const { currentTopic } = this.props
     let { selectedTopic, descendants, references } = this.props
 
+    const escapedContent = escapeRegExp(currentTopic.content)
+
     if (selectedTopic && references) {
       descendants = descendants.map((descendant) => {
         if (descendant.user_id === currentTopic.user_id) {
-          descendant.content = descendant.content //.replace(new RegExp('\\[\\[' + currentTopic.content + '\\]\\]', 'g'), `[[${value}]]`)
+          descendant.content = descendant.content.replace(new RegExp('\\[\\[' + escapedContent + '\\]\\]', 'g'), `[[${value}]]`)
         }
         return (descendant)
       })
       references = references.map((reference) => {
         if (reference.user_id === currentTopic.user_id) {
-          reference.content = reference.content //.replace(new RegExp('\\[\\[' + currentTopic.content + '\\]\\]', 'g'), `[[${value}]]`)
+          reference.content = reference.content.replace(new RegExp('\\[\\[' + escapedContent + '\\]\\]', 'g'), `[[${value}]]`)
         }
         return (reference)
       })
