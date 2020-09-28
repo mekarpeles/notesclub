@@ -28,11 +28,13 @@ class TopicUpdator
   end
 
   def update_topics_with_links!
+    orig_cont = Regexp.escape(original_content)
+    cont = topic.content
     Topic.
       where.not(id: topic.id).
       where(user_id: topic.user_id).
-      where("content like ?", "%[[#{original_content}]]%").find_each do |t|
-        t.update!(content: t.content.gsub(/\[\[#{original_content}\]\]/, "[[#{topic.content}]]"))
+      where("content like ?", "%[[#{orig_cont}]]%").find_each do |t|
+        t.update!(content: t.content.gsub(/\[\[#{orig_cont}\]\]/, "[[#{cont}]]"))
     end
   end
 

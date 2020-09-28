@@ -41,13 +41,13 @@ class CurrentTopicContentRenderer extends React.Component<CurrentTopicContentRen
     if (selectedTopic && references) {
       descendants = descendants.map((descendant) => {
         if (descendant.user_id === currentTopic.user_id) {
-          descendant.content = descendant.content.replace(new RegExp('\\[\\[' + currentTopic.content + '\\]\\]', 'g'), `[[${value}]]`)
+          descendant.content = descendant.content //.replace(new RegExp('\\[\\[' + currentTopic.content + '\\]\\]', 'g'), `[[${value}]]`)
         }
         return (descendant)
       })
       references = references.map((reference) => {
         if (reference.user_id === currentTopic.user_id) {
-          reference.content = reference.content.replace(new RegExp('\\[\\[' + currentTopic.content + '\\]\\]', 'g'), `[[${value}]]`)
+          reference.content = reference.content //.replace(new RegExp('\\[\\[' + currentTopic.content + '\\]\\]', 'g'), `[[${value}]]`)
         }
         return (reference)
       })
