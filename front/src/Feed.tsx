@@ -3,7 +3,7 @@ import { User } from './User'
 import { Topic, Reference } from './topics/Topic'
 import { fetchBackendUser, fetchBackendTopics } from './backendSync'
 import ReferenceRenderer from './topics/ReferenceRenderer'
-import TodaysLink from './topics/TodaysLink'
+import { Link } from 'react-router-dom'
 
 interface FeedProps {
   blogUsername: string
@@ -88,7 +88,8 @@ class Feed extends React.Component<FeedProps, FeedState> {
       <div className="container">
         {blogger && topics && currentUser &&
           <>
-            <TodaysLink currentUser={currentUser} />
+            Not sure where to start?
+            Go to <Link to="/books" onClick={() => window.location.href="/books"}>Books</Link>.
             <h1>Recent activity</h1>
             <ul>
               {topics.map((ref) => (
