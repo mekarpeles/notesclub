@@ -46,7 +46,7 @@ class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
 
   public render () {
     const { topics } = this.state
-    const { currentUser, setAppState } = this.props
+    const { currentUser } = this.props
 
     return (
       <div className="container">
