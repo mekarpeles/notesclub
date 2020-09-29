@@ -91,7 +91,7 @@ class UserPage extends React.Component<UserPageProps, UserPageState> {
           <>
            {"Ready to start? "}
            <Link to="/books/new" onClick={() => window.location.href = "/books/new"}>Add a note about a book</Link>.
-            <h1>{blogger.name}'s recent activity</h1>
+            <h1>{blogger.name === "Help" ? "Help" : `${blogger.name}'s recent activity`}</h1>
             <ul>
               {topics.map((ref) => (
                 <ReferenceRenderer
