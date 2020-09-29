@@ -14,7 +14,7 @@ import Feed from './Feed'
 import WaitingList from './WaitingList'
 import GoldenTicket from './GoldenTicket'
 import { User } from './User'
-import { fetchBackendUser } from './backendSync'
+import { fetchAuthenticatedUser } from './backendSync'
 import ConfirmationToken from './ConfirmationToken'
 import Privacy from './Privacy'
 import Terms from './Terms'
@@ -52,7 +52,7 @@ class App extends React.Component<AppProps, AppState> {
 
     if (currentUser === undefined) {
       if (currentUsername) {
-        fetchBackendUser(currentUsername)
+        fetchAuthenticatedUser()
           .then(currentUser => this.setState({ currentUser: currentUser === undefined ? null : currentUser }))
           .catch(error => {
             if (error && error.response && error.response.status === 401) {
