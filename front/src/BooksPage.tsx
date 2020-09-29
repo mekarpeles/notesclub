@@ -42,7 +42,7 @@ class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
         {user &&
           <li key={index}>
             <Link to={path} onClick={() => window.location.href = path}>{topic.content}</Link>
-            {" by "}
+            {" · "}
             <Link to={user_path} onClick={() => window.location.href = user_path}>{user.name}</Link>
           </li>
         }
