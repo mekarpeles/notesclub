@@ -54,7 +54,14 @@ class App extends React.Component<AppProps, AppState> {
       if (currentUsername) {
         fetchBackendUser(currentUsername)
           .then(currentUser => this.setState({ currentUser: currentUser === undefined ? null : currentUser }))
-          .catch(_ => this.setState({ alert: { message: "Sync error. Please try again later. Sorry, we're in alpha!", variant: "danger" } }))
+          .catch(error => {
+            if (error && error.response && error.response.status === 401) {
+              localStorage.removeItem('currentUser')
+              window.location.href = "/login"
+            } else {
+              this.setState({ alert: { message: "Sync error. Please try again later. Sorry, we're in alpha!", variant: "danger" } })
+            }
+          })
       } else {
         this.setState({ currentUser: null })
       }

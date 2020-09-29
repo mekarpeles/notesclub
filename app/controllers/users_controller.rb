@@ -15,6 +15,15 @@ class UsersController < ApplicationController
     render json: user.to_json, status: :ok
   end
 
+  def me
+    user = User.select(EXPOSED_ATTRIBUTES).where(username: params["username"].downcase).first
+    if user == current_user
+      render json: user.to_json
+    else
+      head :unauthorized
+    end
+  end
+
   def update
     if current_user.update_attributes(user_params)
       track_user

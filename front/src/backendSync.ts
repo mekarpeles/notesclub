@@ -16,11 +16,11 @@ export const fetchBackendUsers = async (ids: number[]) : Promise<User[]> => {
 }
 
 export const fetchBackendUser = async (username: string): Promise<User> => {
-  const response = await axios.get(apiDomain() + '/v1/users', { params: { username: username }, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
-    .then(res => res.data[0])
-    .catch(_ => {
+  const response = await axios.get(apiDomain() + '/v1/users/me', { params: { username: username }, headers: { 'Content-Type': 'application/json', "Accept": "application/json" }, withCredentials: true })
+    .then(res => res.data)
+    .catch(res => {
       console.log('Error fetching user')
-      return (Promise.reject("Error"))
+      return (Promise.reject(res))
     })
   return (response)
 }

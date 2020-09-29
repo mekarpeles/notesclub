@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :show, :create, :update] do
       collection do
         post 'confirmation'
+        get 'me'
       end
     end
     devise_for :users, controllers: { sessions: :sessions },
