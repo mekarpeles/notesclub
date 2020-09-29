@@ -13,14 +13,16 @@ interface BooksPageProps {
 
 interface BooksPageState{
   topics?: TopicWithFamily[]
-  newTopicContent: string
+  newTopicTitle: string
+  newTopicAuthor: string
 }
 
 class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
   constructor(props: BooksPageProps) {
     super(props)
     this.state = {
-      newTopicContent: ""
+      newTopicTitle: "",
+      newTopicAuthor: ""
     }
   }
 
@@ -50,26 +52,29 @@ class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
+    const name = target.name
     const value = target.value
-    this.setState({ newTopicContent: value })
+    this.setState((prevState) => ({
+      ...prevState,
+      [name]: value
+    }))
   }
 
 
   createTopic = (newTopicPath: string) => {
-    const { newTopicContent } = this.state
+    const { newTopicTitle } = this.state
 
-    if (newTopicContent.length < 5) {
-      this.props.setAppState({ alert: { message: "Book title too short", variant: "danger"}})
-    } else if (!/\(book\)/.test(newTopicContent)) {
-      this.props.setAppState({ alert: { message: "The title should include (book) to differentiate it from other notes. E.g. Dune (book) by Frank Herbert", variant: "danger" } })
+    if (newTopicTitle.length < 2) {
+      this.props.setAppState({ alert: { message: "Book title is too short", variant: "danger"}})
     } else {
       window.location.href = newTopicPath
     }
   }
 
   public render () {
-    const { topics, newTopicContent } = this.state
+    const { topics, newTopicTitle, newTopicAuthor } = this.state
     const { currentUser } = this.props
+    const newTopicContent = newTopicAuthor.length > 0 ? `${newTopicTitle} (book) by ${newTopicAuthor}` : ""
     const newTopicSlug = parameterize(newTopicContent, 100)
     const newTopicPath = currentUser ? `/${currentUser.username}/${newTopicSlug}?content=${newTopicContent}` : "/"
 
@@ -91,22 +96,36 @@ class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
               </>
             }
             {currentUser &&
-              <>
-                <h4>Create a new book</h4>
-                <Form>
-                  <Form.Group>
-                    <Form.Label>Title and author:</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={newTopicContent}
-                      name={"newTopicContent"}
-                      placeholder="E.g. Foundation (book) by Isaac Asimov"
-                      onChange={this.handleChange as any} autoFocus
-                    />
-                  </Form.Group>
-                  <Button onClick={() => this.createTopic(newTopicPath)}>Create</Button>
-                </Form>
-              </>
+              <div className="row">
+                <div className="col-lg-6">
+                  <h4>Create a new book</h4>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label>Title</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={newTopicTitle}
+                        name={"newTopicTitle"}
+                        placeholder="E.g. Foundation"
+                        onChange={this.handleChange as any} autoFocus
+                      />
+                    </Form.Group>
+
+                    <Form.Group>
+                      <Form.Label>Author</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={newTopicAuthor}
+                        name={"newTopicAuthor"}
+                        placeholder="E.g. Isaac Asimov"
+                        onChange={this.handleChange as any}
+                      />
+                    </Form.Group>
+                    <Button onClick={() => this.createTopic(newTopicPath)}>Create</Button>
+                  </Form>
+                </div>
+                <div className="col-lg-6"></div>
+              </div>
             }
           </>
         }
