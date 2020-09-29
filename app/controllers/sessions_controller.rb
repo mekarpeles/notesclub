@@ -2,9 +2,10 @@ class SessionsController < ApplicationController
   skip_before_action :authenticate_user!, only: :create
 
   def create
-    sign_in_params = params[:user]
-    user = User.find_by_email(sign_in_params[:email])
-    if user && user.valid_password?(sign_in_params[:password])
+    user = User.find_by_email(params[:email])
+    if !verify_recaptcha
+      render json: { errors: { 'captcha:' => ["Are you human? If so, please refresh and try again."] } }, status: :unauthorized
+    elsif user && user.valid_password?(params[:password])
       Rails.logger.info("action:user_login:#{user.id}")
       log_in_as(user)
       track_user
