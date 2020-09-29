@@ -62,7 +62,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
       .then(res => {
         const currentUser = res.data["user"]
         localStorage.setItem('currentUser', JSON.stringify(currentUser))
-        window.location.href = "/help/welcome"
+        window.location.href = "/help"
       })
       .catch(res => {
         this.props.setAppState({ alert: { message: backendErrorsToMessage(res), variant: "danger" } })

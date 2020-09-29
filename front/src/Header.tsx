@@ -28,13 +28,14 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          {currentUser &&
-            <Nav.Link href={`/${currentUser.username}`}>{(currentUser.name || currentUser.username)}</Nav.Link>
-          }
+          <Nav.Link href='/books/new'>New note</Nav.Link>
+          <Nav.Link href='/books'>Books</Nav.Link>
           {currentUser && currentUser.name !== "Help" &&
             <Nav.Link href="/help">Help</Nav.Link>
           }
-          <Nav.Link href='/books'>Books</Nav.Link>
+          {currentUser &&
+            <Nav.Link href={`/${currentUser.username}`}>{(currentUser.name || currentUser.username)}</Nav.Link>
+          }
           <Nav.Link href='/logout'>Logout</Nav.Link>
         </Navbar.Collapse>
       </>

@@ -3,8 +3,7 @@ import { fetchBackendTopics } from './backendSync'
 import { TopicWithFamily } from './topics/Topic'
 import { Link } from 'react-router-dom'
 import { User } from './User'
-import { Form, Button } from 'react-bootstrap'
-import { parameterize } from './utils/parameterize'
+import { Button } from 'react-bootstrap'
 
 interface BooksPageProps {
   setAppState: Function
@@ -13,17 +12,12 @@ interface BooksPageProps {
 
 interface BooksPageState{
   topics?: TopicWithFamily[]
-  newTopicTitle: string
-  newTopicAuthor: string
 }
 
 class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
   constructor(props: BooksPageProps) {
     super(props)
-    this.state = {
-      newTopicTitle: "",
-      newTopicAuthor: ""
-    }
+    this.state = {}
   }
 
   componentDidMount() {
@@ -50,33 +44,9 @@ class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
     )
   }
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target
-    const name = target.name
-    const value = target.value
-    this.setState((prevState) => ({
-      ...prevState,
-      [name]: value
-    }))
-  }
-
-
-  createTopic = (newTopicPath: string) => {
-    const { newTopicTitle } = this.state
-
-    if (newTopicTitle.length < 2) {
-      this.props.setAppState({ alert: { message: "Book title is too short", variant: "danger"}})
-    } else {
-      window.location.href = newTopicPath
-    }
-  }
-
   public render () {
-    const { topics, newTopicTitle, newTopicAuthor } = this.state
-    const { currentUser } = this.props
-    const newTopicContent = newTopicAuthor.length > 0 ? `${newTopicTitle} (book) by ${newTopicAuthor}` : ""
-    const newTopicSlug = parameterize(newTopicContent, 100)
-    const newTopicPath = currentUser ? `/${currentUser.username}/${newTopicSlug}?content=${newTopicContent}` : "/"
+    const { topics } = this.state
+    const { currentUser, setAppState } = this.props
 
     return (
       <div className="container">
@@ -96,36 +66,7 @@ class BooksPage extends React.Component<BooksPageProps, BooksPageState> {
               </>
             }
             {currentUser &&
-              <div className="row">
-                <div className="col-lg-6">
-                  <h4>Create a new book</h4>
-                  <Form>
-                    <Form.Group>
-                      <Form.Label>Title</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={newTopicTitle}
-                        name={"newTopicTitle"}
-                        placeholder="E.g. Foundation"
-                        onChange={this.handleChange as any} autoFocus
-                      />
-                    </Form.Group>
-
-                    <Form.Group>
-                      <Form.Label>Author</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={newTopicAuthor}
-                        name={"newTopicAuthor"}
-                        placeholder="E.g. Isaac Asimov"
-                        onChange={this.handleChange as any}
-                      />
-                    </Form.Group>
-                    <Button onClick={() => this.createTopic(newTopicPath)}>Create</Button>
-                  </Form>
-                </div>
-                <div className="col-lg-6"></div>
-              </div>
+              <Button onClick={() => window.location.href = "/books/new"}>Add notes about a book</Button>
             }
           </>
         }
