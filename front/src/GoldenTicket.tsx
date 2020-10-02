@@ -4,7 +4,7 @@ import axios from 'axios'
 import { apiDomain } from './appConfig'
 import { Link } from 'react-router-dom'
 import { backendErrorsToMessage } from './backendSync'
-import { recaptchaRef } from './index'
+import { recaptchaRef } from './utils/recaptchaRef'
 
 interface GoldenTicketProps {
   setAppState: Function

@@ -4,7 +4,7 @@ import axios from 'axios'
 import { apiDomain } from './appConfig'
 import './WaitingList.scss'
 import { backendErrorsToMessage } from './backendSync'
-import { recaptchaRef } from './index'
+import { recaptchaRef } from './utils/recaptchaRef'
 import { Link } from 'react-router-dom'
 
 interface WaitingListProps {

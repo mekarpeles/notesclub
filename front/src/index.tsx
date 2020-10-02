@@ -1,16 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.css'
+import App from './App'
+import * as serviceWorker from './serviceWorker'
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import ReCAPTCHA from "react-google-recaptcha"
-
+import { recaptchaRef } from './utils/recaptchaRef'
 // const captchaOnChange = (value: string | null) => {
 //   console.log("Captcha value:", value);
 // }
-
-export const recaptchaRef = React.createRef<ReCAPTCHA>();
 
 ReactDOM.render(
   <ReCAPTCHA

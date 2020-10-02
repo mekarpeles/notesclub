@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap'
 import axios from 'axios'
 import { apiDomain } from './appConfig'
 import { Link } from 'react-router-dom'
-import { recaptchaRef } from './index'
+import { recaptchaRef } from './utils/recaptchaRef'
 import { backendErrorsToMessage } from './backendSync'
 
 interface LoginProps {
