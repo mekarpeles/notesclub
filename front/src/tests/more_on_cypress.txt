@@ -1,1 +1,1 @@
-Integration specs on front/cypress
+Integration specs in front/cypress
