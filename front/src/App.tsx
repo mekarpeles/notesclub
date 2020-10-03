@@ -54,7 +54,9 @@ class App extends React.Component<AppProps, AppState> {
     if (currentUser === undefined) {
       if (currentUsername) {
         fetchAuthenticatedUser()
-          .then(currentUser => this.setState({ currentUser: currentUser === undefined ? null : currentUser }))
+          .then(currentUser => {
+            this.setState({ currentUser: currentUser === undefined ? null : currentUser })
+          })
           .catch(error => {
             if (error && error.response && error.response.status === 401) {
               localStorage.removeItem('currentUser')
