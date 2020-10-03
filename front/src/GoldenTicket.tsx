@@ -111,7 +111,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
           <div className="col-lg-4"></div>
           <div className="col-lg-4">
             {step === 'code' &&
-              <>
+              <Form>
                 <Form.Group>
                   <Form.Label>Please introduce your access code:</Form.Label>
                   <Form.Control
@@ -123,7 +123,7 @@ class GoldenTicket extends React.Component<GoldenTicketProps, GoldenTicketState>
                 <Button onClick={this.checkCode}>Join</Button>
                 {" or go the "}
                 <Link to="/" onClick={() => window.location.href = `/`}>waiting list</Link>.
-              </>
+              </Form>
             }
             {step === 'signup' &&
               <Form>
