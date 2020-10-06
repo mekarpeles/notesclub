@@ -13,6 +13,8 @@ class Footer extends React.Component<FooterProps, FooterState> {
   public render() {
     return (
       <div className="footer">
+        <Link to="https://github.com/notesclub/notesclub">Developers</Link>
+        {" · "}
         <Link to="/terms">Terms</Link>
         {" · "}
         <Link to="/privacy">Privacy</Link>
